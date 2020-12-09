@@ -41,6 +41,7 @@ int		main(void)
 		read(0, buf, 99);
 		// ------------------------------------
 		parser(&all, &buf);
+
 		if (all.buf_len < 1 || all.commas == -1)
 		{
 			if (all.commas == -1)
@@ -48,8 +49,7 @@ int		main(void)
 			free(buf);
 			continue;
 		}
-		else if (!ft_strncmp(all.buf_lst[0], "q", 2) ||
-				!ft_strncmp(all.buf_lst[0], "exit", 5))
+		else if (!ft_strncmp(all.buf_lst[0], "q", 2) || !ft_strncmp(all.buf_lst[0], "exit", 5))
 		{
 			write(1, "exit\n", 5);
 			exit(0);
@@ -62,16 +62,13 @@ int		main(void)
 		}
 		else if (!ft_strncmp(all.buf_lst[0], "env", 4))
 		{
-			all.i = 0;
-			while (environ[all.i] != '\0')
-			{
+			all.i = -1;
+			while (environ[++all.i])
 				ft_putendl(environ[all.i]);
-				all.i++;
-			}
 		}
 		else if (!ft_strncmp(all.buf_lst[0], "cd", 3))
 		{
-			if (chdir(&buf[3]) < 0)
+			if (chdir(all.buf_lst[1]) < 0)
 				error_out("No such file or directory", &all);
 		}
 		else
@@ -79,12 +76,12 @@ int		main(void)
 			error_out("command not found", &all);
 		}
 		// --------------print_buf---------------
-		all.i = 0;
-		while (all.buf_lst[all.i])
-		{
-			ft_putendl(all.buf_lst[all.i]);
-			all.i++;
-		}
+		// all.i = 0;
+		// while (all.buf_lst[all.i])
+		// {
+		// 	ft_putendl(all.buf_lst[all.i]);
+		// 	all.i++;
+		// }
 		// --------------------------------------
 		free_buf_lst(&all);
 		free(buf);
