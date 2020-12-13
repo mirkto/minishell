@@ -25,7 +25,7 @@ $(NAME): $(LIBFT) $(OBJS)
 $(LIBFT):
 	$(MAKE) -C ./libs/libft
 
-$(OBJS): %.o : %.c $(HDR)
+$(OBJS): %.o: %.c $(HDR)
 	gcc $(FLAGS) -c $< -o $@
 
 clean:

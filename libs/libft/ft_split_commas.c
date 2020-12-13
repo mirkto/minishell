@@ -101,7 +101,6 @@ char	**write_words(char **str, const char *s, char c, size_t count_words)
 	while (ios < count_words)
 	{
 		len = len_word(&s[num_w], c);
-		// PRINT_LEN_WORD;
 		str[ios] = (char *)malloc(sizeof(char) * (len + 1));
 		if (!str || len == -1)
 			return (free_split(str, ios - 1));
@@ -130,7 +129,6 @@ char	**ft_split_commas(const char *s, char c)
 	if (!s)
 		return (NULL);
 	amount_words = count_words(s, c);
-	// PRINT_AMOUNT_WORDS;
 	if (amount_words == -1)
 		return (NULL);
 	str = (char **)malloc(sizeof(char *) * (amount_words + 1));

@@ -1,4 +1,11 @@
 
+#define INPUT_CMD GREEN_INPUT RED_INPUT
+#define GREEN_INPUT	GREEN INPUT RESET
+#define GREEN	write(1, "\033[0;32m", 7);
+#define INPUT	write(1, "minishell-0.0", 13);
+#define RESET	write(1, "\033[0m", 4);
+#define RED_INPUT write(1, "\033[0;31m$ \033[0m", 13);
+
 t_parse		*lst_new(char **arg);
 t_parse		*lst_last(t_parse *lstarg);
 void		add_back(t_parse **lstarg, t_parse *new);

@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-void	free_buf_lst(t_param *all)
-{
-	all->i = 0;
-	while (all->buf_lst[all->i])
-	{
-		free(all->buf_lst[all->i]);
-		all->i++;
-	}
-	free(all->buf_lst);
-}
-
 int		check_comma(char *tmp, t_param *all)
 {
 	char	num_c;
@@ -33,17 +22,17 @@ int		check_comma(char *tmp, t_param *all)
 	all->i = 0;
 	c1 = 0;
 	c2 = 0;
-	all->commas = 0;
+	all->flag = 0;
 	while (all->i < all->buf_len)
 	{
 		if (tmp[all->i] == '\'')
 			c1++;
-		if (tmp[all->i] == '\"')
+		if (tmp[all->i] == '"')
 			c2++;
 		all->i++;
 	}
 	if ((c1 % 2) != 0 || (c2 % 2) != 0)
-		all->commas = -1;
+		all->flag = -1;
 	return (0);
 }
 
@@ -54,7 +43,7 @@ int		parser(t_param *all, char **buf)
 	tmp = ft_strtrim(*buf, "\v\f\r \n\t");
 	all->buf_len = ft_strlen(tmp);
 	check_comma(tmp, all);
-	if (all->buf_len > 0 && all->commas != -1)
+	if (all->buf_len > 0 && all->flag != -1)
 	{
 		all->buf_lst = ft_split_commas(tmp, ' ');
 		if (!all->buf_lst)

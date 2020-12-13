@@ -1,0 +1,12 @@
+Makefile
+README.md
+file
+libs
+main.c
+main.o
+minishell
+minishell.h
+parser.c
+parser.o
+test
+testing_func.c
