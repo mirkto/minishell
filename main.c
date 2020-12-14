@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-#define BUFFER_SIZE 9999
+#define BUFFER_SIZE 99
 
 
 void	free_buf(char ***lst)
@@ -73,6 +73,27 @@ int		init_pathes(t_param *all, char **env)
 	return (0);
 }
 
+int		copy_env(t_param *all, char **env)
+{
+	int	len;
+
+	len = 0;
+	while (env[len])
+		len++;
+	// ft_putnbr(len);
+	// ft_putendl("");
+	all->env = (char **)malloc(sizeof(char *) * (len + 1));
+	// all->env[len][0] = '\0';
+	all->i = 0;
+	while (env[all->i])
+	{
+		all->env[all->i] = ft_strdup(env[all->i]);
+		all->i++;
+	}
+	all->env[all->i] = NULL;
+	return (0);
+}
+// ---------------------------------------------------------
 int		implement(t_param *all, char **buf, char ***env)
 {
 	if (all->buf_len < 1 || all->flag == -1)
@@ -103,10 +124,16 @@ int		implement(t_param *all, char **buf, char ***env)
 			error_out("No such file or directory", all->buf_lst[1]);//need add "env:" 
 		else
 		{
-			all->i = -1;
-			while (env[0][++all->i])
-				if (env[0][all->i][0] != '\0')
-					ft_putendl(env[0][all->i]);
+			all->i = 0;
+			// while (env[0][++all->i])
+			// 	if (env[0][all->i][0] != '\0')
+			// 		ft_putendl(env[0][all->i]);
+			while (all->env[all->i])
+			{
+				if (all->env[all->i] != '\0')
+					ft_putendl(all->env[all->i]);
+				all->i++;
+			}
 		}
 	}
 	else if (!ft_strncmp(all->buf_lst[0], "export", 7))
@@ -216,7 +243,6 @@ int		implement(t_param *all, char **buf, char ***env)
 	}
 	else
 	{
-		all->flag = 0;
 		all->i = -1;
 		while (all->pathes[++all->i])
 		{
@@ -231,18 +257,16 @@ int		implement(t_param *all, char **buf, char ***env)
 			}
 			else 
 			{
-				if (execve(all->tmp, all->buf_lst, *env))
-					all->flag = 1;
+				execve(all->tmp, all->buf_lst, *env);
 				exit(0);
 			}
 			free(all->tmp);
-		}
-		if (all->flag == 0)
-			error_out("command not found", all->buf_lst[0]);
+		}			
+		error_out("command not found", all->buf_lst[0]);
 	}
 	return (0);
 }
-
+// ---------------------------------------------------------
 int		main(int argc, char **argv, char **env)
 {
 	char	*buf;
@@ -250,7 +274,7 @@ int		main(int argc, char **argv, char **env)
 
 	if (argc > 1)
 		return (error_out("No such file or directory", argv[1]));
-
+	copy_env(&all, env);
 	while (1)
 	{
 		write(1, "\033[0;32mminishell-0.1$ \033[0m", 26);
