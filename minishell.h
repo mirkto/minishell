@@ -50,9 +50,18 @@ typedef struct		s_parameters
 	int				flag;
 	int				buf_len;
 	char			**env;
+	char			**envt;
 	char			**buf_lst;
 	char			**pathes;
 }					t_param;
+
+typedef struct		s_line
+{
+	char			*cmd;
+	char			*line;
+	int				fd_input;
+	int				fd_output;
+}					t_line;
 
 int					parser(t_param *all, char **buf);
 

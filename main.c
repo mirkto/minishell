@@ -94,7 +94,7 @@ int		copy_env(t_param *all, char **env)
 	return (0);
 }
 // ---------------------------------------------------------
-int		implement(t_param *all, char **buf, char ***env)
+int		implement(t_param *all, char **buf, char **env)
 {
 	if (all->buf_len < 1 || all->flag == -1)
 	{
@@ -125,12 +125,9 @@ int		implement(t_param *all, char **buf, char ***env)
 		else
 		{
 			all->i = 0;
-			// while (env[0][++all->i])
-			// 	if (env[0][all->i][0] != '\0')
-			// 		ft_putendl(env[0][all->i]);
 			while (all->env[all->i])
 			{
-				if (all->env[all->i] != '\0')
+				if (all->env[all->i][0] != '\0')
 					ft_putendl(all->env[all->i]);
 				all->i++;
 			}
@@ -141,7 +138,7 @@ int		implement(t_param *all, char **buf, char ***env)
 		char *s  = ft_strchr(all->buf_lst[1], '=');
 		if (!s)
 		{
-			ft_putendl("-1-");
+			error_out("not a valid identifier", all->buf_lst[0]);// add more
 			return (0);
 		}
 		s++;
@@ -150,56 +147,98 @@ int		implement(t_param *all, char **buf, char ***env)
 		// free(s);
 		// char *s  = ft_strdup(all->buf_lst[1]);
 		// all->tmp = ft_strjoin(s, "=");
-		ft_putendl("-2-");
+		// ft_putendl("---");
+		all->flag = 1;
 		all->i = -1;
-		while (env[0][++all->i])
+		while (all->env[++all->i])
 		{
 			// ft_putstr(all->buf_lst[1]);
 			// ft_putnbr(ft_strlen(all->buf_lst[1]));
-			// ft_putendl(" -3-");
 			// ft_putendl(all->tmp);
-			if (!ft_strncmp(env[0][all->i], all->buf_lst[1], ft_strlen(all->buf_lst[1])))
+			if (!ft_strncmp(all->env[all->i], all->buf_lst[1], ft_strlen(all->buf_lst[1])))
 			{
-				ft_putendl("---");
-				ft_putendl(env[0][all->i]);
-				// free(env[0][all->i]);
+				// ft_putendl("-E-");
+				// ft_putendl(all->env[all->i]);
+				free(all->env[all->i]);
 				s = ft_strjoin(all->buf_lst[1], all->tmp);
-				ft_strcpy(env[0][all->i], s);
-				ft_putendl(env[0][all->i]);
+				all->env[all->i] = ft_strdup(s);
+				// ft_putendl(all->env[all->i]);
 				free(all->tmp);
 				free(s);
-				// free(all->buf_lst[1]);
+				all->flag = 0;
 			}
 		}
+		if (all->flag == 1)
+		{
+			all->i = -1;
+			while (all->env[++all->i])
+			{
+				// ft_putendl(all->env[all->i]);
+				if (all->env[all->i][0] == '\0')
+				{
+					free(all->env[all->i]);
+					s = ft_strjoin(all->buf_lst[1], all->tmp);
+					all->env[all->i] = ft_strdup(s);
+					free(all->tmp);
+					free(s);
+					all->flag = 0;
+				}
+			}
+		}
+		if (all->flag == 1)
+		{
+			// int	len;
+			// len = 0;
+			// while (env[len])
+			// 	len++;
+			// all->envt = (char **)malloc(sizeof(char *) * (len + 1 + 1));
+			// all->envt[len][0] = '\0';
+			// all->i = 0;
+			// while (env[all->i])
+			// {
+			// 	all->envt[all->i] = ft_strdup(env[all->i]);
+			// 	all->i++;
+			// }
+			// all->i++;
+			// all->envt[all->i] = NULL;
 
-		// if (setenv(all->buf_lst[1], all->buf_lst[2], 0) < 0 || all->buf_lst[3])
-		// {
-		// 	all->i = 2;
-		// 	while (all->buf_lst[++all->i])
-		// 		error_out("not a valid identifier", all->buf_lst[all->i]);
-		// }
+			// all->i = -1;
+			// while (all->env[++all->i])
+			// {
+			// 	// ft_putendl(all->env[all->i]);
+			// 	if (all->env[all->i][0] == '\0')
+			// 	{
+			// 		free(all->env[all->i]);
+			// 		s = ft_strjoin(all->buf_lst[1], all->tmp);
+			// 		all->env[all->i] = ft_strdup(s);
+			// 		free(all->tmp);
+			// 		free(s);
+			// 		all->flag = 0;
+			// 	}
+			// }
+		}
 	}
 	else if (!ft_strncmp(all->buf_lst[0], "unset", 6))
 	{
 		char *s  = ft_strdup(all->buf_lst[1]);
 		all->tmp = ft_strjoin(s, "=");
 		free(s);
-		all->flag = 0;
 		all->i = -1;
-		while (env[0][++all->i])
+		while (all->env[++all->i])
 		{
-			if (!ft_strncmp(env[0][all->i], all->tmp, 4))
+			if (!ft_strncmp(all->env[all->i], all->tmp, ft_strlen(all->tmp)))
 			{
-				// ft_putendl(&env[0][all->i][0]);
-				env[0][all->i][0] = '\0';
-				all->flag = 1;
+				// ft_putendl(&all->env[all->i][0]);
+				all->env[all->i][0] = '\0';
 				free(all->tmp);
 				break ;
 			}
 		}
-		if (all->flag == 1 || all->buf_lst[2])
+		if (all->buf_lst[2] || !ft_isalpha(all->buf_lst[1][0]))
 		{
-			all->i = 1;
+			all->i = 0;
+			if (all->buf_lst[2] || all->buf_lst[1][0] == '#' || all->buf_lst[1][0] == '_')
+				all->i++;
 			while (all->buf_lst[++all->i])
 				error_out("not a valid identifier", all->buf_lst[all->i]);
 		}
@@ -221,18 +260,18 @@ int		implement(t_param *all, char **buf, char ***env)
 		{
 			all->tmp = NULL;
 			all->i = -1;
-			while (env[0][++all->i])
+			while (all->env[++all->i])
 			{
-				if (!ft_strncmp(env[0][all->i], "PWD=", 4))
+				if (!ft_strncmp(all->env[all->i], "PWD=", 4))
 				{
-					all->tmp = ft_strdup(&env[0][all->i][4]);
+					all->tmp = ft_strdup(&all->env[all->i][4]);
 					all->flag = -1;
-					while (env[0][++all->flag])
-						if (!ft_strncmp(env[0][all->flag], "OLDPWD=", 7))
-							ft_strcpy(&env[0][all->flag][7], all->tmp);
+					while (all->env[++all->flag])
+						if (!ft_strncmp(all->env[all->flag], "OLDPWD=", 7))
+							ft_strcpy(&all->env[all->flag][7], all->tmp);
 					free(all->tmp);
 					all->tmp = getcwd(NULL, 0);
-					ft_strcpy(&env[0][all->i][4], all->tmp);
+					ft_strcpy(&all->env[all->i][4], all->tmp);
 					break ;
 				}
 			}
@@ -257,7 +296,7 @@ int		implement(t_param *all, char **buf, char ***env)
 			}
 			else 
 			{
-				execve(all->tmp, all->buf_lst, *env);
+				execve(all->tmp, all->buf_lst, all->env);
 				exit(0);
 			}
 			free(all->tmp);
@@ -281,7 +320,7 @@ int		main(int argc, char **argv, char **env)
 		buf = init_buf(&all);
 		init_pathes(&all, env);
 		parser(&all, &buf);
-		if (implement(&all, &buf, &env) == 1)
+		if (implement(&all, &buf, env) == 1)
 			continue ;
 		// --------------print_buf---------------
 		// all.i = 0;
