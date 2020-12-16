@@ -339,7 +339,7 @@ int		main(int argc, char **argv, char **env)
 	init_pathes(&all, env);
 	while (1)
 	{
-		write(1, "\033[0;32mminishell-0.1$ \033[0m", 26);
+		write(1, "\033[0;32mminishell-0.2$ \033[0m", 26);
 		buf = init_buf(&all);
 		// init_pathes(&all, env);
 		parser(&all, &buf);
