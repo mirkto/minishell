@@ -82,7 +82,7 @@ char	**ft_write_words(char **str, const char *s, char c, size_t count_words)
 		str[num_w][num_l] = '\0';
 		num_w++;
 	}
-	str[num_w] = 0;
+	str[num_w] = NULL;
 	return (str);
 }
 

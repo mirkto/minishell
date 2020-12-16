@@ -23,7 +23,7 @@
 # include <sys/stat.h>
 # include <dirent.h>
 # include <errno.h>
-# include "libs/libft/libft.h"
+# include "libft/libft.h"
 
 /*
 ** pid, ppid - 71
@@ -41,6 +41,10 @@
 ** <sys/stat.h> stat, lstat, fstat - 61
 ** <dirent.h> opendir, readdir, closedir - 66
 ** <errno.h> errno - 00
+**
+** ft_putendl("---");
+** ft_putnbr(len);
+** ft_putendl("");
 */
 
 typedef struct		s_parameters
@@ -50,7 +54,6 @@ typedef struct		s_parameters
 	int				flag;
 	int				buf_len;
 	char			**env;
-	char			**envt;
 	char			**buf_lst;
 	char			**pathes;
 }					t_param;

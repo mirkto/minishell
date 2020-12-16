@@ -14,7 +14,7 @@ NAME = minishell
 FLAGS = -Wall -Werror -Wextra
 SRCS = main.c parser.c
 OBJS = $(SRCS:%.c=%.o)
-LIBFT = ./libs/libft/libft.a
+LIBFT = ./libft/libft.a
 HDR = ./minishell.h
 
 all: $(NAME)
@@ -23,18 +23,18 @@ $(NAME): $(LIBFT) $(OBJS)
 	gcc $(FLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 
 $(LIBFT):
-	$(MAKE) -C ./libs/libft
+	$(MAKE) -C ./libft
 
 $(OBJS): %.o: %.c $(HDR)
 	gcc $(FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJS)
-	$(MAKE) clean -C ./libs/libft
+	$(MAKE) clean -C ./libft
 
 fclean: clean
 	rm -rf $(NAME)
-	$(MAKE) fclean -C ./libs/libft
+	$(MAKE) fclean -C ./libft
 
 re: fclean all
 
