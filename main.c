@@ -54,10 +54,13 @@ char	*init_buf(t_param *all)
 
 int		init_pathes(t_param *all, char **env)
 {
-	all->i = 0;
+	// all->pathes = NULL;
+	// free_buf(&all->pathes);
+	all->i = -1;
 	while (env[++all->i])
 		if (!ft_strncmp(env[all->i], "PATH=", 5))
-			all->tmp = ft_strdup(&env[all->i][4]);
+			all->tmp = ft_strdup(&env[all->i][5]);
+	
 	//int len = 1;
 	// all->i = -1;
 	// while(all->tmp[++all->i])
@@ -66,6 +69,7 @@ int		init_pathes(t_param *all, char **env)
 	// all->pathes = NULL;
 	// if (!(all->pathes = (char **)malloc(sizeof(char *) * len + 1)))
 	// 	error_out("dont work malloc buf", "Error");
+	all->pathes = NULL;
 	all->pathes = ft_split(all->tmp, ':');
 	free(all->tmp);
 	return (0);
@@ -111,11 +115,11 @@ int		inc_env(t_param *all)
 	return (0);
 }
 // ---------------------------builtins-----------------------------------------
-int		blt_exit(t_param *all, char **buf)
+int		blt_exit()//t_param *all, char **buf)
 {
-	free_buf(&all->buf_lst);
-	free_buf(&all->pathes);
-	free(*buf);
+	// free_buf(&all->buf_lst);
+	// free_buf(&all->pathes);
+	// free(*buf);
 	write(1, "exit\n", 5);
 	exit(0);
 	return (0);
@@ -146,51 +150,41 @@ int		blt_env(t_param *all)
 	return (0);
 }
 
+int		blt_export_util(t_param *all)
+{
+	char *tmp;
+
+	// ft_putendl(all->env[all->i]);
+	free(all->env[all->i]);
+	tmp = ft_strjoin(all->buf_lst[1], all->tmp);
+	all->env[all->i] = ft_strdup(tmp);
+	// ft_putendl(all->env[all->i]);
+	free(all->tmp);
+	free(tmp);
+	// all->flag = 0;
+	return (0);
+}
+
 int		blt_export(t_param *all)
 {
 	char *tmp;
 	
-	tmp  = ft_strchr(all->buf_lst[1], '=');
-	if (!tmp)
-	{
-		error_out("not a valid identifier", all->buf_lst[0]);// add more
-		return (0);
-	}
-	tmp++;
-	all->tmp = ft_strdup(tmp);
+	if (!(tmp  = ft_strchr(all->buf_lst[1], '=')))
+		return (error_out("not a valid identifier", all->buf_lst[0]));// add more
+	all->tmp = ft_strdup(++tmp);
 	*tmp = '\0';
 	all->flag = 1;
 	all->i = -1;
 	while (all->env[++all->i])
-	{
 		if (!ft_strncmp(all->env[all->i], all->buf_lst[1],
 				ft_strlen(all->buf_lst[1])))
-		{
-			// ft_putendl(all->env[all->i]);
-			free(all->env[all->i]);
-			tmp = ft_strjoin(all->buf_lst[1], all->tmp);
-			all->env[all->i] = ft_strdup(tmp);
-			// ft_putendl(all->env[all->i]);
-			free(all->tmp);
-			free(tmp);
-			all->flag = 0;
-		}
-	}
+			all->flag = blt_export_util(all);
 	while (all->flag == 1)
 	{
 		all->i = -1;
 		while (all->env[++all->i])
-		{
 			if (all->env[all->i][0] == '\0')
-			{
-				free(all->env[all->i]);
-				tmp = ft_strjoin(all->buf_lst[1], all->tmp);
-				all->env[all->i] = ft_strdup(tmp);
-				free(all->tmp);
-				free(tmp);
-				all->flag = 0;
-			}
-		}
+				all->flag = blt_export_util(all);
 		if (all->flag == 1)
 			inc_env(all);
 	}
@@ -223,6 +217,7 @@ int		blt_unset(t_param *all)
 			all->i++;
 		while (all->buf_lst[++all->i])
 			error_out("not a valid identifier", all->buf_lst[all->i]);
+		free(all->tmp);
 	}
 	return (0);
 }
@@ -268,9 +263,39 @@ int		blt_cd(t_param *all)
 	return (0);
 }
 // ---------------------------execve------------------------------------------
+int		ft_fork(t_param *all)
+{
+		int p;
+
+		p = fork();
+		if (p == 0)
+		{
+			if (!execve(all->tmp, all->buf_lst, all->env))
+				error_out("command not found", all->buf_lst[0]);
+			// free(all->tmp);
+			// free_buf(&all->pathes);
+			exit(0);
+		}
+		wait(&p);
+	return (0);
+}
+
 int		ft_execve(t_param *all)
 {
 	char *tmp;
+
+	free_buf(&all->pathes);
+	init_pathes(all, all->env);
+
+	DIR *dir;
+	struct dirent *entry;
+
+	dir = opendir("/");
+	if (!dir)
+		exit(1);
+	while ((entry = readdir(dir)) != NULL)
+		printf("%s\n", entry->d_name);
+	closedir(dir);
 
 	all->i = -1;
 	while (all->pathes[++all->i])
@@ -278,22 +303,10 @@ int		ft_execve(t_param *all)
 		tmp = ft_strjoin(all->pathes[all->i], "/");
 		all->tmp = ft_strjoin(tmp, all->buf_lst[0]);
 		free(tmp);
-		all->flag = 0;
-		int p = fork();
-		if (p)
-		{
-			wait(&p);
-		}
-		else 
-		{
-			execve(all->tmp, all->buf_lst, all->env);
-			free(all->tmp);
-			exit(0);
-		}
+		ft_fork(all);
 		free(all->tmp);
-		if (all->flag == -1)
-			error_out("command not found", all->buf_lst[0]);
-	}	
+		
+	}
 	return (0);
 }
 // ---------------------------executor------------------------------------------
@@ -308,7 +321,7 @@ int		executor(t_param *all, char **buf)
 	}
 	else if (!ft_strncmp(all->buf_lst[0], "q", 2) ||
 			 !ft_strncmp(all->buf_lst[0], "exit", 5))
-		blt_exit(all, buf);
+		blt_exit();//all, buf);
 	else if (!ft_strncmp(all->buf_lst[0], "pwd", 4) ||
 			 !ft_strncmp(all->buf_lst[0], "PWD", 4))
 		blt_pwd(all);
@@ -341,7 +354,6 @@ int		main(int argc, char **argv, char **env)
 	{
 		write(1, "\033[0;32mminishell-0.2$ \033[0m", 26);
 		buf = init_buf(&all);
-		// init_pathes(&all, env);
 		parser(&all, &buf);
 		if (executor(&all, &buf) == 1)
 			continue ;
@@ -351,7 +363,6 @@ int		main(int argc, char **argv, char **env)
 		// 	ft_putendl(all.buf_lst[all.i]);
 		// --------------------------------------
 		free_buf(&all.buf_lst);
-		// free_buf(&all.pathes);
 		free(buf);
 	}
 	return (0);
