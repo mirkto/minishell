@@ -268,16 +268,51 @@ int		ft_fork(t_param *all)
 		int p;
 
 		p = fork();
+		// ft_putnbr(p);
+		// ft_putendl("");
 		if (p == 0)
 		{
-			if (!execve(all->tmp, all->buf_lst, all->env))
-				error_out("command not found", all->buf_lst[0]);
+			if (execve(all->tmp, all->buf_lst, all->env) == -1)
+			{
+				exit(0);
+			}
 			// free(all->tmp);
 			// free_buf(&all->pathes);
-			exit(0);
+			// exit(0);
 		}
 		wait(&p);
 	return (0);
+}
+
+int		ft_check_dir(char *tmp, char *cmd)
+{
+	DIR *dir;
+	struct dirent *read;
+	
+	dir = opendir(tmp);
+	while (dir)
+	{
+		errno = 0;
+		if ((read = readdir(dir)) != NULL)
+		{
+			if (ft_strcmp(read->d_name, cmd) == 0)
+			{
+				closedir(dir);
+				return (1);
+			}
+		}
+		else
+		{
+			if (errno == 0)
+			{
+				closedir(dir);
+				return (0);
+			}
+			closedir(dir);
+			return (-1);//READ_ERROR;
+		}
+	}
+	return (-1);//OPEN_ERROR;
 }
 
 int		ft_execve(t_param *all)
@@ -287,26 +322,25 @@ int		ft_execve(t_param *all)
 	free_buf(&all->pathes);
 	init_pathes(all, all->env);
 
-	DIR *dir;
-	struct dirent *entry;
-
-	dir = opendir("/");
-	if (!dir)
-		exit(1);
-	while ((entry = readdir(dir)) != NULL)
-		printf("%s\n", entry->d_name);
-	closedir(dir);
-
+	all->flag = 0;
 	all->i = -1;
 	while (all->pathes[++all->i])
 	{
 		tmp = ft_strjoin(all->pathes[all->i], "/");
-		all->tmp = ft_strjoin(tmp, all->buf_lst[0]);
+		// ft_putendl(tmp);
+		if (ft_check_dir(tmp, all->buf_lst[0]) == 1)
+		{
+			all->tmp = ft_strjoin(tmp, all->buf_lst[0]);
+			ft_fork(all);
+			free(all->tmp);
+			all->flag = 1;
+			free(tmp);
+			break ;
+		}
 		free(tmp);
-		ft_fork(all);
-		free(all->tmp);
-		
 	}
+	if (all->flag == 0)
+		error_out("command not found", all->buf_lst[0]);
 	return (0);
 }
 // ---------------------------executor------------------------------------------
@@ -319,22 +353,22 @@ int		executor(t_param *all, char **buf)
 		free(*buf);
 		return (1);
 	}
-	else if (!ft_strncmp(all->buf_lst[0], "q", 2) ||
-			 !ft_strncmp(all->buf_lst[0], "exit", 5))
+	else if (!ft_strcmp(all->buf_lst[0], "q") ||	//!ft_strncmp(all->buf_lst[0], "q", 2) ||
+			 !ft_strcmp(all->buf_lst[0], "exit"))	//!ft_strncmp(all->buf_lst[0], "exit", 5))
 		blt_exit();//all, buf);
-	else if (!ft_strncmp(all->buf_lst[0], "pwd", 4) ||
-			 !ft_strncmp(all->buf_lst[0], "PWD", 4))
+	else if (!ft_strcmp(all->buf_lst[0], "pwd") ||	//!ft_strncmp(all->buf_lst[0], "pwd", 4) ||
+			 !ft_strcmp(all->buf_lst[0], "PWD"))	//!ft_strncmp(all->buf_lst[0], "PWD", 4))
 		blt_pwd(all);
-	else if (!ft_strncmp(all->buf_lst[0], "env", 4) ||
-			 !ft_strncmp(all->buf_lst[0], "ENV", 4))
+	else if (!ft_strcmp(all->buf_lst[0], "env") ||	//!ft_strncmp(all->buf_lst[0], "env", 4) ||
+			 !ft_strcmp(all->buf_lst[0], "ENV"))	//!ft_strncmp(all->buf_lst[0], "ENV", 4))
 		blt_env(all);
-	else if (!ft_strncmp(all->buf_lst[0], "export", 7))
+	else if (!ft_strcmp(all->buf_lst[0], "export"))	//!ft_strncmp(all->buf_lst[0], "export", 7))
 		blt_export(all);
-	else if (!ft_strncmp(all->buf_lst[0], "unset", 6))
+	else if (!ft_strcmp(all->buf_lst[0], "unset"))	//!ft_strncmp(all->buf_lst[0], "unset", 6))
 		blt_unset(all);
-	else if (!ft_strncmp(all->buf_lst[0], "echo", 5))
+	else if (!ft_strcmp(all->buf_lst[0], "echo"))	//!ft_strncmp(all->buf_lst[0], "echo", 5))
 		blt_echo(all);
-	else if (!ft_strncmp(all->buf_lst[0], "cd", 3))
+	else if (!ft_strcmp(all->buf_lst[0], "cd"))	//!ft_strncmp(all->buf_lst[0], "cd", 3))
 		blt_cd(all);
 	else
 		ft_execve(all);
