@@ -45,6 +45,11 @@
 ** ft_putendl("---");
 ** ft_putnbr(len);
 ** ft_putendl("");
+** write(1, "\n", 1);
+** ft_putendl(all->env[all->i]);
+**
+** close(1);
+** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
 */
 
 typedef struct		s_parameters
@@ -60,8 +65,7 @@ typedef struct		s_parameters
 
 typedef struct		s_line
 {
-	char			*cmd;
-	char			*line;
+	char			*cmd_str;
 	int				fd_input;
 	int				fd_output;
 }					t_line;
@@ -69,3 +73,4 @@ typedef struct		s_line
 int					parser(t_param *all, char **buf);
 
 #endif
+

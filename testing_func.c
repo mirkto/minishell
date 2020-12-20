@@ -57,3 +57,34 @@ void		add_back(t_parse **lstarg, t_parse *new)
 		tmp->prev = last;
 	}
 }
+
+int		ft_check_dir(char *tmp, char *cmd)
+{
+	DIR *dir;
+	struct dirent *read;
+	
+	dir = opendir(tmp);
+	while (dir)
+	{
+		errno = 0;
+		if ((read = readdir(dir)) != NULL)
+		{
+			if (ft_strcmp(read->d_name, cmd) == 0)
+			{
+				closedir(dir);
+				return (1);
+			}
+		}
+		else
+		{
+			if (errno == 0)
+			{
+				closedir(dir);
+				return (0);
+			}
+			closedir(dir);
+			return (-1);//READ_ERROR;
+		}
+	}
+	return (-1);//OPEN_ERROR;
+}
