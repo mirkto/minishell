@@ -12,7 +12,7 @@
 
 NAME = minishell
 FLAGS = -Wall -Werror -Wextra
-SRCS = main.c parser.c
+SRCS = main.c builtins.c ft_execve.c utils.c parser.c 
 OBJS = $(SRCS:%.c=%.o)
 LIBFT = ./libft/libft.a
 HDR = ./minishell.h

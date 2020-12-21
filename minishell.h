@@ -25,6 +25,8 @@
 # include <errno.h>
 # include "libft/libft.h"
 
+# define BUFFER_SIZE 1024
+
 /*
 ** pid, ppid - 71
 ** fork + exec - 89
@@ -59,7 +61,7 @@ typedef struct		s_parameters
 	int				flag;
 	int				buf_len;
 	char			**env;
-	char			**buf_lst;
+	char			**cmd_lst;
 	char			**pathes;
 }					t_param;
 
@@ -71,6 +73,21 @@ typedef struct		s_line
 }					t_line;
 
 int					parser(t_param *all, char **buf);
+
+void	free_buf(char ***lst);
+int		error_out(char *str_err, char *arg);
+char	**init_pathes(t_param *all, char **env);
+char	**copy_env(char **env, int len);
+
+int		blt_exit();
+int		blt_cd(t_param *all);
+int		blt_pwd(t_param *all);
+int		blt_env(t_param *all, int flag);
+int		blt_unset(t_param *all);
+int		blt_export(t_param *all);
+int		blt_echo(t_param *all);
+
+int		ft_execve(t_param *all);
 
 #endif
 
