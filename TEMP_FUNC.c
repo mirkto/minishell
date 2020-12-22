@@ -1,10 +1,48 @@
 
+/*
+** pid, ppid - 71
+** fork + exec - 89
+**
+** <strings.h> strerror - 00
+** <stdlib.h> malloc, free, exit
+**				- 00, - 00, - 84
+** <unistd.h> write, read, close, fork, getcwd, chdir, execve, dup, dup2, pipe
+**			   - 52, - 52,  - 54, - 77,   - 00,  - 75,   - 80,   - 96,   - 120
+** <fcntl.h> open - 50
+** <sys/wait.h> wait, waitpid - 87
+** <sys/types.h> wait3, wait4 - 88
+** <signal.h> signal, kill - 109
+** <sys/stat.h> stat, lstat, fstat - 61
+** <dirent.h> opendir, readdir, closedir - 66
+** <errno.h> errno - 00
+**
+** ft_putendl("---");
+** ft_putnbr(len);
+** ft_putendl("");
+** write(1, "\n", 1);
+** ft_putendl(all->env[all->i]);
+**
+** close(1);
+** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
+*/
+
+# include <unistd.h> // for NULL
+# include <dirent.h> // for DIR
+# include <errno.h>  // for errno
+
 #define INPUT_CMD GREEN_INPUT RED_INPUT
 #define GREEN_INPUT	GREEN INPUT RESET
 #define GREEN	write(1, "\033[0;32m", 7);
 #define INPUT	write(1, "minishell-0.0", 13);
 #define RESET	write(1, "\033[0m", 4);
 #define RED_INPUT write(1, "\033[0;31m$ \033[0m", 13);
+
+int		wt(void)
+{
+	while (1)
+		;
+	return (0);
+}
 
 t_parse		*lst_new(char **arg);
 t_parse		*lst_last(t_parse *lstarg);

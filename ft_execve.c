@@ -19,7 +19,7 @@ int		exec_fork(t_param *all)
 	p = fork();
 	if (p == 0)
 	{
-		if (execve(all->tmp, all->cmd_lst, all->env) == -1)
+		if (execve(all->tmp, all->cmd, all->env) == -1)
 			exit(1);
 	}
 	wait(&p);
@@ -65,9 +65,9 @@ int		exec_check_path(t_param *all)
 	while (all->pathes[++i])
 	{
 		tmp = ft_strjoin(all->pathes[i], "/");
-		if (exec_check_dir(tmp, all->cmd_lst[0]) == 0)
+		if (exec_check_dir(tmp, all->cmd[0]) == 0)
 		{
-			all->tmp = ft_strjoin(tmp, all->cmd_lst[0]);
+			all->tmp = ft_strjoin(tmp, all->cmd[0]);
 			exec_fork(all);
 			free(all->tmp);
 			free(tmp);
@@ -80,7 +80,7 @@ int		exec_check_path(t_param *all)
 
 int		exec_absolute_and_relative_path(t_param *all)
 {
-	all->tmp = ft_strdup(all->cmd_lst[0]);
+	all->tmp = ft_strdup(all->cmd[0]);
 	exec_fork(all);
 	free(all->tmp);
 	return (0);
@@ -89,11 +89,11 @@ int		exec_absolute_and_relative_path(t_param *all)
 int		ft_execve(t_param *all)
 {
 	errno = 0;
-	if (all->cmd_lst[0][0] == '/' || all->cmd_lst[0][0] == '.')
+	if (all->cmd[0][0] == '/' || all->cmd[0][0] == '.')
 		exec_absolute_and_relative_path(all);
 	else
 		exec_check_path(all);
 	if (errno != 0)
-		error_out("command not found", all->cmd_lst[0]);
+		error_out("command not found", all->cmd[0]);
 	return (0);
 }

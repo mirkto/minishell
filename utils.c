@@ -27,13 +27,26 @@ void	free_buf(char ***lst)
 
 int		error_out(char *str_err, char *arg)
 {
-	write(1, "minishell: ", 11);
-	ft_putstr(arg);
-	write(1, ": ", 2);
-	ft_putstr(str_err);
-	write(1, " | ", 3);
-	ft_putstr(strerror(errno));
-	write(1, "\n", 1);
+	if (arg == NULL)
+		ft_putendl(str_err);
+	else
+	{
+		write(1, "minishell: ", 11);
+		if (arg[0] == '$')
+		{
+			ft_putstr(&arg[1]);
+			free(arg);
+		}
+		else
+			ft_putstr(arg);
+		write(1, ": ", 2);
+		ft_putstr(str_err);
+		// -------errno-----------
+		write(1, " | ", 3);
+		ft_putstr(strerror(errno));
+		// -----------------------
+		write(1, "\n", 1);
+	}
 	return (-1);
 }
 
@@ -51,6 +64,21 @@ char	**init_pathes(t_param *all, char **env)
 	return (tmp);
 }
 
+char	**inc_env(char ***env)
+{
+	char	**tmp;
+	int		len;
+
+	len = 0;
+	while (env[0][len])
+		len++;
+	tmp = copy_env(*env, len + 1);
+	free_buf(env);
+	tmp[len] = ft_strdup("\0");
+	tmp[++len] = NULL;
+	return (tmp);
+}
+
 char	**copy_env(char **env, int len)
 {
 	char	**new_env;
@@ -61,7 +89,7 @@ char	**copy_env(char **env, int len)
 		while (env[len])
 			len++;
 	}
-	if (!(new_env= (char **)malloc(sizeof(char *) * (len + 1))))
+	if (!(new_env = (char **)malloc(sizeof(char *) * (len + 1))))
 	{
 		error_out("dont work malloc copy env", "Error");
 		return (NULL);

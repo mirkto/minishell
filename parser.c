@@ -45,8 +45,8 @@ int		parser(t_param *all, char **buf)
 	check_comma(tmp, all);
 	if (all->buf_len > 0 && all->flag != -1)
 	{
-		all->cmd_lst = ft_split_commas(tmp, ' ');
-		if (!all->cmd_lst)
+		all->cmd = ft_split_commas(tmp, ' ');
+		if (!all->cmd)
 			ft_putendl("ERROR in process of split");
 	}
 	free(tmp);
