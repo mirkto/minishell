@@ -12,7 +12,22 @@
 
 #include "minishell.h"
 
-char	*init_buf(t_param *all)
+int		init_env(t_param *all, char **env)
+{
+	// int		i;
+
+	all->env = copy_env(env, 0);
+	// i = 0;
+	// while (all->env[i])
+	// {
+	// 	all->env = inc_env(&all->env, "\0");
+	// 	i++;
+	// }
+	all->pathes = split_pathes(all, env);
+	return (0);
+}
+
+char	*init_buf_and_get_line(t_param *all)
 {
 	char	*tmp;
 
@@ -20,13 +35,13 @@ char	*init_buf(t_param *all)
 	all->cmd = NULL;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
-		error_out("dont work malloc buf", "Error");
+		put_error("dont work malloc buf", "Error");
 		return (NULL);
 	}
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!read(0, tmp, BUFFER_SIZE))
 	{
-		error_out("dont work read buf", "Error");
+		put_error("dont work read buf", "Error");
 		return (NULL);
 	}
 	return (tmp);
@@ -66,16 +81,16 @@ int		main(int argc, char **argv, char **env)
 	t_param	all;
 
 	if (argc > 1)
-		return (error_out("No such file or directory", argv[1]));
-	all.env = copy_env(env, 0);
-	all.pathes = init_pathes(&all, env);
+		return (put_error("No such file or directory", argv[1]));
+	init_env(&all, env);
 	while (1)
 	{
-		write(1, "\033[0;32mminishell-0.2$ \033[0m", 26);
-		if (!(buf = init_buf(&all)))
+		write(1, "\033[0;32mminishell-0.3$ \033[0m", 26);
+		if (!(buf = init_buf_and_get_line(&all)))
 			return (-1);
 		// --------------parser---------------
 		parser(&all, &buf);
+		free(buf);
 		if (all.buf_len < 1 || all.flag == -1)
 		{
 			if (all.flag == -1)
@@ -93,9 +108,8 @@ int		main(int argc, char **argv, char **env)
 			// while (all.cmd[++all.i])
 			// 	ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
-			free_buf(&all.cmd);
+			free_array(&all.cmd);
 		}
-		free(buf);
 	}
 	return (0);
 }

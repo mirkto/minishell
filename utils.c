@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	free_buf(char ***lst)
+void	free_array(char ***lst)
 {
 	int		i;
 
@@ -25,7 +25,7 @@ void	free_buf(char ***lst)
 	free(*lst);
 }
 
-int		error_out(char *str_err, char *arg)
+int		put_error(char *str_err, char *arg)
 {
 	if (arg == NULL)
 		ft_putendl(str_err);
@@ -50,7 +50,7 @@ int		error_out(char *str_err, char *arg)
 	return (-1);
 }
 
-char	**init_pathes(t_param *all, char **env)
+char	**split_pathes(t_param *all, char **env)
 {
 	char	**tmp;
 	int		i;
@@ -64,7 +64,7 @@ char	**init_pathes(t_param *all, char **env)
 	return (tmp);
 }
 
-char	**inc_env(char ***env)
+char	**inc_env(char ***env, char *str)
 {
 	char	**tmp;
 	int		len;
@@ -73,8 +73,8 @@ char	**inc_env(char ***env)
 	while (env[0][len])
 		len++;
 	tmp = copy_env(*env, len + 1);
-	free_buf(env);
-	tmp[len] = ft_strdup("\0");
+	free_array(env);
+	tmp[len] = ft_strdup(str);
 	tmp[++len] = NULL;
 	return (tmp);
 }
@@ -91,7 +91,7 @@ char	**copy_env(char **env, int len)
 	}
 	if (!(new_env = (char **)malloc(sizeof(char *) * (len + 1))))
 	{
-		error_out("dont work malloc copy env", "Error");
+		put_error("dont work malloc copy env", "Error");
 		return (NULL);
 	}
 	i = 0;

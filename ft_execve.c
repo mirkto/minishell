@@ -59,8 +59,8 @@ int		exec_check_path(t_param *all)
 	char	*tmp;
 	int		i;
 
-	free_buf(&all->pathes);
-	all->pathes = init_pathes(all, all->env);
+	free_array(&all->pathes);
+	all->pathes = split_pathes(all, all->env);
 	i = -1;
 	while (all->pathes[++i])
 	{
@@ -94,6 +94,6 @@ int		ft_execve(t_param *all)
 	else
 		exec_check_path(all);
 	if (errno != 0)
-		error_out("command not found", all->cmd[0]);
+		put_error("command not found", all->cmd[0]);
 	return (0);
 }

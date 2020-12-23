@@ -64,10 +64,10 @@ typedef struct		s_line
 
 int					parser(t_param *all, char **buf);
 
-void				free_buf(char ***lst);
-int					error_out(char *str_err, char *arg);
-char				**init_pathes(t_param *all, char **env);
-char				**inc_env(char ***env);
+void				free_array(char ***lst);
+int					put_error(char *str_err, char *arg);
+char				**split_pathes(t_param *all, char **env);
+char				**inc_env(char ***env, char *str);
 char				**copy_env(char **env, int len);
 
 int					blt_exit(t_param *all);
