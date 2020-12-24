@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/11/27 18:24:40 by ngonzo           ###   ########.fr       */
+/*   Updated: 2020/12/24 23:12:07 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ int		main(int argc, char **argv, char **env)
 		if (!(buf = init_buf_and_get_line(&all)))
 			return (-1);
 		// --------------parser---------------
-		parser(&all, &buf);
-		free(buf);
-		if (all.buf_len < 1 || all.flag == -1)
+		// parser(&all, &buf);
+		// free(buf);
+		if (all.buf_len < 1 || all.flag == -1 || parser(&all, &buf) == -1)
 		{
 			if (all.flag == -1)
 			{
@@ -108,6 +108,7 @@ int		main(int argc, char **argv, char **env)
 			// --------------------------------------
 			free_array(&all.cmd);
 		}
+		free(buf);
 	}
 	return (0);
 }
