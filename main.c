@@ -87,28 +87,19 @@ int		main(int argc, char **argv, char **env)
 		if (!(buf = init_buf_and_get_line(&all)))
 			return (-1);
 		// --------------parser---------------
-		// parser(&all, &buf);
-		// free(buf);
-		if (all.buf_len < 1 || all.flag == -1 || parser(&all, &buf) == -1)
-		{
-			if (all.flag == -1)
-			{
-				ft_putendl("odd number of commas");
-				ft_putendl("multiline commands are forbidden");
-			}
-		}
+		all.flag = parser(&all, &buf);
+		free(buf);
 		// -----------------------------------
-		else
+		if (!(all.buf_len < 1 || all.flag == -1))
 		{
 			executor(&all);
 			// --------------print_buf---------------
-			// all.i = -1;
-			// while (all.cmd[++all.i])
-			// 	ft_putendl(all.cmd[all.i]);
+			all.i = -1;
+			while (all.cmd[++all.i])
+				ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
 			free_array(&all.cmd);
 		}
-		free(buf);
 	}
 	return (0);
 }

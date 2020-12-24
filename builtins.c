@@ -50,6 +50,8 @@ int		blt_exit(t_param *all)
 	return (blt_exit_and_free(all, errno, TRUE));
 }
 
+// ---------------------------env-----------------------------------------
+
 int		blt_pwd(t_param *all)
 {
 	if (all->cmd[1])
@@ -65,11 +67,15 @@ int		blt_pwd(t_param *all)
 
 int		blt_env(t_param *all)
 {
-	if (all->cmd[1])
+	if (all->cmd[1] && all->cmd[1][0] != '#' && !ft_strchr(all->cmd[1], '='))
 	{
 		if (all->cmd[1][0] == '-')
+		{
 			if (ft_isalpha(all->cmd[1][1]) == 1)
 				return (put_error("Enter without any options!", NULL));
+		}
+		else
+			return (put_error("No such file or directory", all->cmd[1]));
 	}
 	else
 	{
@@ -78,6 +84,9 @@ int		blt_env(t_param *all)
 			if (all->env[all->i] != NULL)
 				if (ft_strchr(all->env[all->i], '='))
 					ft_putendl(all->env[all->i]);
+		if (all->cmd[1])
+			if (ft_strchr(all->cmd[1], '='))
+				ft_putendl(all->cmd[1]);
 	}
 	return (0);
 }
@@ -232,6 +241,8 @@ int		blt_unset_check_in(t_param *all)
 
 int		blt_unset(t_param *all)
 {
+	if (!all->cmd[1])
+		return (0);
 	blt_unset_check_in(all);
 	if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == 1)
 			return (put_error("Enter without any options!", NULL));
@@ -255,6 +266,11 @@ int		blt_echo(t_param *all)
 	int		nbr_arg;
 	int		option_n;
 
+	if (!all->cmd[1])
+	{
+		write(1, "\n", 1);
+		return (0);
+	}
 	nbr_arg = 1;
 	option_n = FALSE;
 	if (all->cmd[1][0] == '-' && all->cmd[1][1] == 'n')
