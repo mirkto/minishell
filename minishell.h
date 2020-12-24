@@ -70,6 +70,9 @@ char				**split_pathes(t_param *all, char **env);
 char				**inc_env(char ***env, char *str);
 char				**copy_env(char **env, int len);
 
+int					search_in_env(t_param *all, char *str);
+char				*get_from_env(t_param *all, char *str);
+
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
 int					blt_pwd(t_param *all);

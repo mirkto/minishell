@@ -14,16 +14,14 @@
 
 int		init_env(t_param *all, char **env)
 {
-	// int		i;
+	// char	*tmp;
 
 	all->env = copy_env(env, 0);
-	// i = 0;
-	// while (all->env[i])
-	// {
-	// 	all->env = inc_env(&all->env, "\0");
-	// 	i++;
-	// }
-	all->pathes = split_pathes(all, env);
+	// tmp = get_from_env(all, "OLDPWD");
+	// if (tmp)
+	// 	all->env = inc_env(&all->env, "OLDPWD");
+	// else
+		all->pathes = split_pathes(all, env);
 	return (0);
 }
 

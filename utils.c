@@ -103,3 +103,43 @@ char	**copy_env(char **env, int len)
 	new_env[i] = NULL;
 	return (new_env);
 }
+
+int		search_in_env(t_param *all, char *str)
+{
+	int		i;
+	int		len;
+
+	len = ft_strlen(str);
+	i = 0;
+	while (all->env[i])
+	{
+		if (ft_strncmp(all->env[i], str, len) == 0)
+		{
+			if (all->env[i][len] == '=' || all->env[i][len] == '\0')
+				return (TRUE);
+		}
+		i++;
+	}
+	return (FALSE);
+}
+
+char	*get_from_env(t_param *all, char *str)
+{
+	char	*tmp;
+	int		i;
+	int		len;
+
+	tmp = NULL;
+	len = ft_strlen(str);
+	i = 0;
+	while (all->env[i])
+	{
+		if (ft_strncmp(all->env[i], str, len) == 0)
+		{
+			if (all->env[i][len] == '=')
+				tmp = ft_strdup(&all->env[i][++len]);
+		}
+		i++;
+	}
+	return (tmp);
+}

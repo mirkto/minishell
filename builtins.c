@@ -66,12 +66,19 @@ int		blt_pwd(t_param *all)
 int		blt_env(t_param *all)
 {
 	if (all->cmd[1])
-		return (put_error("Enter without any options and any arguments!", 0));
-	all->i = -1;
-	while (all->env[++all->i])
-		if (all->env[all->i] != NULL)
-			if (ft_strchr(all->env[all->i], '='))
-				ft_putendl(all->env[all->i]);
+	{
+		if (all->cmd[1][0] == '-')
+			if (ft_isalpha(all->cmd[1][1]) == 1)
+				return (put_error("Enter without any options!", NULL));
+	}
+	else
+	{
+		all->i = -1;
+		while (all->env[++all->i])
+			if (all->env[all->i] != NULL)
+				if (ft_strchr(all->env[all->i], '='))
+					ft_putendl(all->env[all->i]);
+	}
 	return (0);
 }
 
@@ -117,12 +124,8 @@ int		blt_export_print(t_param *all)
 
 int		blt_export_util(t_param *all)
 {
-	char *tmp;
-
 	free(all->env[all->i]);
-	tmp = ft_strjoin(all->cmd[1], all->tmp);
-	all->env[all->i] = ft_strdup(tmp);
-	free(tmp);
+	all->env[all->i] = ft_strjoin(all->cmd[1], all->tmp);
 	return (0);
 }
 
@@ -179,7 +182,7 @@ int		blt_export(t_param *all)
 	char *tmp;
 
 	if (all->cmd[1])
-		if (all->cmd[1][0] == '-')
+		if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == 1)
 			return (put_error("Enter without any options!", NULL));
 	if (!all->cmd[1] || all->cmd[1][0] == '#')
 		return (blt_export_print(all));
@@ -219,7 +222,6 @@ int		blt_unset_check_in(t_param *all)
 		{
 			if (all->env[all->i][len] == '=' || all->env[all->i][len] == '\0')
 			{
-				// all->env[all->i][0] = '\0';
 				ft_bzero(all->env[all->i], ft_strlen(all->env[all->i]));
 				break ;
 			}
@@ -231,16 +233,16 @@ int		blt_unset_check_in(t_param *all)
 int		blt_unset(t_param *all)
 {
 	blt_unset_check_in(all);
-	if (all->cmd[1][0] == '-')
-		return (put_error("Enter without any options!", NULL));
-	if (all->cmd[2] || (!ft_isalpha(all->cmd[1][0] && all->cmd[1][0] != '_')))
+	if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == 1)
+			return (put_error("Enter without any options!", NULL));
+	if (all->cmd[2] || (!ft_isalpha(all->cmd[1][0]) && all->cmd[1][0] != '_'))
 	{
 		all->i = 0;
-		if (all->cmd[2] || all->cmd[1][0] == '#' ||
-								all->cmd[1][0] == '_')
+		if (all->cmd[2] || all->cmd[1][0] == '#' || all->cmd[1][0] == '_')
 			all->i++;
 		while (all->cmd[++all->i])
 			put_error("not a valid identifier", all->cmd[all->i]);
+		return (-1);
 		free(all->tmp);
 	}
 	return (0);
@@ -282,12 +284,12 @@ int		blt_cd_replace(t_param *all, char *str)
 	len = ft_strlen(str);
 	i = -1;
 	while (all->env[++i])
-		if (!ft_strncmp(all->env[i], str, len))
+		if (ft_strncmp(all->env[i], str, len) == 0)
 		{
-			if (all->env[all->i][len] == '=' || all->env[all->i][len] == '\0')
+			if (all->env[i][len] == '=' || all->env[i][len] == '\0')
 			{
 				free(all->env[i]);
-				all->env[i] = ft_strjoin(str, all->tmp);
+				all->env[i] = ft_strstrjoin(str, "=", all->tmp);
 			}
 		}
 	return (0);
@@ -295,6 +297,22 @@ int		blt_cd_replace(t_param *all, char *str)
 
 int		blt_cd(t_param *all)
 {
+	if (!all->cmd[1] || (all->cmd[1][0] == '~' && all->cmd[1][1] == '\0'))
+	{
+		all->tmp = get_from_env(all, "HOME");
+		if (chdir(all->tmp))
+			return (put_error("HOME not set", "cd"));
+		free(all->tmp);
+		return (0);
+	}
+	if (all->cmd[1][0] == '-' && all->cmd[1][1] == '\0')
+		{
+			if (!(all->tmp = get_from_env(all, "OLDPWD")))
+				return (put_error("OLDPWD not set", "cd"));
+			ft_putendl(all->tmp);
+			free(all->cmd[1]);
+			all->cmd[1] = all->tmp;
+		}
 	all->tmp = getcwd(NULL, 0);
 	if (chdir(all->cmd[1]) == 0)
 	{
@@ -304,7 +322,7 @@ int		blt_cd(t_param *all)
 		blt_cd_replace(all, "PWD");
 	}
 	else
-		put_error("No such file or directory", all->cmd[1]);
+		return (put_error("No such file or directory", all->cmd[1]));
 	free(all->tmp);
 	return (0);
 }
