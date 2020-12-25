@@ -22,6 +22,8 @@
 ** write(1, "\n", 1);
 ** ft_putendl(all->env[all->i]);
 **
+** "\v\f\r \n\t"
+**
 ** close(1);
 ** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
 */

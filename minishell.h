@@ -27,9 +27,10 @@
 # include "libft/libft.h"
 
 # define BUFFER_SIZE 1024
-# define FALSE -1
-# define TRUE 0
-# define CONTINUE 1
+# define ERROR -1
+# define FALSE 0
+# define TRUE 1
+# define CONTINUE 2
 
 /*
 ** <strings.h>	- strerror

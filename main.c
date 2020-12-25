@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		init_env(t_param *all, char **env)
+int		init_env_and_pathes(t_param *all, char **env)
 {
 	// char	*tmp;
 
@@ -25,12 +25,16 @@ int		init_env(t_param *all, char **env)
 	return (0);
 }
 
-char	*init_buf_and_get_line(t_param *all)
+char	*inits_buf_and_get_line(t_param *all)
 {
 	char	*tmp;
 
-	tmp = NULL;
+	all->i = 0;
+	all->tmp = NULL;
+	all->flag = 0;
+	all->buf_len = 0;
 	all->cmd = NULL;
+	tmp = NULL;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
 		put_error("dont work malloc buf", "Error");
@@ -80,14 +84,13 @@ int		main(int argc, char **argv, char **env)
 
 	if (argc > 1)
 		return (put_error("No such file or directory", argv[1]));
-	init_env(&all, env);
+	init_env_and_pathes(&all, env);
 	while (1)
 	{
 		write(1, "\033[0;32mminishell-0.3$ \033[0m", 26);
-		if (!(buf = init_buf_and_get_line(&all)))
+		if (!(buf = inits_buf_and_get_line(&all)))
 			return (-1);
 		// --------------parser---------------
-		all.flag = 0;
 		all.flag = parser(&all, &buf);
 		free(buf);
 		// -----------------------------------

@@ -39,9 +39,9 @@ int		blt_exit(t_param *all)
 	write(1, "exit\n", 5);
 	if (all->cmd[1])
 	{
-		if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == 1)
-			return (put_error("Enter without any options!", NULL));
-		if (ft_strisdigit(all->cmd[1]) == 0)
+		// if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == 1)
+		// 	return (put_error("Enter without any options!", NULL));
+		if (ft_strisdigit(all->cmd[1]) == 0 && all->cmd[1])
 			return (blt_exit_and_free(all, 0, FALSE));
 		if (all->cmd[2])
 			return (put_error("too many arguments", "exit"));
