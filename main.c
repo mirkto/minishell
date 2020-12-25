@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/24 23:12:07 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/25 20:43:40 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int		main(int argc, char **argv, char **env)
 		if (!(buf = init_buf_and_get_line(&all)))
 			return (-1);
 		// --------------parser---------------
+		all.flag = 0;
 		all.flag = parser(&all, &buf);
 		free(buf);
 		// -----------------------------------
@@ -94,9 +95,9 @@ int		main(int argc, char **argv, char **env)
 		{
 			executor(&all);
 			// --------------print_buf---------------
-			all.i = -1;
-			while (all.cmd[++all.i])
-				ft_putendl(all.cmd[all.i]);
+			// all.i = -1;
+			// while (all.cmd[++all.i])
+			// 	ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
 			free_array(&all.cmd);
 		}

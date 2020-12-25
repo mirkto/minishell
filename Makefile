@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: arannara <arannara@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/28 22:44:15 by ngonzo            #+#    #+#              #
-#    Updated: 2020/10/28 22:44:18 by ngonzo           ###   ########.fr        #
+#    Updated: 2020/12/25 17:51:21 by arannara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-FLAGS = -Wall -Werror -Wextra
-SRCS = main.c builtins.c ft_execve.c utils.c parser.c 
+FLAGS = -g -Wall -Werror -Wextra
+SRCS = main.c builtins.c ft_execve.c utils.c parser.c
 OBJS = $(SRCS:%.c=%.o)
 LIBFT = ./libft/libft.a
 HDR = ./minishell.h
