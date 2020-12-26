@@ -55,12 +55,16 @@ char	**split_pathes(t_param *all, char **env)
 	char	**tmp;
 	int		i;
 
+	tmp = NULL;
 	i = -1;
 	while (env[++i])
 		if (!ft_strncmp(env[i], "PATH=", 5))
+		{
 			all->tmp = ft_strdup(&env[i][5]);
-	tmp = ft_split(all->tmp, ':');
-	free(all->tmp);
+			tmp = ft_split(all->tmp, ':');
+			free(all->tmp);
+			break ;
+		}
 	return (tmp);
 }
 
@@ -104,42 +108,41 @@ char	**copy_env(char **env, int len)
 	return (new_env);
 }
 
-int		search_in_env(t_param *all, char *str)
+int		search_key_env(t_param *all, char *str)
 {
-	int		i;
+	int		index;
 	int		len;
 
 	len = ft_strlen(str);
-	i = 0;
-	while (all->env[i])
+	index = 0;
+	while (all->env[index])
 	{
-		if (ft_strncmp(all->env[i], str, len) == 0)
-		{
-			if (all->env[i][len] == '=' || all->env[i][len] == '\0')
-				return (TRUE);
-		}
-		i++;
+		if (ft_strncmp(all->env[index], str, len) == 0)
+			if (all->env[index][len] == '=' || all->env[index][len] == '\0')
+				return (index);
+		index++;
 	}
-	return (FALSE);
+	return (0);
 }
 
-char	*get_from_env(t_param *all, char *str)
+char	*get_value_env(t_param *all, char *str)
 {
 	char	*tmp;
-	int		i;
+	int		index;
 	int		len;
 
 	tmp = NULL;
 	len = ft_strlen(str);
-	i = 0;
-	while (all->env[i])
-	{
-		if (ft_strncmp(all->env[i], str, len) == 0)
-		{
-			if (all->env[i][len] == '=')
-				tmp = ft_strdup(&all->env[i][++len]);
-		}
-		i++;
-	}
+	index = search_key_env(all, str);
+	if (all->env[index][len] == '=')
+		tmp = ft_strdup(&all->env[index][++len]);
 	return (tmp);
+}
+
+int		check_options(t_param *all)
+{
+	if (all->cmd[1])
+		if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == TRUE)
+			return (TRUE);
+	return (FALSE);
 }

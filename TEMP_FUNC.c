@@ -128,3 +128,28 @@ int		ft_check_dir(char *tmp, char *cmd)
 	}
 	return (-1);//OPEN_ERROR;
 }
+int		blt_env(t_param *all)
+{
+	if (all->cmd[1] && all->cmd[1][0] != '#' && !ft_strchr(all->cmd[1], '='))
+	{
+		if (all->cmd[1][0] == '-')
+		{
+			if (ft_isalpha(all->cmd[1][1]) == 1)
+				return (put_error("Enter without any options!", NULL));
+		}
+		else
+			return (put_error("No such file or directory", all->cmd[1]));
+	}
+	else
+	{
+		all->i = -1;
+		while (all->env[++all->i])
+			if (all->env[all->i] != NULL)
+				if (ft_strchr(all->env[all->i], '='))
+					ft_putendl(all->env[all->i]);
+		if (all->cmd[1])
+			if (ft_strchr(all->cmd[1], '='))
+				ft_putendl(all->cmd[1]);
+	}
+	return (0);
+}
