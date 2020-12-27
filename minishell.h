@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/02 16:58:04 by ngonzo           ###   ########.fr       */
+/*   Updated: 2020/12/27 20:07:03 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ typedef struct		s_line
 	int				fd_output;
 }					t_line;
 
-int					parser(t_param *all, char **buf);
-
 void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
@@ -84,5 +82,8 @@ int					blt_echo(t_param *all);
 
 int					exec_fork(t_param *all);
 int					ft_execve(t_param *all);
+
+int					parser(t_param *all, char **buf);
+int					lexer(char *tmp);
 
 #endif

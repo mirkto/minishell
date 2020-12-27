@@ -6,13 +6,13 @@
 #    By: arannara <arannara@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/28 22:44:15 by ngonzo            #+#    #+#              #
-#    Updated: 2020/12/25 17:51:21 by arannara         ###   ########.fr        #
+#    Updated: 2020/12/27 20:07:13 by arannara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 FLAGS = -g -Wall -Werror -Wextra
-SRCS = main.c builtins.c ft_execve.c utils.c parser.c
+SRCS = main.c builtins.c ft_execve.c utils.c parser.c lexer.c
 OBJS = $(SRCS:%.c=%.o)
 LIBFT = ./libft/libft.a
 HDR = ./minishell.h
