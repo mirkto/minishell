@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/27 20:17:01 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/27 20:46:37 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,13 @@ int			parser(t_param *all, char **buf)
 			i++;
 		ft_lstadd_back(&vasya, ft_lstnew(tok));
 	}
+	// printing
 	while (vasya)
 	{
 		printf("%s\n", vasya->content);
 		vasya = vasya->next;
 	}
+
 	if (all->buf_len > 0 && all->flag != -1)
 	{
 		all->cmd = ft_split(tmp, ' ');
