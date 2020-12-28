@@ -43,7 +43,7 @@ char		*token_init(char *tmp, int *i)
 			*i = quotes(tmp, *i);
 		(*i)++;
 	}
-	tok = malloc(sizeof(char) * (*i - end));
+	// tok = malloc(sizeof(char) * (*i - end));
 	tok = ft_substr(tmp, end, *i - end);
 	end = *i;
 	return (tok);
@@ -52,20 +52,25 @@ char		*token_init(char *tmp, int *i)
 int			parser(t_param *all, char **buf)
 {
 	char	*tmp;
-	char	*tok;
 	int		i;
-	t_list	*vasya;
 
-	vasya = NULL;
-	i = 0;
 	tmp = ft_strtrim(*buf, " \t\n");
-	all->buf_len = ft_strlen(tmp);
-	all->i = lexer(tmp);
-	if (all->i == -1)
+	if (ft_strlen(tmp) <= 0)
 	{
-		all->buf_len = 0;
+		free(tmp);
 		return (-1);
 	}
+	if (lexer(tmp) == -1)
+	{
+		free(tmp);
+		return (-1);
+	}
+
+	t_list	*vasya;
+	vasya = NULL;
+	char	*tok;
+	tok = NULL;
+	i = 0;
 	while (tmp[i])
 	{
 		tok = token_init(tmp, &i);
@@ -73,6 +78,7 @@ int			parser(t_param *all, char **buf)
 			i++;
 		ft_lstadd_back(&vasya, ft_lstnew(tok));
 		all->num_of_toks++;
+		// free(tok);
 	}
 	// // printing
 	// while (vasya)
@@ -80,34 +86,28 @@ int			parser(t_param *all, char **buf)
 	// 	printf("%s\n", vasya->content);
 	// 	vasya = vasya->next;
 	// }
-
 	// ft_putnbr(all->num_of_toks);
 
-	char **str;
-
-
-
-	str = (char **)malloc(sizeof(char *) * (all->num_of_toks + 1));
+	char **str = (char **)malloc(sizeof(char *) * (all->num_of_toks + 1));
 	if (!str)
 		return (0);
 
+	t_list	*tmp_vasya;
+	tmp_vasya = vasya;
 	i = 0;
 	while (vasya)
 	{
-		str[i] = (char *)malloc(sizeof(char) * ft_strlen(vasya->content));
-		str[i] = vasya->content;
+		str[i] = ft_strdup(vasya->content);
 		vasya = vasya->next;
 		i++;
 	}
 	str[i] = NULL;
 
+	ft_lstclear(&tmp_vasya, free);
 
-	if (all->buf_len > 0 && all->flag != -1)
-	{
-		all->cmd = str;
-		if (!all->cmd)
-			ft_putendl("ERROR in process of split");
-	}
+	all->cmd = str;
+	if (!all->cmd)
+		ft_putendl("ERROR in process of split");
 	free(tmp);
 	return (0);
 }

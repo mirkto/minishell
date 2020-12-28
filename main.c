@@ -91,7 +91,7 @@ int		main(int argc, char **argv, char **env)
 		all.flag = parser(&all, &buf);
 		free(buf);
 		// -----------------------------------
-		if (!(all.buf_len < 1 || all.flag == -1))
+		if (all.flag != -1)
 		{
 			executor(&all);
 			// --------------print_buf---------------
