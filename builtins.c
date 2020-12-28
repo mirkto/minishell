@@ -98,28 +98,28 @@ int		blt_export_put(t_param *all, int index)
 	return (0);
 }
 
-
 int		blt_export_print(t_param *all)
 {
-	char	*sort;
-	int		index;
+	char	**tmp_env;
+	char	*tmp;
 	int		i;
-	int		j;
 
-	sort = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
-	i = -1;
-	while (sort[++i] != '\0')
+	tmp_env = all->env;
+	i = 1;
+	while (tmp_env[i] != NULL)
 	{
-		j = -1;
-		while (sort[++j] != '\0')
+		if (ft_strcmp(tmp_env[i - 1], tmp_env[i]) > 0)
 		{
-			index = -1; 
-			while (all->env[++index])
-				if (all->env[index][0] == sort[i] &&
-					all->env[index][1] == sort[j])
-					blt_export_put(all, index);
+			tmp = tmp_env[i - 1];
+			tmp_env[i - 1] = tmp_env[i];
+			tmp_env[i] = tmp;
+			i = 0;
 		}
+		i++;
 	}
+	i = -1;
+	while (tmp_env[++i])
+		blt_export_put(all, i);
 	return (0);
 }
 

@@ -95,9 +95,9 @@ int		main(int argc, char **argv, char **env)
 		{
 			executor(&all);
 			// --------------print_buf---------------
-			all.i = -1;
-			while (all.cmd[++all.i])
-				ft_putendl(all.cmd[all.i]);
+			// all.i = -1;
+			// while (all.cmd[++all.i])
+			// 	ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
 			free_array(&all.cmd);
 		}
