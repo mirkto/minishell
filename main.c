@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/26 23:19:00 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/28 17:11:29 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ char	*inits_buf_and_get_line(t_param *all)
 	all->flag = 0;
 	all->buf_len = 0;
 	all->cmd = NULL;
+	all->num_of_toks = 0;
 	tmp = NULL;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
@@ -94,9 +95,9 @@ int		main(int argc, char **argv, char **env)
 		{
 			executor(&all);
 			// --------------print_buf---------------
-			// all.i = -1;
-			// while (all.cmd[++all.i])
-			// 	ft_putendl(all.cmd[all.i]);
+			all.i = -1;
+			while (all.cmd[++all.i])
+				ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
 			free_array(&all.cmd);
 		}

@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/27 20:07:03 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/28 15:39:18 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct		s_parameters
 	char			**env;
 	char			**cmd;
 	char			**pathes;
+	int				num_of_toks;
 }					t_param;
 
 typedef struct		s_line

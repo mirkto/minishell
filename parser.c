@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/27 20:46:37 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/28 17:02:15 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,39 @@ int			parser(t_param *all, char **buf)
 		while (tmp[i] == ' ' || tmp[i] == '\t')
 			i++;
 		ft_lstadd_back(&vasya, ft_lstnew(tok));
+		all->num_of_toks++;
 	}
-	// printing
+	// // printing
+	// while (vasya)
+	// {
+	// 	printf("%s\n", vasya->content);
+	// 	vasya = vasya->next;
+	// }
+
+	// ft_putnbr(all->num_of_toks);
+
+	char **str;
+
+
+
+	str = (char **)malloc(sizeof(char *) * (all->num_of_toks + 1));
+	if (!str)
+		return (0);
+
+	i = 0;
 	while (vasya)
 	{
-		printf("%s\n", vasya->content);
+		str[i] = (char *)malloc(sizeof(char) * ft_strlen(vasya->content));
+		str[i] = vasya->content;
 		vasya = vasya->next;
+		i++;
 	}
+	str[i] = NULL;
+
 
 	if (all->buf_len > 0 && all->flag != -1)
 	{
-		all->cmd = ft_split(tmp, ' ');
+		all->cmd = str;
 		if (!all->cmd)
 			ft_putendl("ERROR in process of split");
 	}
