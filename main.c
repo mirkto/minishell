@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/28 22:07:36 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/29 16:27:23 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ char	*inits_buf_and_get_line(t_param *all)
 	all->buf_len = 0;
 	all->cmd = NULL;
 	all->num_of_toks = 0;
+	all->vasya = NULL;
+	all->tok = NULL;
 	tmp = NULL;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
