@@ -20,7 +20,11 @@ int		exec_fork(t_param *all)
 	if (p == 0)
 	{
 		if (execve(all->tmp, all->cmd, all->env) == -1)
-			exit(1);
+		{
+			put_error("No such file or directory", all->cmd[0]);
+			errno = 127;
+			exit(errno);
+		}
 	}
 	wait(&p);
 	return (0);

@@ -34,8 +34,13 @@ int		put_error(char *str_err, char *arg)
 		write(1, "minishell: ", 11);
 		if (arg[0] == '$')
 		{
-			ft_putstr(&arg[1]);
-			free(arg);
+			if (arg[1] == '?')
+				ft_putnbr(errno);
+			else
+			{
+				ft_putstr(&arg[1]);
+				free(arg);
+			}
 		}
 		else
 			ft_putstr(arg);
@@ -79,7 +84,7 @@ char	**inc_env(char ***env, char *str)
 	tmp = copy_env(*env, len + 1);
 	free_array(env);
 	tmp[len] = ft_strdup(str);
-	tmp[++len] = NULL;
+	tmp[len + 1] = NULL;
 	return (tmp);
 }
 

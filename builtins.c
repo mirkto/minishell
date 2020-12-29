@@ -72,28 +72,27 @@ int		blt_env(t_param *all)
 
 // ---------------------------export-----------------------------------------
 
-int		blt_export_put_with_commas(t_param *all, int index)
+int		blt_export_put(t_param *all, int index)
 {
 	int		i;
 
-	i = 0;
-	while (all->env[index][i])
-	{
-		ft_putchar(all->env[index][i]);
-		if (all->env[index][i] == '=' || all->env[index][i + 1] == '\0')
-			write(1, "\"", 1);
-		i++;
-	}
-	write(1, "\n", 1);
-	return (0);
-}
-
-int		blt_export_put(t_param *all, int index)
-{
-	write(1, "declare -x ", 11);
+	if (all->env[index][0] != '\0')
+		write(1, "declare -x ", 11);
 	if (ft_strchr(all->env[index], '='))
-		blt_export_put_with_commas(all, index);
-	else
+		{
+		i = 0;
+		while (all->env[index][i])
+		{
+			ft_putchar(all->env[index][i]);
+			if (all->env[index][i] == '=')
+				write(1, "\"", 1);
+			if (all->env[index][i + 1] == '\0')
+				write(1, "\"", 1);
+			i++;
+		}
+		write(1, "\n", 1);
+		}
+	else if (all->env[index][0] != '\0')
 		ft_putendl(all->env[index]);
 	return (0);
 }
@@ -123,88 +122,90 @@ int		blt_export_print(t_param *all)
 	return (0);
 }
 
-int		blt_export_util(t_param *all)
+int		blt_export_with_value(t_param *all)
 {
-	free(all->env[all->i]);
-	all->env[all->i] = ft_strjoin(all->cmd[1], all->tmp);
+	int	i;
+	char **tmp;
+
+	tmp = ft_split(all->cmd[1], '=');
+	i = search_key_env(all, tmp[0]);
+	if (i > 0)
+	{
+		free(all->env[i]);
+		all->env[i] = ft_strdup(all->cmd[1]);
+	}
+	else
+	{
+		i = 0;
+		while (all->env[i])
+		{
+			if (all->env[i][0] == '\0')
+				break ;
+			i++;
+			if (all->env[i] == NULL)
+				all->env = inc_env(&all->env, "\0");
+		}
+		free(all->env[i]);
+		all->env[i] = ft_strdup(all->cmd[1]);
+	}
+	free_array(&tmp);
 	return (0);
 }
 
-int		blt_export_equal(t_param *all, char **tmp)
+int		blt_export_without_value(t_param *all)
 {
-	all->tmp = ft_strdup(++*tmp);
-	**tmp = '\0';
-	all->flag = 1;
-	all->i = -1;
-	while (all->env[++all->i])
-		if (ft_strncmp(all->env[all->i], all->cmd[1],
-							ft_strlen(all->cmd[1])) == 0)
-			all->flag = blt_export_util(all);
-	while (all->flag == 1)
+	int	i;
+
+	if (search_key_env(all, all->cmd[1]))
+		return (0);
+	i = 0;
+	while (all->env[i])
 	{
-		all->i = -1;
-		while (all->env[++all->i])
-			if (all->env[all->i][0] == '\0')
-			{
-				all->flag = 0;
-				blt_export_util(all);
-				free(all->tmp);
-			}
-		if (all->flag == 1)
+		if (all->env[i][0] == '\0')
+			break ;
+		i++;
+		if (all->env[i] == NULL)
 			all->env = inc_env(&all->env, "\0");
 	}
+	free(all->env[i]);
+	all->env[i] = ft_strdup(all->cmd[1]);
 	return (0);
 }
 
-int		blt_export_not_equal(t_param *all)
+int		blt_export_check_valid_name(t_param *all)
 {
-	all->flag = 1;
-	all->i = -1;
-	while (all->env[++all->i])
+	int	i;
+
+	i = 0;
+	if (all->cmd[1][i] != '_' && ft_isalpha(all->cmd[1][i]) == FALSE)
+		return (ERROR);
+	i++;
+	while (all->cmd[1][i] != '=' && all->cmd[1][i] != '\0')
 	{
-		if (ft_strncmp(all->env[all->i], all->cmd[1],
-				ft_strlen(all->cmd[1])) == 0)
-			all->flag = 0;
-	}
-	while (all->flag == 1)
-	{
-		all->i = -1;
-		while (all->env[++all->i])
-			if (all->env[all->i][0] == '\0')
-				all->flag = blt_export_util(all);
-		if (all->flag == 1)
-			all->env = inc_env(&all->env, "\0");
+		if (ft_isalpha(all->cmd[1][i]) == FALSE &&
+			ft_isdigit(all->cmd[1][i]) == FALSE &&
+			all->cmd[1][i] != '_')
+		{
+			return (ERROR);
+		}
+		i++;
 	}
 	return (0);
 }
 
 int		blt_export(t_param *all)
 {
-	char *tmp;
-
 	if (check_options(all) == TRUE)
 		return (put_error("Enter without any options!", NULL));
 	if (!all->cmd[1] || all->cmd[1][0] == '#')
 		return (blt_export_print(all));
-	all->i = 0;
-	while (all->cmd[1][all->i] != '=' && all->cmd[1][all->i] != '\0')
-	{
-		if ((!ft_isalpha(all->cmd[1][all->i]) &&
-			!ft_isdigit(all->cmd[1][all->i]) &&
-			all->cmd[1][all->i] != '_')
-			|| (all->i == 0 && all->cmd[1][all->i] != '_' &&
-			!ft_isalpha(all->cmd[1][all->i])))
-		{
-			return (put_error("not a valid identifier",
+	if (blt_export_check_valid_name(all) == ERROR)
+		return (put_error("not a valid identifier",
 								ft_strjoin("$export: ", all->cmd[1])));
-		}
-		all->i++;
-	}
-	tmp = ft_strchr(all->cmd[1], '=');
-	if (tmp)
-		blt_export_equal(all, &tmp);
+	if (ft_strchr(all->cmd[1], '=') == FALSE)
+		blt_export_without_value(all);
 	else
-		blt_export_not_equal(all);
+		blt_export_with_value(all);
 	return (0);
 }
 

@@ -55,9 +55,9 @@ typedef struct		s_parameters
 	char			**cmd;
 	char			**pathes;
 	int				num_of_toks;
-	t_list	*vasya;
-	t_list	*tmp_vasya;
-	char	*tok;
+	t_list			*vasya;
+	t_list			*tmp_vasya;
+	char			*tok;
 
 }					t_param;
 

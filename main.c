@@ -69,6 +69,8 @@ int		executor(t_param *all)
 		blt_echo(all);
 	else if (!ft_strcmp(all->cmd[0], "cd"))
 		blt_cd(all);
+	else if (!ft_strcmp(all->cmd[0], "$?"))
+		put_error("command not found", "$?");
 	else
 		ft_execve(all);
 	return (0);
@@ -97,9 +99,9 @@ int		main(int argc, char **argv, char **env)
 		{
 			executor(&all);
 			// --------------print_buf---------------
-			all.i = -1;
-			while (all.cmd[++all.i])
-				ft_putendl(all.cmd[all.i]);
+			// all.i = -1;
+			// while (all.cmd[++all.i])
+			// 	ft_putendl(all.cmd[all.i]);
 			// --------------------------------------
 			free_array(&all.cmd);
 		}
