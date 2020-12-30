@@ -45,6 +45,8 @@
 ** <errno.h>	- errno
 */
 
+int	exit_code;
+
 typedef struct		s_parameters
 {
 	int				i;
@@ -71,19 +73,23 @@ typedef struct		s_line
 void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
-char				**inc_env(char ***env, char *str);
-char				**copy_env(char **env, int len);
-int					search_key_env(t_param *all, char *str);
-char				*get_value_env(t_param *all, char *str);
 int					check_options(t_param *all);
 
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
 int					blt_pwd(t_param *all);
-int					blt_env(t_param *all);
 int					blt_unset(t_param *all);
-int					blt_export(t_param *all);
 int					blt_echo(t_param *all);
+
+int					blt_export_print(t_param *all);
+int					blt_export_write(t_param *all, int i);
+int					blt_export(t_param *all);
+
+char				**inc_env(char ***env, char *str);
+char				**copy_env(char **env, int len);
+int					search_key_env(t_param *all, char *str);
+char				*get_value_env(t_param *all, char *str);
+int					blt_env(t_param *all);
 
 int					exec_fork(t_param *all);
 int					ft_execve(t_param *all);

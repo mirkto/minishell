@@ -48,8 +48,6 @@ char	*inits_buf_and_get_line(t_param *all)
 	return (tmp);
 }
 
-// ---------------------------executor-----------------------------------------
-
 int		executor(t_param *all)
 {
 	if (!ft_strcmp(all->cmd[0], "q") ||
@@ -76,8 +74,6 @@ int		executor(t_param *all)
 	return (0);
 }
 
-// --------------------------main-------------------------------
-
 int		main(int argc, char **argv, char **env)
 {
 	char	*buf;
@@ -91,10 +87,8 @@ int		main(int argc, char **argv, char **env)
 		write(1, "\033[0;32mminishell-0.3$ \033[0m", 26);
 		if (!(buf = inits_buf_and_get_line(&all)))
 			return (-1);
-		// --------------parser---------------
 		all.flag = parser(&all, &buf);
 		free(buf);
-		// -----------------------------------
 		if (all.flag != -1)
 		{
 			executor(&all);

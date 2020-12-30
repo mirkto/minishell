@@ -32,6 +32,8 @@
 # include <dirent.h> // for DIR
 # include <errno.h>  // for errno
 
+# include "minishell.h"
+
 #define INPUT_CMD GREEN_INPUT RED_INPUT
 #define GREEN_INPUT	GREEN INPUT RESET
 #define GREEN	write(1, "\033[0;32m", 7);
