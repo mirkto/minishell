@@ -6,15 +6,33 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 19:32:49 by arannara          #+#    #+#             */
-/*   Updated: 2020/12/27 19:34:37 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/30 20:04:15 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int			is_quote_close(int *i, char *tmp)
+{
+	char c;
+
+	c = tmp[*i];
+	(*i)++;
+	while(tmp[*i] != c)
+	{
+		if (tmp[*i] == '\0')
+			return (FALSE);
+		(*i)++;
+	}
+	if (tmp[(*i)++] == c)
+		return (TRUE);
+	return (FALSE);
+}
+
 int			lexer3(char *tmp)
 {
 	int		i;
+
 
 	i = 0;
 	while (tmp[i])
@@ -25,6 +43,19 @@ int			lexer3(char *tmp)
 			return (put_error("syntax error near unexpected token `||'", 0));
 		else if (tmp[i] == '&' && (tmp[i + 1]) == '&')
 			return (put_error("syntax error near unexpected token `&&'", 0));
+		i++;
+	}
+
+	i = 0;
+	while (tmp[i])
+	{
+		if (tmp[i] == '\'' || tmp[i] == '\"')
+		{
+			if (is_quote_close(&i, tmp) == TRUE)
+				continue ;
+			else
+				return (put_error("quotes are not close", 0));
+		}
 		i++;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/29 16:43:57 by arannara         ###   ########.fr       */
+/*   Updated: 2020/12/31 00:02:49 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char		*token_init(t_param *all, char *tmp, int *i)
 		if (tmp[*i] == '>' || tmp[*i] == '<' ||
 			tmp[*i] == '|' || tmp[*i] == ';')
 		{
-			if (end == *i && tmp[*i + 1] == '>' && tmp[*i] == '>')
+			if (end == *i && tmp[*i] == '>' && tmp[*i + 1] == '>')
 				(*i) += 2;
 			else if (end == *i)
 				(*i)++;
@@ -58,7 +58,7 @@ char		*token_init(t_param *all, char *tmp, int *i)
 	return (all->tok);
 }
 
-char		**tmp_handler(t_param *all, char *tmp)
+char		**list_maker(t_param *all, char *tmp)
 {
 	int		i;
 	char	**str;
@@ -86,6 +86,57 @@ char		**tmp_handler(t_param *all, char *tmp)
 	return (str);
 }
 
+
+char *quote_remover(int *i, char *tok)
+{
+	char c;
+	char *tmp;
+	char *tmp2;
+	char *tmp3;
+
+	c = tok[*i];
+	tmp = ft_substr(tok, 0, *i);
+	(*i)++;
+	while (tok[*i] && tok[*i] != c)
+	{
+		// if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
+		//  	(*i)++;
+		(*i)++;
+	}
+	(*i)--;
+	tmp2 = ft_substr(tok, ft_strlen(tmp) + 1, *i);
+	tmp3 = ft_strjoin(tmp, tmp2);
+	free(tmp);
+	free(tmp2);
+	return (tmp3);
+}q
+
+char *token_handler(char *tok)
+{
+	int i;
+
+	i = 0;
+	while (tok[i])
+	{
+		if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
+			return (tok);
+		else
+		{
+			if (tok[i] == '\'' || tok[i] == '\"' )
+				tok = quote_remover(&i, tok);
+			// else if (tok[i][j] == '\\')
+			// {
+			// }
+			// else if (tok[i][j] == '$')
+			// {
+			// }
+			else
+				i++;
+		}
+	}
+	return (tok);
+}
+
 int			parser(t_param *all, char **buf)
 {
 	char	*tmp;
@@ -102,8 +153,15 @@ int			parser(t_param *all, char **buf)
 		free(tmp);
 		return (-1);
 	}
-	str = tmp_handler(all, tmp);
-	// token_handler(str);
+	str = list_maker(all, tmp);
+
+	int i = 0;
+	while (str[i])
+	{
+		str[i] = token_handler(str[i]);
+		i++;
+	}
+
 	ft_lstclear(&all->tmp_vasya, free);
 	all->cmd = str;
 	if (!all->cmd)
