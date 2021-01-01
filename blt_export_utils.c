@@ -12,10 +12,39 @@
 
 #include "minishell.h"
 
-int		blt_export_write(t_param *all, int i)
+void	check_dollar(t_param *all)
+{
+	int		word;
+	int		c;
+
+	word = 0;
+	while (all->cmd[++word])
+	{
+		c = 0;
+		all->i = 0;
+		all->tmp = ft_strdup(all->cmd[word]);
+		while (all->cmd[word][c])
+		{
+			while (all->cmd[word][c] == '$')
+			{
+				c++;
+				while (ft_isalpha(all->cmd[word][c]) == TRUE)
+					c++;
+				if (ft_isdigit(all->cmd[word][c]) == TRUE)
+					c++;
+			}
+			all->tmp[all->i++] = all->cmd[word][c++];
+		}
+		all->tmp[all->i] = '\0';
+		free(all->cmd[word]);
+		all->cmd[word] = all->tmp;
+	}
+}
+
+int		blt_export_write(t_param *all, int i, int arg_n)
 {
 	free(all->env[i]);
-	all->env[i] = ft_strdup(all->cmd[1]);
+	all->env[i] = ft_strdup(all->cmd[arg_n]);
 	return (0);
 }
 

@@ -45,8 +45,6 @@
 ** <errno.h>	- errno
 */
 
-int	exit_code;
-
 typedef struct		s_parameters
 {
 	int				i;
@@ -56,11 +54,11 @@ typedef struct		s_parameters
 	char			**env;
 	char			**cmd;
 	char			**pathes;
+	int				tmp_exit_code;
 	int				num_of_toks;
 	t_list			*vasya;
 	t_list			*tmp_vasya;
 	char			*tok;
-
 }					t_param;
 
 typedef struct		s_line
@@ -73,7 +71,7 @@ typedef struct		s_line
 void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
-int					check_options(t_param *all);
+int					check_options(t_param *all, int i);
 
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
@@ -81,8 +79,9 @@ int					blt_pwd(t_param *all);
 int					blt_unset(t_param *all);
 int					blt_echo(t_param *all);
 
+void				check_dollar(t_param *all);
 int					blt_export_print(t_param *all);
-int					blt_export_write(t_param *all, int i);
+int					blt_export_write(t_param *all, int i, int arg_n);
 int					blt_export(t_param *all);
 
 char				**inc_env(char ***env, char *str);
@@ -96,5 +95,11 @@ int					ft_execve(t_param *all);
 
 int					parser(t_param *all, char **buf);
 int					lexer(char *tmp);
+
+void				handler_quit_(int);
+void				handler_kill_d(int);
+void				handler_int_c(int);
+
+int					g_exit_code;
 
 #endif

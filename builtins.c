@@ -35,7 +35,7 @@ int		blt_exit(t_param *all)
 	{
 		if (all->cmd[2])
 			return (put_error("too many arguments", "exit"));
-		if (check_options(all) == TRUE)
+		if (check_options(all, 1) == TRUE)
 			return (put_error("Enter without any options!", NULL));
 		if (ft_strisdigit(all->cmd[1]) == FALSE)
 			return (blt_exit_and_free(all, 255, FALSE));
@@ -56,15 +56,15 @@ int		blt_echo(t_param *all)
 	arg = 1;
 	option_n = FALSE;
 	if (!ft_strcmp(all->cmd[1], "-n"))
-	{
-		option_n = TRUE;
-		arg++;
-	}
-	else if (check_options(all) == TRUE)
+		option_n = arg++;
+	else if (check_options(all, 1) == TRUE)
 		return (put_error("Enter with option ’-n’ only!", NULL));
 	while (all->cmd[arg])
 	{
-		ft_putstr(all->cmd[arg]);
+		if (!ft_strcmp(all->cmd[arg], "$?"))
+			ft_putnbr(g_exit_code);
+		else
+			ft_putstr(all->cmd[arg]);
 		if (all->cmd[arg + 1] != '\0')
 			write(1, " ", 1);
 		arg++;
@@ -88,7 +88,7 @@ int		blt_unset(t_param *all)
 {
 	if (!all->cmd[1])
 		return (0);
-	if (check_options(all) == TRUE)
+	if (check_options(all, 1) == TRUE)
 		return (put_error("Enter without any options!", NULL));
 	blt_unset_check_in(all);
 	if (all->cmd[2] || (!(ft_isalpha(all->cmd[1][0])) && all->cmd[1][0] != '_'))

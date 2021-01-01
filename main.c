@@ -18,6 +18,8 @@ int		init_env_and_pathes(t_param *all, char **env)
 	if (search_key_env(all, "OLDPWD") == FALSE)
 		all->env = inc_env(&all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
+	g_exit_code = 0;
+	all->tmp_exit_code = 0;
 	return (0);
 }
 
@@ -33,6 +35,8 @@ char	*inits_buf_and_get_line(t_param *all)
 	all->num_of_toks = 0;
 	all->vasya = NULL;
 	all->tok = NULL;
+	g_exit_code = all->tmp_exit_code;
+	all->tmp_exit_code = 0;
 	tmp = NULL;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
@@ -42,7 +46,7 @@ char	*inits_buf_and_get_line(t_param *all)
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!read(0, tmp, BUFFER_SIZE))
 	{
-		put_error("dont work read buf", "Error");
+		put_error("exit", NULL);//put_error("dont work read buf", "Error");
 		return (NULL);
 	}
 	return (tmp);
@@ -84,6 +88,8 @@ int		main(int argc, char **argv, char **env)
 	init_env_and_pathes(&all, env);
 	while (1)
 	{
+		signal(SIGINT, handler_int_c);//signal(SIGKILL, handler_kill_d);
+		signal(SIGQUIT, handler_quit_);
 		write(1, "\033[0;32mminishell-0.3$ \033[0m", 26);
 		if (!(buf = inits_buf_and_get_line(&all)))
 			return (-1);
@@ -92,11 +98,9 @@ int		main(int argc, char **argv, char **env)
 		if (all.flag != -1)
 		{
 			executor(&all);
-			// --------------print_buf---------------
 			// all.i = -1;
 			// while (all.cmd[++all.i])
 			// 	ft_putendl(all.cmd[all.i]);
-			// --------------------------------------
 			free_array(&all.cmd);
 		}
 	}

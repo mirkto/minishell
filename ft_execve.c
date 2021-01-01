@@ -14,18 +14,24 @@
 
 int		exec_fork(t_param *all)
 {
-	int		p;
+	int		status;
+	int		wr;
 
-	p = fork();
-	if (p == 0)
+	status = fork();
+	if (status == 0)
 	{
+		signal(SIGKILL, handler_kill_d);
+		//signal(SIGINT, handler_int_c);
+		//signal(SIGQUIT, handler_quit_);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);
 			exit(127);
 		}
 	}
-	wait(&p);
+	wr = wait(&status);
+	if (wr != -1)
+		all->tmp_exit_code = WEXITSTATUS(status);
 	return (0);
 }
 

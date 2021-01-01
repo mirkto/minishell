@@ -25,17 +25,17 @@ void	free_array(char ***lst)
 	free(*lst);
 }
 
-int		put_error(char *str_err, char *arg)
+int		put_error(char *str_error, char *arg)
 {
 	if (arg == NULL)
-		ft_putendl(str_err);
+		ft_putendl(str_error);
 	else
 	{
 		write(1, "minishell: ", 11);
 		if (arg[0] == '$')
 		{
 			if (arg[1] == '?')
-				ft_putnbr(exit_code);
+				ft_putnbr(g_exit_code);
 			else
 			{
 				ft_putstr(&arg[1]);
@@ -45,7 +45,7 @@ int		put_error(char *str_err, char *arg)
 		else
 			ft_putstr(arg);
 		write(1, ": ", 2);
-		ft_putstr(str_err);
+		ft_putstr(str_error);
 		write(1, " | ", 3);
 		ft_putstr(strerror(errno));
 		write(1, "\n", 1);
@@ -71,10 +71,10 @@ char	**split_pathes(t_param *all, char **env)
 	return (tmp);
 }
 
-int		check_options(t_param *all)
+int		check_options(t_param *all, int arg_n)
 {
-	if (all->cmd[1])
-		if (all->cmd[1][0] == '-' && ft_isalpha(all->cmd[1][1]) == TRUE)
+	if (all->cmd[arg_n])
+		if (all->cmd[arg_n][0] == '-' && ft_isalpha(all->cmd[arg_n][1]) == TRUE)
 			return (TRUE);
 	return (FALSE);
 }

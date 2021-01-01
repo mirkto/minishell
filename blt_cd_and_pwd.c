@@ -14,7 +14,7 @@
 
 int		blt_pwd(t_param *all)
 {
-	if (check_options(all) == TRUE)
+	if (check_options(all, 1) == TRUE)
 		return (put_error("Enter without any options!", NULL));
 	all->tmp = getcwd(NULL, 0);
 	ft_putendl(all->tmp);
@@ -43,13 +43,24 @@ int		blt_cd_replace(t_param *all, char *str)
 
 int		blt_cd_home(t_param *all)
 {
+	char	*tmp;
+
 	if (all->cmd[1] == NULL ||
 		(all->cmd[1][0] == '~' && all->cmd[1][1] == '\0'))
 	{
-		all->tmp = get_value_env(all, "HOME");
-		if (chdir(all->tmp))
+		tmp = get_value_env(all, "HOME");
+		all->tmp = getcwd(NULL, 0);
+		if (chdir(tmp) == 0)
+		{
+			blt_cd_replace(all, "OLDPWD");
+			free(all->tmp);
+			all->tmp = getcwd(NULL, 0);
+			blt_cd_replace(all, "PWD");
+			free(all->tmp);
+		}
+		else
 			return (put_error("HOME not set", "cd"));
-		free(all->tmp);
+		free(tmp);
 		return (1);
 	}
 	return (0);
@@ -72,7 +83,8 @@ int		blt_cd(t_param *all)
 {
 	int	ret;
 
-	if ((ret = blt_cd_home(all)) != 0)
+	ret = blt_cd_home(all);
+	if (ret == ERROR || ret == 1)
 		return (ret);
 	if ((ret = blt_cd_return(all)) == ERROR)
 		return (ERROR);
