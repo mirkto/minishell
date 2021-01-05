@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/31 00:02:49 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/05 18:21:51 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,37 +93,77 @@ char *quote_remover(int *i, char *tok)
 	char *tmp;
 	char *tmp2;
 	char *tmp3;
+	int  z;
 
 	c = tok[*i];
-	tmp = ft_substr(tok, 0, *i);
 	(*i)++;
+	z = *i;
+	tmp3 = ft_calloc(sizeof(char), 2);
 	while (tok[*i] && tok[*i] != c)
 	{
-		// if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
-		//  	(*i)++;
+		if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
+		{
+			tmp = ft_substr(tok, z, (*i) - z);
+			tmp2 = ft_strjoin(tmp3, tmp);
+			free(tmp);
+			free(tmp3);
+			tmp3 = tmp2;
+			(*i)++;
+			z = *i;
+		}
 		(*i)++;
 	}
-	(*i)--;
-	tmp2 = ft_substr(tok, ft_strlen(tmp) + 1, *i);
-	tmp3 = ft_strjoin(tmp, tmp2);
-	free(tmp);
-	free(tmp2);
+	if (z != *i)
+	{
+		tmp = ft_substr(tok, z, (*i) - z);
+		tmp2 = ft_strjoin(tmp3, tmp);
+		free(tmp);
+		free(tmp3);
+		tmp3 = tmp2;
+	}
+	(*i)++;
 	return (tmp3);
-}q
+}
 
 char *token_handler(char *tok)
 {
+	char *str;
+	char *tmp;
+	char *tmp2;
 	int i;
+	int z;
 
 	i = 0;
+	z = 0;
+	str = ft_calloc(sizeof(char), 3);
 	while (tok[i])
 	{
 		if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
-			return (tok);
+		{
+			while (tok[i])
+			{
+				str[i] = tok[i];
+				i++;
+			}
+			return (str);
+		}
 		else
 		{
 			if (tok[i] == '\'' || tok[i] == '\"' )
-				tok = quote_remover(&i, tok);
+			{
+				tmp = ft_substr(tok, z, i - z);
+				tmp2 = ft_strjoin(str, tmp);
+				free(str);
+				free(tmp);
+				str = tmp2;
+				z = i;
+				tmp = quote_remover(&i, tok);
+				tmp2 = ft_strjoin(str, tmp);
+				free(str);
+				free(tmp);
+				str = tmp2;
+				z = i;
+			}
 			// else if (tok[i][j] == '\\')
 			// {
 			// }
@@ -134,13 +174,22 @@ char *token_handler(char *tok)
 				i++;
 		}
 	}
-	return (tok);
+	if (z != i)
+	{
+		tmp = ft_substr(tok, z, i - z);
+		tmp2 = ft_strjoin(str, tmp);
+		free(str);
+		free(tmp);
+		str = tmp2;
+	}
+	return (str);
 }
 
 int			parser(t_param *all, char **buf)
 {
 	char	*tmp;
 	char	**str;
+	char	*str2;
 
 	tmp = ft_strtrim(*buf, " \t\n");
 	if (ft_strlen(tmp) <= 0)
@@ -158,7 +207,10 @@ int			parser(t_param *all, char **buf)
 	int i = 0;
 	while (str[i])
 	{
-		str[i] = token_handler(str[i]);
+		str2 = token_handler(str[i]);
+		free(str[i]);
+		str[i] = ft_strdup(str2);
+		free(str2);
 		i++;
 	}
 
