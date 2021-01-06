@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/05 18:21:51 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/06 19:34:22 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,23 @@ char		**list_maker(t_param *all, char *tmp)
 	return (str);
 }
 
-
-char *quote_remover(int *i, char *tok)
+char		*token_join(char *tmp3, char *tok, int *i, int *z)
 {
-	char c;
-	char *tmp;
-	char *tmp2;
-	char *tmp3;
-	int  z;
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = ft_substr(tok, *z, *i - *z);
+	tmp2 = ft_strjoin(tmp3, tmp);
+	free(tmp);
+	free(tmp3);
+	return (tmp2);
+}
+
+char		*quote_remover(int *i, char *tok)
+{
+	char	c;
+	char	*tmp3;
+	int		z;
 
 	c = tok[*i];
 	(*i)++;
@@ -103,35 +112,25 @@ char *quote_remover(int *i, char *tok)
 	{
 		if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
 		{
-			tmp = ft_substr(tok, z, (*i) - z);
-			tmp2 = ft_strjoin(tmp3, tmp);
-			free(tmp);
-			free(tmp3);
-			tmp3 = tmp2;
+			tmp3 = token_join(tmp3, tok, i, &z);
 			(*i)++;
 			z = *i;
 		}
 		(*i)++;
 	}
 	if (z != *i)
-	{
-		tmp = ft_substr(tok, z, (*i) - z);
-		tmp2 = ft_strjoin(tmp3, tmp);
-		free(tmp);
-		free(tmp3);
-		tmp3 = tmp2;
-	}
+		tmp3 = token_join(tmp3, tok, i, &z);
 	(*i)++;
 	return (tmp3);
 }
 
-char *token_handler(char *tok)
+char		*token_handler(char *tok)
 {
-	char *str;
-	char *tmp;
-	char *tmp2;
-	int i;
-	int z;
+	char	*str;
+	char	*tmp;
+	char	*tmp2;
+	int		i;
+	int		z;
 
 	i = 0;
 	z = 0;
@@ -149,13 +148,9 @@ char *token_handler(char *tok)
 		}
 		else
 		{
-			if (tok[i] == '\'' || tok[i] == '\"' )
+			if (tok[i] == '\'' || tok[i] == '\"')
 			{
-				tmp = ft_substr(tok, z, i - z);
-				tmp2 = ft_strjoin(str, tmp);
-				free(str);
-				free(tmp);
-				str = tmp2;
+				str = token_join(str, tok, &i, &z);
 				z = i;
 				tmp = quote_remover(&i, tok);
 				tmp2 = ft_strjoin(str, tmp);
@@ -164,24 +159,12 @@ char *token_handler(char *tok)
 				str = tmp2;
 				z = i;
 			}
-			// else if (tok[i][j] == '\\')
-			// {
-			// }
-			// else if (tok[i][j] == '$')
-			// {
-			// }
 			else
 				i++;
 		}
 	}
 	if (z != i)
-	{
-		tmp = ft_substr(tok, z, i - z);
-		tmp2 = ft_strjoin(str, tmp);
-		free(str);
-		free(tmp);
-		str = tmp2;
-	}
+		str = token_join(str, tok, &i, &z);
 	return (str);
 }
 
@@ -190,6 +173,7 @@ int			parser(t_param *all, char **buf)
 	char	*tmp;
 	char	**str;
 	char	*str2;
+	int		i;
 
 	tmp = ft_strtrim(*buf, " \t\n");
 	if (ft_strlen(tmp) <= 0)
@@ -203,8 +187,7 @@ int			parser(t_param *all, char **buf)
 		return (-1);
 	}
 	str = list_maker(all, tmp);
-
-	int i = 0;
+	i = 0;
 	while (str[i])
 	{
 		str2 = token_handler(str[i]);
@@ -213,7 +196,6 @@ int			parser(t_param *all, char **buf)
 		free(str2);
 		i++;
 	}
-
 	ft_lstclear(&all->tmp_vasya, free);
 	all->cmd = str;
 	if (!all->cmd)
