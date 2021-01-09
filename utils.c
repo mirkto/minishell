@@ -78,3 +78,17 @@ int		check_options(t_param *all, int arg_n)
 			return (TRUE);
 	return (FALSE);
 }
+
+int		check_back_slash_n(char *tmp)
+{
+	int i;
+
+	i = 0;
+	while (tmp[i])
+	{
+		if (tmp[i] == '\n')
+			return (0);
+		i++;
+	}
+	return (1);
+}

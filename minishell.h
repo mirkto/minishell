@@ -72,6 +72,7 @@ void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
 int					check_options(t_param *all, int i);
+int					check_back_slash_n(char *tmp);
 
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
@@ -83,6 +84,7 @@ void				check_dollar(t_param *all);
 int					blt_export_print(t_param *all);
 int					blt_export_write(t_param *all, int i, int arg_n);
 int					blt_export(t_param *all);
+void				put_cmd(t_param *all);
 
 char				**inc_env(char ***env, char *str);
 char				**copy_env(char **env, int len);

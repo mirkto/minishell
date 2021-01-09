@@ -20,9 +20,8 @@ int		exec_fork(t_param *all)
 	status = fork();
 	if (status == 0)
 	{
-		signal(SIGKILL, handler_kill_d);
-		//signal(SIGINT, handler_int_c);
-		//signal(SIGQUIT, handler_quit_);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);

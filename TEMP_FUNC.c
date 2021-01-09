@@ -25,8 +25,8 @@
 ** "\v\f\r \n\t"
 **
 ** signal(SIGINT, handler);		// SIGINT - CTRL + C
-** signal(SIGTERM, handler);	
-** signal(SIGKILL, handler);	// SIGKILL - CTRL + D
+** signal(SIGTERM, handler);
+** signal(SIGKILL, handler);
 ** signal(SIGQUIT, handler);	// SIGQUIT - CTRL + \
 **
 ** close(1);

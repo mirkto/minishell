@@ -97,3 +97,10 @@ int		blt_export_print(t_param *all)
 		blt_export_put(all, i);
 	return (0);
 }
+
+void	put_cmd(t_param *all)
+{
+	all->i = -1;
+	while (all->cmd[++all->i])
+		ft_putendl(all->cmd[all->i]);
+}
