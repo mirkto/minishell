@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/29 16:27:51 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/08 19:09:01 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,13 @@
 ** <dirent.h>	- opendir, readdir, closedir
 ** <errno.h>	- errno
 */
+
+enum
+{
+	OPEN,
+	CLOSE,
+	NORMAL
+}	;
 
 typedef struct		s_parameters
 {
