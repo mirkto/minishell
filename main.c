@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/10 19:24:42 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/11 18:56:40 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +98,9 @@ int		executor(t_param *all)
 		blt_echo(all);
 	else if (!ft_strcmp(all->cmd[0], "cd"))
 		blt_cd(all);
-	else if (!ft_strcmp(all->cmd[0], "$?"))
-		put_error("command not found", "$?");
 	else
 		ft_execve(all);
-	// put_cmd(all);
+	put_cmd(all);
 	free_array(&all->cmd);
 	return (0);
 }

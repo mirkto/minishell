@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/09 19:00:00 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/11 18:55:56 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,11 @@ char		*token_handler(char *tok)
 			str[i] = tok[i];
 			free(tok);
 			return(str);
+		}
+		else if (tok[i] == '$' && tok[i + 1] == '?')
+		{
+			free(str);
+			return(ft_itoa(g_exit_code));
 		}
 		else if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
 		{
