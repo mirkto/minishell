@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/11 18:55:56 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/11 19:44:10 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,6 @@ char		*quote_remover(int *i, char *tok)
 			z = *i;
 
 		}
-		// else if (tok[*i] == '\"' && tok[*i + 1] != '\0' && c == '\\')
-		// {
-		// 	tmp3 = str_joiner(tmp3, tok, i, &z);
-		// 	(*i)++;
-		// 	z = *i;
-		// }
 		(*i)++;
 	}
 	if (z != *i)
@@ -131,6 +125,32 @@ char		*quote_remover(int *i, char *tok)
 	(*i)++;
 	return (tmp3);
 }
+
+
+
+char		*dollar_remover(t_param *all, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$' && str[i + 1] == '?')
+		{
+			return(ft_itoa(g_exit_code));
+		}
+		else if (str[i] == '$')
+		{
+			return(get_value_env(all, &str[i + 1]));
+		}
+		i++;
+	}
+	str = ft_strdup(str);
+	return(str);
+}
+
+
+
 
 char		*token_handler(char *tok)
 {
@@ -159,11 +179,6 @@ char		*token_handler(char *tok)
 			str[i] = tok[i];
 			free(tok);
 			return(str);
-		}
-		else if (tok[i] == '$' && tok[i + 1] == '?')
-		{
-			free(str);
-			return(ft_itoa(g_exit_code));
 		}
 		else if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
 		{
@@ -223,7 +238,7 @@ int			parser(t_param *all, char **buf)
 	{
 		str2 = token_handler(str[i]);
 		free(str[i]);
-		str[i] = ft_strdup(str2);
+		str[i] = dollar_remover(all, str2);
 		free(str2);
 		i++;
 	}

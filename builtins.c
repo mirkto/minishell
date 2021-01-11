@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 16:43:44 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/21 16:43:55 by ngonzo           ###   ########.fr       */
+/*   Updated: 2021/01/11 19:25:16 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,7 @@ int		blt_echo(t_param *all)
 		return (put_error("Enter with option ’-n’ only!", NULL));
 	while (all->cmd[arg])
 	{
-		if (!ft_strcmp(all->cmd[arg], "$?"))
-			ft_putnbr(g_exit_code);
-		else
-			ft_putstr(all->cmd[arg]);
+		ft_putstr(all->cmd[arg]);
 		if (all->cmd[arg + 1] != '\0')
 			write(1, " ", 1);
 		arg++;
