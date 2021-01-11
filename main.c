@@ -102,7 +102,7 @@ int		executor(t_param *all)
 		put_error("command not found", "$?");
 	else
 		ft_execve(all);
-	put_cmd(all);
+	// put_cmd(all);
 	free_array(&all->cmd);
 	return (0);
 }
@@ -130,12 +130,6 @@ int		main(int argc, char **argv, char **env)
 		free(buf);
 		if (all.flag != -1)
 			executor(&all);
-
-			// all.i = -1;
-			// while (all.cmd[++all.i])
-			// 	ft_putendl(all.cmd[all.i]);
-			// free_array(&all.cmd);
-		// }
 	}
 	return (0);
 }

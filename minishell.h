@@ -45,13 +45,6 @@
 ** <errno.h>	- errno
 */
 
-enum
-{
-	OPEN,
-	CLOSE,
-	NORMAL
-}	;
-
 typedef struct		s_parameters
 {
 	int				i;

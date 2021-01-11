@@ -20,15 +20,17 @@ int			is_quote_close(int *i, char *tmp)
 	(*i)++;
 	while(tmp[*i] != c)
 	{
-		if (tmp[*i - 1] == '\\')
-			printf("lol");
-
-		if (tmp[*i] == '\0')
+		if (tmp[*i] == '\\' && c == '\"' && tmp[*i + 1] != '\0')
+			(*i)++;
+		else if (tmp[*i] == '\0')
 			return (FALSE);
 		(*i)++;
 	}
-	if (tmp[(*i)++] == c)
+	if (tmp[(*i)] == c)
+	{
+		(*i)++;
 		return (TRUE);
+	}
 	return (FALSE);
 }
 
@@ -36,13 +38,13 @@ int			lexer3(char *tmp)
 {
 	int		i;
 
-	i = 0;
-	while (tmp[i])
-	{
-		if (tmp[i] == '&' && (tmp[i + 1]) == '&')
-			return (put_error("syntax error near unexpected token `&&'", 0));
-		i++;
-	}
+	// i = 0;
+	// while (tmp[i])
+	// {
+	// 	if (tmp[i] == '&' && (tmp[i + 1]) == '&')
+	// 		return (put_error("syntax error near unexpected token `&&'", 0));
+	// 	i++;
+	// }
 	i = 0;
 	while (tmp[i])
 	{
