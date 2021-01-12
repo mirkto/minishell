@@ -15,7 +15,7 @@
 int		init_env_and_pathes(t_param *all, char **env)
 {
 	all->env = copy_env(env, 0);
-	if (search_key_env(all, "OLDPWD") == FALSE)
+	if (search_key_env(all, "OLDPWD") == -1)
 		all->env = inc_env(&all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
 	g_exit_code = 0;
@@ -100,7 +100,7 @@ int		executor(t_param *all)
 		blt_cd(all);
 	else
 		ft_execve(all);
-	put_cmd(all);
+	// put_cmd(all);
 	return (0);
 }
 

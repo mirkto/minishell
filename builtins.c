@@ -83,7 +83,7 @@ int		blt_echo(t_param *all)
 int		blt_unset_check_in(t_param *all)
 {
 	all->i = 0;
-	if ((all->i = search_key_env(all, all->cmd[1])))
+	if ((all->i = search_key_env(all, all->cmd[1])) >= 0)
 		ft_bzero(all->env[all->i], ft_strlen(all->env[all->i]));
 	return (0);
 }

@@ -66,7 +66,7 @@ int		search_key_env(t_param *all, char *str)
 				return (index);
 		index++;
 	}
-	return (0);
+	return (-1);
 }
 
 char	*get_value_env(t_param *all, char *str)

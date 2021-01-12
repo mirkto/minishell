@@ -36,7 +36,7 @@ int		blt_export_with_value(t_param *all, int arg_n)
 
 	tmp = ft_split(all->cmd[arg_n], '=');
 	i = search_key_env(all, tmp[0]);
-	if (i > 0)
+	if (i >= 0)
 		blt_export_write(all, i, arg_n);
 	else
 		blt_export_search_and_inc(all, arg_n);
@@ -46,7 +46,7 @@ int		blt_export_with_value(t_param *all, int arg_n)
 
 int		blt_export_without_value(t_param *all, int arg_n)
 {
-	if (search_key_env(all, all->cmd[arg_n]))
+	if (search_key_env(all, all->cmd[arg_n]) == -1)
 		return (0);
 	blt_export_search_and_inc(all, arg_n);
 	return (0);
