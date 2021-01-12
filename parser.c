@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/12 16:54:19 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/12 16:59:53 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,32 +128,31 @@ char		*quote_remover(int *i, char *tok)
 
 
 
-char		*dollar_remover(t_param *all, char *str)
-{
-	int	i;
+// char		*dollar_remover(t_param *all, char *str)
+// {
+// 	int	i;
 
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1] == '?')
-		{
-			str = ft_itoa(g_exit_code);
-			return(str);
-		}
-		else if (str[i] == '$')
-		{
-			return(get_value_env(all, &str[i + 1]));
-		}
-		i++;
-	}
-	str = ft_strdup(str);
-	return(str);
-}
-
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$' && str[i + 1] == '?')
+// 		{
+// 			return(ft_itoa(g_exit_code));
+// 		}
+// 		else if (str[i] == '$')
+// 		{
+// 			return(get_value_env(all, &str[i + 1]));
+// 		}
+// 		i++;
+// 	}
+// 	str = ft_strdup(str);
+// 	return(str);
+// }
 
 
 
-char		*token_handler(char *tok)
+
+char		*token_handler(t_param *all, char *tok)
 {
 	char	*str;
 	char	*tmp;
@@ -206,6 +205,10 @@ char		*token_handler(char *tok)
 
 				z = i;
 			}
+			else if (tok[i] == '$' && tok[i + 1] == '?')
+				return(ft_itoa(g_exit_code));
+			else if (tok[i] == '$')
+				return(get_value_env(all, &tok[i + 1]));
 			else
 				i++;
 		}
@@ -237,9 +240,10 @@ int			parser(t_param *all, char **buf)
 	i = 0;
 	while (str[i])
 	{
-		str2 = token_handler(str[i]);
+		str2 = token_handler(all, str[i]);
 		free(str[i]);
-		str[i] = dollar_remover(all, str2);
+		str[i] = ft_strdup(str2);
+		// str[i] = dollar_remover(all, str2);
 		free(str2);
 		i++;
 	}
