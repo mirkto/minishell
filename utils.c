@@ -35,8 +35,8 @@ int		put_error(char *str_error, char *arg)
 		ft_putstr(arg);
 		write(1, ": ", 2);
 		ft_putstr(str_error);
-		write(1, " | ", 3);
-		ft_putstr(strerror(errno));
+		// write(1, " | ", 3);
+		// ft_putstr(strerror(errno));
 		write(1, "\n", 1);
 	}
 	return (-1);

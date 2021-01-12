@@ -112,6 +112,9 @@ int		ft_execve(t_param *all)
 	else
 		flag = exec_check_path(all);
 	if (flag == 0)
+	{
+		all->tmp_exit_code = 127;
 		put_error("command not found", all->cmd[0]);
+	}
 	return (0);
 }

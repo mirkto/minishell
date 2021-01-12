@@ -100,7 +100,7 @@ int		executor(t_param *all)
 		blt_cd(all);
 	else
 		ft_execve(all);
-	// put_cmd(all);
+	put_cmd(all);
 	return (0);
 }
 
