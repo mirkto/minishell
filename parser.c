@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/11 19:44:10 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/12 16:54:19 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ char		*dollar_remover(t_param *all, char *str)
 	{
 		if (str[i] == '$' && str[i + 1] == '?')
 		{
-			str = ft_itoa(g_exit_code)
+			str = ft_itoa(g_exit_code);
 			return(str);
 		}
 		else if (str[i] == '$')
