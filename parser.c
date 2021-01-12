@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/12 16:14:28 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/12 17:51:59 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ char		*str_joiner(char *tmp3, char *tok, int *i, int *z)
 	tmp2 = ft_strjoin(tmp3, tmp);
 	free(tmp);
 	free(tmp3);
-
 	return (tmp2);
 }
 
-char		*quote_remover(int *i, char *tok)
+char		*quote_remover(int *i, char *tok, t_param *all)
 {
 	char	c;
 	char	*tmp3;
+	char 	*tmp4;
 	int		z;
 
 	c = tok[*i];
@@ -114,19 +114,34 @@ char		*quote_remover(int *i, char *tok)
 		if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
 		{
 			tmp3 = str_joiner(tmp3, tok, i, &z);
-			(*i)++;
+			(*i) += 2;
 			z = *i;
-
 		}
-		(*i)++;
+		else if (tok[*i] == '$' && c == '\"')
+		{
+			if (z != *i)
+				tmp3 = str_joiner(tmp3, tok, i, &z);
+			z = ++(*i);
+			while (tok[*i] != '$' && tok[*i] != ' ' && tok[*i] != '\\' && tok[*i] != '\"')
+				(*i)++;
+			tmp4 = ft_substr(tok, z, (*i) - z);
+			all->tmp = get_value_env(all, tmp4);
+			free(tmp4);
+			tmp4 = ft_strjoin(tmp3, all->tmp);
+			free(tmp3);
+			free(all->tmp);
+			tmp3 = tmp4; //str_joiner(tmp3, tok, i, &z);
+			// (*i)++;
+			z = *i;
+		}
+		else
+			(*i)++;
 	}
 	if (z != *i)
 		tmp3 = str_joiner(tmp3, tok, i, &z);
 	(*i)++;
 	return (tmp3);
 }
-
-
 
 // char		*dollar_remover(t_param *all, char *str)
 // {
@@ -148,9 +163,6 @@ char		*quote_remover(int *i, char *tok)
 // 	str = ft_strdup(str);
 // 	return(str);
 // }
-
-
-
 
 char		*token_handler(t_param *all, char *tok)
 {
@@ -191,21 +203,19 @@ char		*token_handler(t_param *all, char *tok)
 		}
 		else
 		{
-			if (tok[i] == '\'' || tok[i] == '\"' || tok[i] == '\\')
+			if (tok[i] == '\'' || tok[i] == '\"' )
 			{
 
 				str = str_joiner(str, tok, &i, &z);
 				z = i;
-				tmp = quote_remover(&i, tok);
-
+				tmp = quote_remover(&i, tok, all);
 				tmp2 = ft_strjoin(str, tmp);
 				free(str);
 				free(tmp);
 				str = tmp2;
-
 				z = i;
 			}
-			else if (tok[i] == '$' && tok[i + 1] == '?')
+			if (tok[i] == '$' && tok[i + 1] == '?')
 				return(ft_itoa(g_exit_code));
 			else if (tok[i] == '$')
 				return(get_value_env(all, &tok[i + 1]));
