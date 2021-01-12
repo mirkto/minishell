@@ -6,12 +6,13 @@
 #    By: arannara <arannara@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/28 22:44:15 by ngonzo            #+#    #+#              #
-#    Updated: 2021/01/11 19:45:28 by arannara         ###   ########.fr        #
+#    Updated: 2021/01/12 20:52:49 by arannara         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 FLAGS = -g -Wall -Werror -Wextra
+#-fsanitize=address
 SRCS = main.c builtins.c ft_execve.c utils.c parser.c lexer.c blt_export.c\
 		blt_export_utils.c blt_env.c blt_cd_and_pwd.c signal.c
 OBJS = $(SRCS:%.c=%.o)

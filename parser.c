@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/12 17:51:59 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/12 22:03:53 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,26 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 			(*i) += 2;
 			z = *i;
 		}
+		else if (tok[*i] == '$' && tok[*i + 1] == '?' && c == '\"')
+		{
+			if (z != *i)
+			{
+				tmp3 = str_joiner(tmp3, tok, i, &z);
+				z = ft_strlen(tmp3);
+			}
+			else
+				z = (*i);
+
+			*i = (*i) + 2;
+
+			tmp4 = ft_substr(tmp3, 0, z);
+			all->tmp = ft_itoa(g_exit_code);
+			free(tmp3);
+			tmp3 = ft_strjoin(tmp4, all->tmp);
+			free(tmp4);
+			free(all->tmp);
+			z = *i;
+		}
 		else if (tok[*i] == '$' && c == '\"')
 		{
 			if (z != *i)
@@ -130,8 +150,7 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 			tmp4 = ft_strjoin(tmp3, all->tmp);
 			free(tmp3);
 			free(all->tmp);
-			tmp3 = tmp4; //str_joiner(tmp3, tok, i, &z);
-			// (*i)++;
+			tmp3 = tmp4;
 			z = *i;
 		}
 		else
@@ -215,10 +234,18 @@ char		*token_handler(t_param *all, char *tok)
 				str = tmp2;
 				z = i;
 			}
-			if (tok[i] == '$' && tok[i + 1] == '?')
-				return(ft_itoa(g_exit_code));
-			else if (tok[i] == '$')
-				return(get_value_env(all, &tok[i + 1]));
+			// if (tok[i] == '$' && tok[i + 1] == '?')
+			// {
+			// 	free(str);
+			// 	str = ft_itoa(g_exit_code);
+			// 	return(str);
+			// }
+			// else if (tok[i] == '$')
+			// {
+			// 	free(str);
+			// 	str = get_value_env(all, &tok[i + 1]);
+			// 	return(str);
+			// }
 			else
 				i++;
 		}
