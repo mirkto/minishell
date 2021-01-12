@@ -78,7 +78,9 @@ char	*get_value_env(t_param *all, char *str)
 	tmp = NULL;
 	len = ft_strlen(str);
 	index = search_key_env(all, str);
-	if (all->env[index][len] == '=')
+	if (index == -1)
+		tmp = ft_strdup("");
+	else if (all->env[index][len] == '=')
 		tmp = ft_strdup(&all->env[index][++len]);
 	return (tmp);
 }
