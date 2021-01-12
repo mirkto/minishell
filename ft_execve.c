@@ -30,7 +30,10 @@ int		exec_fork(t_param *all)
 	}
 	wr = wait(&status);
 	if (wr != -1)
+	{
 		all->tmp_exit_code = WEXITSTATUS(status);
+		return (1);
+	}
 	return (0);
 }
 
@@ -81,7 +84,7 @@ int		exec_check_path(t_param *all)
 			exec_fork(all);
 			free(all->tmp);
 			free(tmp);
-			break ;
+			return (1);
 		}
 		free(tmp);
 	}
@@ -90,20 +93,25 @@ int		exec_check_path(t_param *all)
 
 int		exec_absolute_and_relative_path(t_param *all)
 {
+	int	flag;
+
+	flag = 0;
 	all->tmp = ft_strdup(all->cmd[0]);
-	exec_fork(all);
+	flag = exec_fork(all);
 	free(all->tmp);
-	return (0);
+	return (flag);
 }
 
 int		ft_execve(t_param *all)
 {
-	errno = 0;
+	int	flag;
+
+	flag = 0;
 	if (all->cmd[0][0] == '/' || all->cmd[0][0] == '.')
-		exec_absolute_and_relative_path(all);
+		flag = exec_absolute_and_relative_path(all);
 	else
-		exec_check_path(all);
-	if (errno != 0)
+		flag = exec_check_path(all);
+	if (flag == 0)
 		put_error("command not found", all->cmd[0]);
 	return (0);
 }

@@ -137,7 +137,8 @@ char		*dollar_remover(t_param *all, char *str)
 	{
 		if (str[i] == '$' && str[i + 1] == '?')
 		{
-			return(ft_itoa(g_exit_code));
+			str = ft_itoa(g_exit_code)
+			return(str);
 		}
 		else if (str[i] == '$')
 		{
