@@ -68,6 +68,21 @@ typedef struct		s_line
 	int				fd_output;
 }					t_line;
 
+typedef struct		s_var
+{
+	t_list			*list;
+	int				fd_1;
+	int				fd_0;
+	int				r;
+	int				exception;
+}					t_var;
+
+typedef struct		s_commands
+{
+	int				fd_1;
+	int				fd_0;
+}					t_commands;
+
 void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
@@ -101,6 +116,12 @@ int					lexer(char *tmp);
 void				handler_quit_(int);
 void				handler_kill_d(int);
 void				handler_int_c(int);
+
+int					close_fd(int fd);
+void				processing_fd(t_var *var, t_commands *cmd);
+
+int					ft_pipe(t_param *all);
+int					conveyor(t_param *all);
 
 int					g_exit_code;
 

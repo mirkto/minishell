@@ -14,7 +14,8 @@ NAME = minishell
 FLAGS = -g -Wall -Werror -Wextra
 #-fsanitize=address
 SRCS = main.c builtins.c ft_execve.c utils.c parser.c lexer.c blt_export.c\
-		blt_export_utils.c blt_env.c blt_cd_and_pwd.c signal.c
+		blt_export_utils.c blt_env.c blt_cd_and_pwd.c signal.c ft_redirect.c\
+		ft_pipe.c
 OBJS = $(SRCS:%.c=%.o)
 LIBFT = ./libft/libft.a
 HDR = ./minishell.h
