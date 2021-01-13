@@ -120,16 +120,9 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 		else if (tok[*i] == '$' && tok[*i + 1] == '?' && c == '\"')
 		{
 			if (z != *i)
-			{
 				tmp3 = str_joiner(tmp3, tok, i, &z);
-				z = ft_strlen(tmp3);
-			}
-			else
-				z = (*i);
-
-			*i = (*i) + 2;
-
-			tmp4 = ft_substr(tmp3, 0, z);
+			(*i) += 2;
+			tmp4 = ft_substr(tmp3, 0, ft_strlen(tmp3));
 			all->tmp = ft_itoa(g_exit_code);
 			free(tmp3);
 			tmp3 = ft_strjoin(tmp4, all->tmp);
