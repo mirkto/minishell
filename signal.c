@@ -15,7 +15,8 @@
 void	handler_int_c(int i)
 {
 	i = 0;
-	write(1, "\b\b  \b\b\n", 7);
+	write(1, "\b\b  \b\b", 6);
+	write(1, "\n", 1);
 	write(1, "\033[0;32mminishell-0.4$ \033[0m", 26);
 }
 

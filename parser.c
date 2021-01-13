@@ -215,9 +215,13 @@ char		*token_handler(t_param *all, char *tok)
 		}
 		else
 		{
+			if (z != i)
+			{
+				str = str_joiner(str, tok, &i, &z);
+				z = i;
+			}
 			if (tok[i] == '\'' || tok[i] == '\"' )
 			{
-
 				str = str_joiner(str, tok, &i, &z);
 				z = i;
 				tmp = quote_remover(&i, tok, all);
@@ -227,18 +231,26 @@ char		*token_handler(t_param *all, char *tok)
 				str = tmp2;
 				z = i;
 			}
-			// if (tok[i] == '$' && tok[i + 1] == '?')
-			// {
-			// 	free(str);
-			// 	str = ft_itoa(g_exit_code);
-			// 	return(str);
-			// }
-			// else if (tok[i] == '$')
-			// {
-			// 	free(str);
-			// 	str = get_value_env(all, &tok[i + 1]);
-			// 	return(str);
-			// }
+			if (tok[i] == '$' && tok[i + 1] == '?')
+			{
+				tmp = str;
+				str = ft_itoa(g_exit_code);
+				tmp2 = ft_strjoin(tmp, str);
+				free(str);
+				free(tmp);
+				str = tmp2;
+				return(str);
+			}
+			else if (tok[i] == '$')
+			{
+				tmp = str;
+				str = get_value_env(all, &tok[i + 1]);
+				tmp2 = ft_strjoin(tmp, str);
+				free(str);
+				free(tmp);
+				str = tmp2;
+				return(str);
+			}
 			else
 				i++;
 		}

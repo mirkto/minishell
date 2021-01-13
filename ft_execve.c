@@ -32,6 +32,8 @@ int		exec_fork(t_param *all)
 	if (wr != -1)
 	{
 		all->tmp_exit_code = WEXITSTATUS(status);
+		write(1, "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", 15);
+		// write(1, "^C            \n", 15);
 		return (1);
 	}
 	return (0);
