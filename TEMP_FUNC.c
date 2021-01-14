@@ -213,3 +213,42 @@ void	sig_init(void)
 	g_sig.pid = 0;
 	g_sig.exit_status = 0;
 }
+
+// --------------------tmp_redirect-------------------
+
+/*
+typedef struct		s_var
+{
+	t_list			list;	// char			*cmd_str; использует листы вместо двумерного массива
+	int				fd_1;	// input
+	int				fd_0;	// output
+	int				r;		// type of redirect: (1 это >) (2 это >>) (3 это <)
+	int				exception; // пометка для пропуска этого листа по логике дальше
+}					t_var;
+*/
+void	processing_fd(t_var *var, t_param *all)
+{
+									// int i = -1;
+	if (var->list->next != NULL)	// while (all->cmd[++i] != NULL || != ";" || != "|")
+	{
+		var->list = var->list->next;	//
+
+		if (all->fd_1 != -1 && (var->r == 1 || var->r == 2)) // ((all->cmd[i][0] == '>') || (all->cmd[i][0] == '>' && ll->cmd[i][1] == '>'))
+			all->fd_1 = close_fd(all->fd_1);
+		else if (all->fd_0 != -1 && var->r == 3) // (all->cmd[i][0] == '<')
+			all->fd_1 = close_fd(all->fd_1);
+
+		if (var->r == 1)		// > // if (all->cmd[i][0] == '>')
+			all->fd_1 = open(var->list->content, O_RDWR | O_CREAT | \ // all->cmd[++i]
+			O_TRUNC, S_IWRITE | S_IREAD);
+		else if (var->r == 2)	// >> // if (all->cmd[i][0] == '>' && ll->cmd[i][1] == '>')
+			all->fd_1 = open(var->list->content, O_RDWR | O_CREAT | \ // all->cmd[++i]
+			O_APPEND, S_IWRITE | S_IREAD);
+
+		else if (var->r == 3)	// < // if (all->cmd[i][0] == '<')
+			all->fd_0 = open(var->list->content, O_RDONLY); // all->cmd[++i]
+
+		// var->exception = 1;
+		// permission_denied(all);
+	}
+}

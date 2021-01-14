@@ -23,6 +23,8 @@ int		init_env_and_pathes(t_param *all, char **env)
 	all->tmp = NULL;
 	signal(SIGINT, handler_int_c);
 	signal(SIGQUIT, handler_quit_);
+	all->fd_0 = -1;
+	all->fd_1 = -1;
 	return (0);
 }
 
@@ -100,7 +102,7 @@ int		executor(t_param *all)
 		blt_cd(all);
 	else
 		ft_execve(all);
-	// put_cmd(all);
+	put_cmd(all);
 	return (0);
 }
 
@@ -125,6 +127,7 @@ int		main(int argc, char **argv, char **env)
 		}
 		all.flag = parser(&all, &buf);
 		free(buf);
+		// fd_processor(&all);
 		if (all.flag != -1)
 		{
 			executor(&all);

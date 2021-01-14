@@ -59,6 +59,8 @@ typedef struct		s_parameters
 	t_list			*vasya;
 	t_list			*tmp_vasya;
 	char			*tok;
+	int				fd_1;
+	int				fd_0;
 }					t_param;
 
 typedef struct		s_line
@@ -67,21 +69,6 @@ typedef struct		s_line
 	int				fd_input;
 	int				fd_output;
 }					t_line;
-
-typedef struct		s_var
-{
-	t_list			*list;
-	int				fd_1;
-	int				fd_0;
-	int				r;
-	int				exception;
-}					t_var;
-
-typedef struct		s_commands
-{
-	int				fd_1;
-	int				fd_0;
-}					t_commands;
 
 void				free_array(char ***lst);
 int					put_error(char *str_err, char *arg);
@@ -117,8 +104,8 @@ void				handler_quit_(int);
 void				handler_kill_d(int);
 void				handler_int_c(int);
 
-int					close_fd(int fd);
-void				processing_fd(t_var *var, t_commands *cmd);
+int					fd_close(int fd);
+void				fd_processor(t_param *all);
 
 int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
