@@ -33,6 +33,8 @@
 ** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
 */
 
+// alias mm="make && ./minishell"
+
 # include <unistd.h> // for NULL
 # include <dirent.h> // for DIR
 # include <errno.h>  // for errno

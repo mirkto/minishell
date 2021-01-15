@@ -21,10 +21,10 @@ int		init_env_and_pathes(t_param *all, char **env)
 	g_exit_code = 0;
 	all->tmp_exit_code = 0;
 	all->tmp = NULL;
-	signal(SIGINT, handler_int_c);
-	signal(SIGQUIT, handler_quit_);
 	all->fd_0 = -1;
 	all->fd_1 = -1;
+	all->save_fd_0 = -1;
+	all->save_fd_1 = -1;
 	return (0);
 }
 
@@ -43,6 +43,9 @@ char	*inits_buf(t_param *all)
 	g_exit_code = all->tmp_exit_code;
 	all->tmp_exit_code = 0;
 	tmp = NULL;
+	signal(SIGINT, handler_int_c);
+	signal(SIGQUIT, handler_quit_);
+	all->redirect = 0;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
 		put_error("dont work malloc buf", "Error");
@@ -84,6 +87,13 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 
 int		executor(t_param *all)
 {
+	if (all->redirect == 1)
+	{
+		all->save_fd_1 = dup(1);
+		all->save_fd_0 = dup(0);
+		fd_check_and_dup(all);
+	}
+
 	if (!ft_strcmp(all->cmd[0], "q") || !ft_strcmp(all->cmd[0], "exit"))
 		blt_exit(all);
 	else if (!ft_strcmp(all->cmd[0], "pwd") ||
@@ -102,7 +112,16 @@ int		executor(t_param *all)
 		blt_cd(all);
 	else
 		ft_execve(all);
-	put_cmd(all);
+
+	if (all->redirect == 1)
+	{
+		dup2(all->save_fd_1, 1);
+		dup2(all->save_fd_0, 0);
+		fd_check_and_close(all);
+		
+	}
+
+	// put_cmd(all);
 	return (0);
 }
 
@@ -127,7 +146,7 @@ int		main(int argc, char **argv, char **env)
 		}
 		all.flag = parser(&all, &buf);
 		free(buf);
-		// fd_processor(&all);
+		fd_processor(&all);
 		if (all.flag != -1)
 		{
 			executor(&all);

@@ -59,8 +59,11 @@ typedef struct		s_parameters
 	t_list			*vasya;
 	t_list			*tmp_vasya;
 	char			*tok;
+	int				redirect;
 	int				fd_1;
 	int				fd_0;
+	int				save_fd_1;
+	int				save_fd_0;
 }					t_param;
 
 typedef struct		s_line
@@ -101,9 +104,11 @@ int					parser(t_param *all, char **buf);
 int					lexer(char *tmp);
 
 void				handler_quit_(int);
-void				handler_kill_d(int);
 void				handler_int_c(int);
+void				handler_int_c_2(int i);
 
+int					fd_check_and_dup(t_param *all);
+int					fd_check_and_close(t_param *all);
 int					fd_close(int fd);
 void				fd_processor(t_param *all);
 

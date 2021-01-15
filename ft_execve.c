@@ -22,18 +22,19 @@ int		exec_fork(t_param *all)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
+		fd_check_and_dup(all);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);
 			exit(127);
 		}
 	}
+	signal(SIGINT, handler_int_c_2);
 	wr = wait(&status);
+	fd_check_and_close(all);
 	if (wr != -1)
 	{
 		all->tmp_exit_code = WEXITSTATUS(status);
-		write(1, "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", 15);
-		// write(1, "^C            \n", 15);
 		return (1);
 	}
 	return (0);

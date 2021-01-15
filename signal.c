@@ -20,6 +20,12 @@ void	handler_int_c(int i)
 	write(1, "\033[0;32mminishell-0.4$ \033[0m", 26);
 }
 
+void	handler_int_c_2(int i)
+{
+	i = 0;
+	write(1, "\n", 1);
+}
+
 void	handler_quit_(int i)
 {
 	i = 0;
