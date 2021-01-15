@@ -109,7 +109,6 @@ void				handler_int_c_2(int i);
 
 int					fd_check_and_dup(t_param *all);
 int					fd_check_and_close(t_param *all);
-int					fd_close(int fd);
 void				fd_processor(t_param *all);
 
 int					ft_pipe(t_param *all);

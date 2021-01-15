@@ -87,13 +87,7 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 
 int		executor(t_param *all)
 {
-	if (all->redirect == 1)
-	{
-		all->save_fd_1 = dup(1);
-		all->save_fd_0 = dup(0);
-		fd_check_and_dup(all);
-	}
-
+	fd_check_and_dup(all);
 	if (!ft_strcmp(all->cmd[0], "q") || !ft_strcmp(all->cmd[0], "exit"))
 		blt_exit(all);
 	else if (!ft_strcmp(all->cmd[0], "pwd") ||
@@ -112,16 +106,8 @@ int		executor(t_param *all)
 		blt_cd(all);
 	else
 		ft_execve(all);
-
-	if (all->redirect == 1)
-	{
-		dup2(all->save_fd_1, 1);
-		dup2(all->save_fd_0, 0);
-		fd_check_and_close(all);
-		
-	}
-
-	// put_cmd(all);
+	fd_check_and_close(all);
+	free_array(&all->cmd);
 	return (0);
 }
 
@@ -148,10 +134,7 @@ int		main(int argc, char **argv, char **env)
 		free(buf);
 		fd_processor(&all);
 		if (all.flag != -1)
-		{
 			executor(&all);
-			free_array(&all.cmd);
-		}
 	}
 	return (0);
 }

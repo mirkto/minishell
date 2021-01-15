@@ -31,6 +31,11 @@
 **
 ** close(1);
 ** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
+**
+** put_cmd(all);
+**
+** write(1, " | ", 3);
+** ft_putstr(strerror(errno));
 */
 
 // alias mm="make && ./minishell"
