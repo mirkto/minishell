@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/11 19:31:53 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/15 22:00:09 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,11 @@ int		main(int argc, char **argv, char **env)
 		}
 		all.flag = parser(&all, &buf);
 		free(buf);
-		fd_processor(&all);
 		if (all.flag != -1)
+		{
+			fd_processor(&all);
 			executor(&all);
+		}
 	}
 	return (0);
 }
