@@ -12,6 +12,53 @@
 
 #include "minishell.h"
 
+int		check_pipes_and_end(t_param *all)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		if (all->cmd_flag == 1)
+		{
+			all->cmd_flag = 0;
+			all->cmd = copy_env(all->cmd_tmp, 0);
+			free_array(&all->cmd_tmp);
+			// put_cmd(all);
+		}
+		if (all->cmd[i] == NULL)
+		{
+			// ft_putendl("not find '|' or ';'");
+			break ;
+		}
+		else if (!ft_strcmp(all->cmd[i], "|"))
+		{
+			ft_putendl("find '|'");
+			return (1);
+		}
+		else if (!ft_strcmp(all->cmd[i], ";"))
+		{
+			// ft_putendl("not find ';'");
+			i++;
+			all->cmd_tmp = copy_env(&all->cmd[i], 0);
+			i--;
+			all->i = 0;
+			while (all->cmd[i + all->i])
+			{
+				free(all->cmd[i + all->i]);
+				all->i++;
+			}
+			all->cmd[i] = NULL;
+			// put_cmd(all);
+			all->cmd_flag = 1;
+			return (2);
+		}
+		i++;
+	}
+	executor(all);
+	return (0);
+}
+
 int		ft_pipe(t_param *all)
 {
 	all->i = 0;

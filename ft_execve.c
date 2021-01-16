@@ -17,6 +17,7 @@ int		exec_fork(t_param *all)
 	int		status;
 	int		wr;
 
+	signal(SIGINT, handler_int_c_2);
 	status = fork();
 	if (status == 0)
 	{
@@ -29,7 +30,6 @@ int		exec_fork(t_param *all)
 			exit(127);
 		}
 	}
-	signal(SIGINT, handler_int_c_2);
 	wr = wait(&status);
 	fd_check_and_close(all);
 	if (wr != -1)

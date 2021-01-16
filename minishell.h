@@ -31,6 +31,8 @@
 # define FALSE 0
 # define TRUE 1
 # define CONTINUE 2
+# define OFLAG_TRUNC O_RDWR | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD
+# define OFLAG_APPEND O_RDWR | O_CREAT | O_APPEND, S_IWRITE | S_IREAD
 
 /*
 ** <strings.h>	- strerror
@@ -64,6 +66,8 @@ typedef struct		s_parameters
 	int				fd_0;
 	int				save_fd_1;
 	int				save_fd_0;
+	char			**cmd_tmp;
+	int				cmd_flag;
 }					t_param;
 
 typedef struct		s_line
@@ -89,7 +93,7 @@ void				check_dollar(t_param *all);
 int					blt_export_print(t_param *all);
 int					blt_export_write(t_param *all, int i, int arg_n);
 int					blt_export(t_param *all);
-void				put_cmd(t_param *all);
+void		put_cmd(t_param *all);
 
 char				**inc_env(char ***env, char *str);
 char				**copy_env(char **env, int len);
@@ -113,6 +117,9 @@ void				fd_processor(t_param *all);
 
 int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
+
+int					check_pipes_and_end(t_param *all);
+int		executor(t_param *all);
 
 int					g_exit_code;
 
