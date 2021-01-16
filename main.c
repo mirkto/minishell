@@ -19,10 +19,10 @@ int		init_env_and_pathes(t_param *all, char **env)
 		all->env = inc_env(&all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
 	all->tmp_exit_code = 0;
-	all->fd_0 = -1;
-	all->fd_1 = -1;
-	all->save_fd_0 = -1;
-	all->save_fd_1 = -1;
+	all->fd_0 = -2;
+	all->fd_1 = -2;
+	all->save_fd_0 = -2;
+	all->save_fd_1 = -2;
 	all->cmd_flag = 0;
 	return (0);
 }
@@ -108,6 +108,7 @@ int		executor(t_param *all)
 	else
 		ft_execve(all);
 	fd_check_and_close(all);
+	put_cmd(all);
 	free_array(&all->cmd);
 	return (0);
 }

@@ -119,6 +119,7 @@ int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
 
 int					check_pipes_and_end(t_param *all);
+int					pipe_conveyor(t_param *all);
 int		executor(t_param *all);
 
 int					g_exit_code;

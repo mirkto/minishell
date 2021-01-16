@@ -24,6 +24,8 @@ int		exec_fork(t_param *all)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		fd_check_and_dup(all);
+		ft_putendl(all->tmp);
+		put_cmd(all);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);

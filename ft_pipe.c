@@ -34,12 +34,7 @@ int		check_pipes_and_end(t_param *all)
 		else if (!ft_strcmp(all->cmd[i], "|"))
 		{
 			ft_putendl("find '|'");
-			return (1);
-		}
-		else if (!ft_strcmp(all->cmd[i], ";"))
-		{
-			// ft_putendl("not find ';'");
-			if (all->cmd[i + 1] == '\0')
+			if (all->cmd[i + 1] == NULL)
 			{
 				free(all->cmd[i]);
 				all->cmd[i] = NULL;
@@ -47,15 +42,31 @@ int		check_pipes_and_end(t_param *all)
 			}
 			else 
 			{
-				i++;
-				all->cmd_tmp = copy_env(&all->cmd[i], 0);
-				i--;
+				all->cmd_tmp = copy_env(&all->cmd[i + 1], 0);
 				all->i = 0;
 				while (all->cmd[i + all->i])
-				{
-					free(all->cmd[i + all->i]);
-					all->i++;
-				}
+					free(all->cmd[i + all->i++]);
+				all->cmd[i] = NULL;
+			}
+			pipe_conveyor(all);
+			all->cmd_flag = 1;
+			return (1);
+		}
+		else if (!ft_strcmp(all->cmd[i], ";"))
+		{
+			// ft_putendl("not find ';'");
+			if (all->cmd[i + 1] == NULL)
+			{
+				free(all->cmd[i]);
+				all->cmd[i] = NULL;
+				break ;
+			}
+			else 
+			{
+				all->cmd_tmp = copy_env(&all->cmd[i + 1], 0);
+				all->i = 0;
+				while (all->cmd[i + all->i])
+					free(all->cmd[i + all->i++]);
 				all->cmd[i] = NULL;
 			}
 			// put_cmd(all);
@@ -68,70 +79,38 @@ int		check_pipes_and_end(t_param *all)
 	return (0);
 }
 
-int		ft_pipe(t_param *all)
+int		pipe_conveyor(t_param *all)
 {
-	all->i = 0;
-	int	rc;
-
 	int		fd[2];
-	int		p1;
-	int		p2;
 
+	fd[0] = all->fd_0;
+	fd[1] = all->fd_1;
 	pipe(fd);
-	p1 = fork();
-	if (p1 == 0) // child #1
+	if (fork() == 0)
 	{
 		close(fd[0]);
-		// ...
-		write(fd[1], "...", 3);
-		// ...
-		exit (0);
+		dup2(fd[1], 1);
+		close(fd[1]);
+		// all->tmp = ;
+		// all->cmd = ;
+		executor(all);
+		// execlp("ls", "ls", "-lR", NULL);
+		// execve(all->tmp, all->cmd, all->env);
 	}
-	p2 = fork();
-	if (p2 == 0) // child #2
+	if (fork() == 0)
 	{
-		close (fd[1]);
-		// ...
-		rc = read(fd[0], "...", 3);
-		// ...
-		exit(0);
+		close(fd[1]);
+		dup2(fd[0], 0);
+		close(fd[0]);
+		// all->tmp = ;
+		// all->cmd = ;
+		executor(all);
+		// execlp("grep", "grep", "^d", NULL);
+		// execve(all->tmp, all->cmd, all->env);
 	}
-	// parent
 	close(fd[0]);
 	close(fd[1]);
-	// ...
-	return (0);
-}
-
-int		conveyor(t_param *all)
-{
-	all->i = 0;
-
-	int		fd[2];		// переменная для хранения ввода и вывода в канале связи
-						// (fd[0] - output, fd[1] - input)
-
-	pipe(fd);			// создаем канал связи (create pipe)
-	if (fork() == 0)	// процесс для выполнения первой команды
-	{
-		close(fd[0]);	// читать из канала не нужно (output close) 
-		dup2(fd[1], 1);	// подаем стандартный вывод - в канал связи (input -> pipe)
-		close(fd[1]);	// закрываем после передачи в канал (input close)
-		execlp("ls", "ls", "-lR", NULL);	// запускаем первую команду (execve1 run)
-		perror("ls");	// если команда не закрылась сама, значит произошла ошибка
-		exit(1);		// мы сообщаем об этом и закрываем вручную
-	}
-	if (fork() == 0)	// процесс для выполнения второй команды
-	{
-		close(fd[1]);	// писать в канал не нужно (input close)
-		dup2(fd[0], 0);	// принимаем стандартный ввод - из канала связи (output <- pipe)
-		close(fd[0]);	// закрываем после принятия из канала (output close)
-		execlp("grep", "grep", "^d", NULL);	// запускаем вторую команду (execve2 run)
-		perror("grep");	// если команда не закрылась сама, значит произошла ошибка
-		exit(1);		// мы сообщаем об этом и закрываем вручную
-	}
-	close(fd[0]);	// в родительском процессе закрываем оба канала (output close)
-	close(fd[1]);	// (input close)
-	wait(NULL);		// и дожидаемся завершения двух дочерних процессов (wait execve1)
-	wait(NULL);		// (wait execve2)
+	wait(NULL);
+	wait(NULL);
 	return (0);
 }

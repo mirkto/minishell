@@ -15,7 +15,7 @@
 int		fd_close(int fd)
 {
 	close(fd);
-	fd = -1;
+	fd = -2;
 	return (fd);
 }
 
@@ -26,9 +26,9 @@ int		fd_check_and_dup(t_param *all)
 		all->save_fd_1 = dup(1);
 		all->save_fd_0 = dup(0);
 	}
-	if (all->fd_1 != -1)
+	if (all->fd_1 != -2)
 		dup2(all->fd_1, 1);
-	if (all->fd_0 != -1)
+	if (all->fd_0 != -2)
 		dup2(all->fd_0, 0);
 	return (0);
 }
@@ -40,13 +40,13 @@ int		fd_check_and_close(t_param *all)
 		dup2(all->save_fd_1, 1);
 		dup2(all->save_fd_0, 0);
 	}
-	if (all->fd_1 != -1)
+	if (all->fd_1 != -2)
 		all->fd_1 = fd_close(all->fd_1);
-	if (all->fd_0 != -1)
+	if (all->fd_0 != -2)
 		all->fd_0 = fd_close(all->fd_0);
-	if (all->save_fd_1 != -1)
+	if (all->save_fd_1 != -2)
 		all->save_fd_1 = fd_close(all->save_fd_1);
-	if (all->save_fd_0 != -1)
+	if (all->save_fd_0 != -2)
 		all->save_fd_0 = fd_close(all->save_fd_0);
 	return (0);
 }
@@ -77,10 +77,10 @@ void	fd_processor(t_param *all)
 	i = 0;
 	while (all->cmd[i] != NULL)
 	{
-		if (all->fd_1 != -1 &&
+		if (all->fd_1 != -2 &&
 			(!ft_strcmp(all->cmd[i], ">") || !ft_strcmp(all->cmd[i], ">>")))
 			all->fd_1 = fd_close(all->fd_1);
-		else if (all->fd_0 != -1 && !ft_strcmp(all->cmd[i], "<"))
+		else if (all->fd_0 != -2 && !ft_strcmp(all->cmd[i], "<"))
 			all->fd_1 = fd_close(all->fd_1);
 		if (!ft_strcmp(all->cmd[i], ">") || !ft_strcmp(all->cmd[i], ">>") ||
 			!ft_strcmp(all->cmd[i], "<"))
@@ -91,7 +91,10 @@ void	fd_processor(t_param *all)
 				all->fd_1 = open(all->cmd[i + 1], OFLAG_APPEND);
 			if (!ft_strcmp(all->cmd[i], "<"))
 				all->fd_0 = open(all->cmd[i + 1], O_RDONLY);
-			all->redirect = cmd_remove_and_shift(all, i, 2);
+			if (all->fd_1 == -1 || all->fd_0 == -1)
+				all->redirect = cmd_remove_and_shift(all, i, 1);
+			else
+				all->redirect = cmd_remove_and_shift(all, i, 2);
 		}
 		else
 			i++;
