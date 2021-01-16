@@ -39,16 +39,25 @@ int		check_pipes_and_end(t_param *all)
 		else if (!ft_strcmp(all->cmd[i], ";"))
 		{
 			// ft_putendl("not find ';'");
-			i++;
-			all->cmd_tmp = copy_env(&all->cmd[i], 0);
-			i--;
-			all->i = 0;
-			while (all->cmd[i + all->i])
+			if (all->cmd[i + 1] == '\0')
 			{
-				free(all->cmd[i + all->i]);
-				all->i++;
+				free(all->cmd[i]);
+				all->cmd[i] = NULL;
+				break ;
 			}
-			all->cmd[i] = NULL;
+			else 
+			{
+				i++;
+				all->cmd_tmp = copy_env(&all->cmd[i], 0);
+				i--;
+				all->i = 0;
+				while (all->cmd[i + all->i])
+				{
+					free(all->cmd[i + all->i]);
+					all->i++;
+				}
+				all->cmd[i] = NULL;
+			}
 			// put_cmd(all);
 			all->cmd_flag = 1;
 			return (2);
