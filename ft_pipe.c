@@ -12,6 +12,26 @@
 
 #include "minishell.h"
 
+int		cut_and_save(t_param *all, int i)
+{
+	if (all->cmd[i + 1] == NULL)
+	{
+		free(all->cmd[i]);
+		all->cmd[i] = NULL;
+		return (1);
+	}
+	else 
+	{
+		all->cmd_tmp = copy_env(&all->cmd[i + 1], 0);
+		all->i = 0;
+		while (all->cmd[i + all->i])
+			free(all->cmd[i + all->i++]);
+		all->cmd[i] = NULL;
+	}
+	all->cmd_flag = 1;
+	return (0);
+}
+
 int		check_pipes_and_end(t_param *all)
 {
 	int	i;
@@ -24,7 +44,7 @@ int		check_pipes_and_end(t_param *all)
 			all->cmd_flag = 0;
 			all->cmd = copy_env(all->cmd_tmp, 0);
 			free_array(&all->cmd_tmp);
-			// put_cmd(all);
+			put_cmd(all);
 		}
 		if (all->cmd[i] == NULL)
 		{
@@ -33,44 +53,18 @@ int		check_pipes_and_end(t_param *all)
 		}
 		else if (!ft_strcmp(all->cmd[i], "|"))
 		{
-			ft_putendl("find '|'");
-			if (all->cmd[i + 1] == NULL)
-			{
-				free(all->cmd[i]);
-				all->cmd[i] = NULL;
+			// ft_putendl("find '|'");
+			if (cut_and_save(all, i) == 1)
 				break ;
-			}
-			else 
-			{
-				all->cmd_tmp = copy_env(&all->cmd[i + 1], 0);
-				all->i = 0;
-				while (all->cmd[i + all->i])
-					free(all->cmd[i + all->i++]);
-				all->cmd[i] = NULL;
-			}
 			pipe_conveyor(all);
-			all->cmd_flag = 1;
 			return (1);
 		}
 		else if (!ft_strcmp(all->cmd[i], ";"))
 		{
 			// ft_putendl("not find ';'");
-			if (all->cmd[i + 1] == NULL)
-			{
-				free(all->cmd[i]);
-				all->cmd[i] = NULL;
+			if (cut_and_save(all, i) == 1)
 				break ;
-			}
-			else 
-			{
-				all->cmd_tmp = copy_env(&all->cmd[i + 1], 0);
-				all->i = 0;
-				while (all->cmd[i + all->i])
-					free(all->cmd[i + all->i++]);
-				all->cmd[i] = NULL;
-			}
 			// put_cmd(all);
-			all->cmd_flag = 1;
 			return (2);
 		}
 		i++;

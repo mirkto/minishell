@@ -87,9 +87,9 @@ void	fd_processor(t_param *all)
 		{
 			if (!ft_strcmp(all->cmd[i], ">"))
 				all->fd_1 = open(all->cmd[i + 1], OFLAG_TRUNC);
-			if (!ft_strcmp(all->cmd[i], ">>"))
+			else if (!ft_strcmp(all->cmd[i], ">>"))
 				all->fd_1 = open(all->cmd[i + 1], OFLAG_APPEND);
-			if (!ft_strcmp(all->cmd[i], "<"))
+			else if (!ft_strcmp(all->cmd[i], "<"))
 				all->fd_0 = open(all->cmd[i + 1], O_RDONLY);
 			if (all->fd_1 == -1 || all->fd_0 == -1)
 				all->redirect = cmd_remove_and_shift(all, i, 1);

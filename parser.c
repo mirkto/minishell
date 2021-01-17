@@ -273,11 +273,11 @@ int			parser(t_param *all, char **buf)
 		free(tmp);
 		return (-1);
 	}
-	if (lexer(tmp) == -1)
-	{
-		free(tmp);
-		return (-1);
-	}
+	// if (lexer(tmp) == -1)
+	// {
+	// 	free(tmp);
+	// 	return (-1);
+	// }
 	str = list_maker(all, tmp);
 	i = 0;
 	while (str[i])

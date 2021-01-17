@@ -108,7 +108,7 @@ int		executor(t_param *all)
 	else
 		ft_execve(all);
 	fd_check_and_close(all);
-	put_cmd(all);
+	// put_cmd(all);
 	free_array(&all->cmd);
 	return (0);
 }
