@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execve.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 21:31:32 by ngonzo            #+#    #+#             */
-/*   Updated: 2020/12/21 21:31:35 by ngonzo           ###   ########.fr       */
+/*   Updated: 2021/01/17 18:12:00 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int		exec_fork(t_param *all)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		fd_check_and_dup(all);
-		ft_putendl(all->tmp);
-		put_cmd(all);
+		// ft_putendl(all->tmp);
+		// put_cmd(all);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);
