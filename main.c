@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 18:24:36 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/17 18:20:14 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/15 22:00:09 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ int		executor(t_param *all)
 	else
 		ft_execve(all);
 	fd_check_and_close(all);
-	// put_cmd(all);
 	free_array(&all->cmd);
 	return (0);
 }
@@ -134,9 +133,10 @@ int		main(int argc, char **argv, char **env)
 		}
 		all.flag = parser(&all, &buf);
 		free(buf);
+		// put_cmd(&all); // print cmd
 		if (all.flag != -1)
-			while (check_pipes_and_end(&all))
-				executor(&all);
+			while (check_semicolon_and_pipe(&all) != 0)
+				ft_putendl("__--in--__");
 	}
 	return (0);
 }

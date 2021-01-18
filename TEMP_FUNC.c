@@ -371,3 +371,79 @@ int		ft_pipe(t_param *all)
 	// ...
 	return (0);
 }
+
+int		pipe_conveyor(t_param *all)
+{
+	int		fd[2];
+
+	// all->save_fd_1 = dup(1);
+	// all->save_fd_0 = dup(0);	
+
+	fd[0] = all->fd_0;
+	fd[1] = all->fd_1;
+	
+	// ------print--------
+	// ft_putendl("-tmp-");
+	// ft_putendl(all->tmp);
+	// ft_putendl("-cmd-");
+	// int i = -1;
+	// while (all->cmd[++i] != NULL)
+	// 	ft_putendl(all->cmd[i]);
+	// ft_putendl("---");
+
+	pipe(fd);
+	if (fork() == 0)
+	{
+		ft_putendl("-1-");
+		int i = -1;
+		while (all->cmd[++i] != NULL)
+			ft_putendl(all->cmd[i]);
+
+		close(fd[0]);
+		dup2(fd[1], 1);
+		close(fd[1]);
+		// all->tmp = ;
+		// all->cmd = ;
+		// executor(all);
+		// execlp("ls", "ls", "-lR", NULL);
+		// execve(all->tmp, all->cmd, all->env);
+		exit (1);
+	}
+	if (fork() == 0)
+	{
+		ft_putendl("-2-");
+		int i = -1;
+		while (all->cmd[++i] != NULL)
+			ft_putendl(all->cmd[i]);
+
+		close(fd[1]);
+		dup2(fd[0], 0);
+		close(fd[0]);
+		// all->tmp = ;
+		// all->cmd = ;
+		// executor(all);
+		// execlp("grep", "grep", "^d", NULL);
+		// execve(all->tmp, all->cmd, all->env);
+		exit (1);
+	}
+	close(fd[0]);
+	close(fd[1]);
+	wait(NULL);
+	wait(NULL);
+
+	// dup2(all->save_fd_1, 1);
+	// dup2(all->save_fd_0, 0);
+	// if (all->save_fd_1 != -2)
+	// 	all->save_fd_1 = fd_close(all->save_fd_1);
+	// if (all->save_fd_0 != -2)
+	// 	all->save_fd_0 = fd_close(all->save_fd_0);
+
+	return (0);
+}
+
+
+		all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
+		all->i = 0;
+		while (all->cmd[*i + all->i])
+			free(all->cmd[*i + all->i++]);
+		all->cmd[*i] = NULL;

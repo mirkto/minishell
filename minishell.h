@@ -114,6 +114,7 @@ void				handler_quit_(int);
 void				handler_int_c(int);
 void				handler_int_c_2(int i);
 
+int					fd_close(int fd);
 int					fd_check_and_dup(t_param *all);
 int					fd_check_and_close(t_param *all);
 void				fd_processor(t_param *all);
@@ -121,7 +122,8 @@ void				fd_processor(t_param *all);
 int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
 
-int					check_pipes_and_end(t_param *all);
+int					check_semicolon_and_pipe(t_param *all);
+int			pipe_fd_open(t_param *all);
 int					pipe_conveyor(t_param *all);
 int		executor(t_param *all);
 
