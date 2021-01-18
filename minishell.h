@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/17 19:31:07 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/18 20:49:47 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct		s_parameters
 	int				save_fd_0;
 	char			**cmd_tmp;
 	int				cmd_flag;
+	char			*tmp3;
 }					t_param;
 
 typedef struct		s_line

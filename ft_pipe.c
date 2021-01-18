@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ngonzo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/13 20:45:26 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/13 20:45:29 by ngonzo           ###   ########.fr       */
+/*   Updated: 2021/01/18 20:20:55 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		cut_and_save_or_check_end(t_param *all, int *i)
 		all->cmd[*i] = NULL;
 		return (1);
 	}
-	else 
+	else
 	{
 		all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
 		all->i = 0;
@@ -88,7 +88,7 @@ int		check_semicolon_and_pipe(t_param *all)
 		else if (!ft_strcmp(all->cmd[i], ";"))
 		{
 			if (cut_and_save_or_check_end(all, &i) == 0)
-				executor(all);;
+				executor(all);
 			continue ;
 		}
 		i++;
@@ -138,7 +138,7 @@ char	**check_tmp_on_end(t_param *all)
 {
 	int		i;
 	char	**tmp;
-	
+
 	i = 0;
 	tmp = NULL;
 	while (1)
@@ -171,7 +171,7 @@ int		pipe_fd_open(t_param *all)
 	int		fd[2];
 	int		fd_tmp[2];
 	char	**tmp;
-	
+
 	tmp = NULL;
 	fd[0] = -2;
 	fd[1] = -2;
@@ -226,14 +226,14 @@ int		pipe_fd_open(t_param *all)
 	// 	}
 	// 	i++;
 	// }
-	
+
 	// if (all->cmd[*i + 1] == NULL)
 	// {
 	// 	free(all->cmd[*i]);
 	// 	all->cmd[*i] = NULL;
 	// 	return (1);
 	// }
-	// else 
+	// else
 	// {
 	// 	all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
 	// 	all->i = 0;
