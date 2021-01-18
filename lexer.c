@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/27 19:32:49 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/09 20:19:45 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/17 18:17:50 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,15 @@ int			lexer(char *tmp)
 	i = 0;
 	while (tmp[i])
 	{
-		if (tmp[i] == '|' || tmp[i++] == ';')
+		if (tmp[i] == '|' || tmp[i] == ';')
 		{
+			i++;
 			while (tmp[i] == ' ' || tmp[i] == '\t')
 				i++;
-			if (tmp[i] == '|' || tmp[i++] == ';')
-				return (put_error("syntax error near unexpected token", 0));
+			if (tmp[i] == '|' || tmp[i] == ';')
+				return (put_error("syntax error near unexpected", 0));
 		}
+		i++;
 	}
 	return (lexer2(tmp));
 }

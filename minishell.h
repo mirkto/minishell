@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/08 19:09:01 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/17 19:31:07 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,9 @@ int					ft_execve(t_param *all);
 
 int					parser(t_param *all, char **buf);
 int					lexer(char *tmp);
+char				**list_maker(t_param *all, char *tmp);
+char				*str_joiner(char *tmp3, char *tok, int *i, int *z);
+char				*quote_remover(int *i, char *tok, t_param *all);
 
 void				handler_quit_(int);
 void				handler_int_c(int);

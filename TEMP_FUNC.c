@@ -371,3 +371,9 @@ int		ft_pipe(t_param *all)
 	// ...
 	return (0);
 }
+
+	// all->pipe_flag == 1;
+					// if (all->pipe_flag == 1)
+				// 	executor(&all);
+		// int				pipe_flag;
+		int					fd_close(int fd);
