@@ -24,8 +24,6 @@ int		exec_fork(t_param *all)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		fd_check_and_dup(all);
-		// ft_putendl(all->tmp);
-		// put_cmd(all);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
 			put_error("No such file or directory", all->cmd[0]);
@@ -42,32 +40,18 @@ int		exec_fork(t_param *all)
 	return (0);
 }
 
-int		exec_check_dir(char *tmp, char *cmd)
+int		check_command_name(char *tmp, char *cmd)
 {
-	DIR				*dir;
-	struct dirent	*read;
+	char			*file_name;
+	struct stat		buf;
+	int				check;
 
-	dir = opendir(tmp);
-	while (dir)
-	{
-		errno = 0;
-		if ((read = readdir(dir)) != NULL)
-		{
-			if (ft_strcmp(read->d_name, cmd) == 0)
-				return (closedir(dir));
-		}
-		else
-		{
-			if (errno == 0)
-			{
-				closedir(dir);
-				return (1);
-			}
-			closedir(dir);
-			return (-1);
-		}
-	}
-	return (-2);
+	file_name = ft_strjoin(tmp, cmd);
+	check = stat(file_name, &buf);
+	free(file_name);
+	if (check == 0)
+		return (0);
+	return (-1);
 }
 
 int		exec_check_path(t_param *all)
@@ -83,7 +67,7 @@ int		exec_check_path(t_param *all)
 	while (all->pathes[++i])
 	{
 		tmp = ft_strjoin(all->pathes[i], "/");
-		if (exec_check_dir(tmp, all->cmd[0]) == 0)
+		if (check_command_name(tmp, all->cmd[0]) == 0)
 		{
 			all->tmp = ft_strjoin(tmp, all->cmd[0]);
 			exec_fork(all);

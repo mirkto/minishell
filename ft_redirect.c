@@ -78,7 +78,7 @@ void	fd_processor(t_param *all)
 	while (all->cmd[i] != NULL)
 	{
 		if (all->fd_1 != -2 &&
-			(!ft_strcmp(all->cmd[i], ">") || !ft_strcmp(all->cmd[i], ">>")))
+		(!ft_strcmp(all->cmd[i], ">") || !ft_strcmp(all->cmd[i], ">>")))
 			all->fd_1 = fd_close(all->fd_1);
 		else if (all->fd_0 != -2 && !ft_strcmp(all->cmd[i], "<"))
 			all->fd_1 = fd_close(all->fd_1);

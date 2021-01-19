@@ -69,6 +69,7 @@ typedef struct		s_parameters
 	char			**cmd_tmp;
 	int				cmd_flag;
 	char			*tmp3;
+	int				pipe_flag;
 }					t_param;
 
 typedef struct		s_line
@@ -124,9 +125,11 @@ int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
 
 int					check_semicolon_and_pipe(t_param *all);
+
 int			pipe_fd_open(t_param *all);
 int					pipe_conveyor(t_param *all);
-int		executor(t_param *all);
+
+int					executor(t_param *all);
 
 int					g_exit_code;
 
