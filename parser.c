@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/18 21:29:05 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/19 23:09:12 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ char		*token_handler(t_param *all, char *tok)
 			}
 			if (tok[i] == '\'' || tok[i] == '\"')
 				quoter(all, tok, str, &i, &z);
-			if (tok[i] == '$' && tok[i + 1] == '?')
+			else if (tok[i] == '$' && tok[i + 1] == '?')
 				return (exit_handler(str));
 			else if (tok[i] == '$')
 				return (dollar_handler(all, tok, &i, str));
