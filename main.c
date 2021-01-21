@@ -23,7 +23,6 @@ int		init_env_and_pathes(t_param *all, char **env)
 	all->fd_1 = -2;
 	all->save_fd_0 = -2;
 	all->save_fd_1 = -2;
-	all->pipe_num = 0;
 	return (0);
 }
 
@@ -47,6 +46,7 @@ char	*inits_buf(t_param *all)
 	all->redirect = 0;
 	all->cmd_tmp = NULL;
 	all->semicolon_num = 0;
+	all->pipe_num = -1;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
 		put_error("dont work malloc buf", "Error");
@@ -132,30 +132,49 @@ int		main(int argc, char **argv, char **env)
 		if (parser(&all, &all.buf) == -1 || check_semicolon(&all) == -1)
 			continue ;
 
-		ft_putendl("/str\\");
-		put_cmd(&all); // print cmd
-		ft_putendl("\\___/");
+		// ft_putendl("/str\\");
+		// put_cmd(&all); // print cmd
+		// ft_putendl("\\___/");
 
 		while(all.semicolon_num >= 0)
 		{
 			split_by_semicolon(&all);
-			// ---print_work---
-			ft_putstr("\n--");
-			ft_putnbr(all.semicolon_num);
+
+				// // ---print_semicolon---
+				// ft_putstr("\n--");
+				// ft_putnbr(all.semicolon_num);
+				// ft_putstr("--\n");
+				// ft_putendl("/cmd\\");
+				// put_cmd(&all);
+				// ft_putendl("\\___/");
+				// ft_putendl("/tmp\\");
+				// int	c = -1;
+				// while (all.cmd_tmp[++c] != NULL)
+				// 	ft_putendl(all.cmd_tmp[c]);
+				// if (all.cmd_tmp[0] == NULL)
+				// 	ft_putendl("#free");
+				// ft_putendl("\\___/");
+				// // ---print_semicolon---
+
 			all.semicolon_num--;
-			ft_putstr("--\n");
-			ft_putendl("/cmd\\");
-			put_cmd(&all);
-			ft_putendl("\\___/");
-			ft_putendl("/tmp\\");
-			int	c = -1;
-			while (all.cmd_tmp[++c] != NULL)
-				ft_putendl(all.cmd_tmp[c]);
-			if (all.cmd_tmp[0] == NULL)
-				ft_putendl("#free");
-			ft_putendl("\\___/");
-			// ---print_work---
-			executor(&all);
+			check_pipes(&all);
+				// // ---print_pipes---
+				// ft_putstr("\n|");
+				// ft_putnbr(all.pipe_num);
+				// ft_putstr("| pipes\n");
+				// // ---print_pipes---
+			if (all.pipe_num != -1)
+			{
+					// ft_putendl("_/cmd\\");
+					// put_cmd(&all);
+					// ft_putendl("_\\___/");
+				pipe_conveyor(&all);
+					// ft_putendl("__/cmd\\");
+					// put_cmd(&all);
+					// ft_putendl("__\\___/");
+			}
+			else
+				executor(&all);
 		}
 		free_array(all.cmd);
 	}

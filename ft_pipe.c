@@ -12,86 +12,6 @@
 
 #include "minishell.h"
 
-int		pipe_conveyor_one(t_param *all, int fd[2])
-{
-	if (fork() == 0)
-	{
-		// ft_putendl("-1-");
-		// int i = -1;
-		// while (all->cmd[++i] != NULL)
-		// 	ft_putendl(all->cmd[i]);
-
-		close(fd[0]);
-		dup2(fd[1], 1);
-		close(fd[1]);
-		fd_processor(all);
-		ft_execve(all);
-		// executor(all);
-		exit (1);
-	}
-	return (0);
-}
-
-int		pipe_conveyor_two(t_param *all, int fd[2])
-{
-	if (fork() == 0)
-	{
-		// ft_putendl("-2-");
-		// int i = -1;
-		// while (all->cmd[++i] != NULL)
-		// 	ft_putendl(all->cmd[i]);
-
-		close(fd[1]);
-		dup2(fd[0], 0);
-		close(fd[0]);
-		fd_processor(all);
-		ft_execve(all);
-		// executor(all);
-		exit (1);
-	}
-	return (0);
-}
-
-int		check_tmp_on_end(t_param *all)
-{
-	int		i;
-	char	**tmp;
-	
-	i = 0;
-	tmp = NULL;
-	while (1)
-	{
-		
-		if (all->cmd_tmp[i + 1] == NULL)
-		{
-			free_array(all->cmd);
-			all->cmd = copy_env(all->cmd_tmp, 0);
-			// free_array(all->cmd_tmp);
-			break ;
-		}
-		if (!ft_strcmp(all->cmd_tmp[i], ";") || !ft_strcmp(all->cmd_tmp[i], "|"))
-		{
-			tmp = copy_env(&all->cmd_tmp[i + 1], 0);
-			all->i = 0;
-			while (all->cmd_tmp[i + all->i])
-				free(all->cmd_tmp[i + all->i++]);
-			all->cmd_tmp[i] = NULL;
-			free_array(all->cmd);
-			all->cmd = copy_env(all->cmd_tmp, 0);
-			if (tmp != NULL)
-			{
-				free_array(all->cmd_tmp);
-				all->cmd_tmp = copy_env(tmp, 0);
-				free_array(tmp);
-			}
-			// free_array(all->cmd_tmp);
-			break ;
-		}
-		i++;
-	}
-		return (0);
-}
-
 void	fd_connect(int prev_fd[], int next_fd[])
 {
 	if (prev_fd[0] >= 0)
@@ -108,19 +28,28 @@ void	fd_connect(int prev_fd[], int next_fd[])
 	}
 }
 
-int		pipe_fd_open(t_param *all)
+int		pipe_conveyor(t_param *all)
 {
+	int		i;
 	int		prev_fd[2];
 	int		next_fd[2];
 	
-	prev_fd[0] = -2;
-	prev_fd[1] = -2;
-	// ------------
-	int i = 0;
+	next_fd[0] = -2;
+	next_fd[1] = -2;
+	i = 0;
 	while (i <= all->pipe_num)
 	{
+					// ft_putendl("p_in_/cmd\\");//
+					// put_cmd(all);
+					// ft_putendl("p_in_\\___/");//
+		split_by_pipes(all);
+					// ft_putendl("p_out_/cmd\\");//
+					// put_cmd(all);
+					// ft_putendl("p_out_\\___/");//
+			// ft_putendl("-1-");//
 		prev_fd[0] = next_fd[0];
 		prev_fd[1] = next_fd[1];
+			// ft_putendl("-2-");//
 		if (i != all->pipe_num)
 			pipe(next_fd);
 		else
@@ -128,6 +57,7 @@ int		pipe_fd_open(t_param *all)
 			next_fd[0] = -2;
 			next_fd[1] = -2;
 		}
+		// ft_putendl("-3-");//
 		if (fork() == 0)
 		{
 			fd_connect(prev_fd, next_fd);
@@ -136,11 +66,21 @@ int		pipe_fd_open(t_param *all)
 			executor(all);
 			exit (1);
 		}
-		// check_tmp_on_end(all);
-
+			// ft_putendl("-4-");//
+			// ft_putnbr(prev_fd[0]);//
+			// ft_putendl("");//
 		close(prev_fd[0]);
+			// ft_putendl("-5-");//
+			// ft_putnbr(prev_fd[1]);//
+			// ft_putendl("");//
 		close(prev_fd[1]);
+			// ft_putendl("-6-");//
 		i++;
+			// ft_putendl("");//
+			// ft_putnbr(all->pipe_num);//
+			// ft_putstr("-");//
+			// ft_putnbr(i);
+			// ft_putendl("");//
 	}
 	i = 0;
 	while (i <= all->pipe_num)

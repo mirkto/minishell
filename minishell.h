@@ -71,6 +71,7 @@ typedef struct		s_parameters
 	char			*tmp3;
 	int				pipe_num;
 	int				semicolon_num;
+	char			**pipes_tmp;
 }					t_param;
 
 typedef struct		s_line
@@ -123,15 +124,12 @@ int					fd_check_and_close(t_param *all);
 int					cmd_remove_and_shift(t_param *all, int index, int num);
 void				fd_processor(t_param *all);
 
+int					check_pipes(t_param *all);
+int					split_by_pipes(t_param *all);
 int					check_semicolon(t_param *all);
 int					split_by_semicolon(t_param *all);
 // ---
-int					ft_pipe(t_param *all);
-int					conveyor(t_param *all);
 
-int					check_semicolon_and_pipe(t_param *all);
-
-int			pipe_fd_open(t_param *all);
 int					pipe_conveyor(t_param *all);
 
 char				*inits_buf_and_get_line(t_param *all, char *buf);
