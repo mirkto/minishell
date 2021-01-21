@@ -16,14 +16,14 @@ int		init_env_and_pathes(t_param *all, char **env)
 {
 	all->env = copy_env(env, 0);
 	if (search_key_env(all, "OLDPWD") == -1)
-		all->env = inc_env(&all->env, "OLDPWD");
+		all->env = inc_env(all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
 	all->tmp_exit_code = 0;
 	all->fd_0 = -2;
 	all->fd_1 = -2;
 	all->save_fd_0 = -2;
 	all->save_fd_1 = -2;
-	all->cmd_flag = 0;
+	all->pipe_num = 0;
 	return (0);
 }
 
@@ -46,6 +46,8 @@ char	*inits_buf(t_param *all)
 	signal(SIGQUIT, handler_quit_);
 	all->redirect = 0;
 	all->cmd_tmp = NULL;
+	all->semicolon_num = 0;
+	all->cmd_flag = 0;
 	if (!(tmp = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
 	{
 		put_error("dont work malloc buf", "Error");
@@ -87,6 +89,8 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 
 int		executor(t_param *all)
 {
+	if (all->cmd_flag == 1)
+		return (-1);
 	fd_processor(all);
 	fd_check_and_dup(all);
 	if (!ft_strcmp(all->cmd[0], "q") || !ft_strcmp(all->cmd[0], "exit"))
@@ -108,13 +112,12 @@ int		executor(t_param *all)
 	else
 		ft_execve(all);
 	fd_check_and_close(all);
-	free_array(&all->cmd);
+	// free_array(all->cmd);
 	return (0);
 }
 
 int		main(int argc, char **argv, char **env)
 {
-	char	*buf;
 	t_param	all;
 
 	if (argc > 1)
@@ -123,20 +126,41 @@ int		main(int argc, char **argv, char **env)
 	while (1)
 	{
 		write(1, "\033[0;32mminishell-0.4$ \033[0m", 26);
-		if (!(buf = inits_buf_and_get_line(&all, NULL)))
+		if (!(all.buf = inits_buf_and_get_line(&all, NULL)))
 			return (-1);
-		while (check_back_slash_n(buf) == 1)
+		while (check_back_slash_n(&all, all.buf) == 1)
+			all.buf = inits_buf_and_get_line(&all, all.tmp);
+		all.flag = parser(&all, &all.buf);
+		free(all.buf);
+		if (all.flag == -1 || check_semicolon(&all) == -1)
+			continue ;
+
+		ft_putendl("/str\\");
+		put_cmd(&all); // print cmd
+		ft_putendl("\\___/");
+		
+		while(all.semicolon_num >= 0)
 		{
-			all.tmp = buf;
-			free(buf);
-			buf = inits_buf_and_get_line(&all, all.tmp);
+			split_by_semicolon(&all);
+			// ---print_work---
+			ft_putstr("\n--");
+			ft_putnbr(all.semicolon_num);
+			all.semicolon_num--;
+			ft_putstr("--\n");
+			ft_putendl("/cmd\\");
+			put_cmd(&all);
+			ft_putendl("\\___/");
+			ft_putendl("/tmp\\");
+			int	c = -1;
+			while (all.cmd_tmp[++c] != NULL)
+				ft_putendl(all.cmd_tmp[c]);
+			if (all.cmd_tmp[c] == NULL)
+				ft_putendl("#free");
+			ft_putendl("\\___/");
+			// ---print_work---
+			executor(&all);
 		}
-		all.flag = parser(&all, &buf);
-		free(buf);
-		// put_cmd(&all); // print cmd
-		if (all.flag != -1)
-			while (check_semicolon_and_pipe(&all) != 0)
-				ft_putendl("__--in--__");
+		free_array(all.cmd);
 	}
 	return (0);
 }

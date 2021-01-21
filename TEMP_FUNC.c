@@ -1,45 +1,44 @@
 
 /*
-** pid, ppid - 71
-** fork + exec - 89
-**
-** <strings.h> strerror - 00
-** <stdlib.h> malloc, free, exit
-**				- 00, - 00, - 84
-** <unistd.h> write, read, close, fork, getcwd, chdir, execve, dup, dup2, pipe
-**			   - 52, - 52,  - 54, - 77,   - 00,  - 75,   - 80,   - 96,   - 120
-** <fcntl.h> open - 50
-** <sys/wait.h> wait, waitpid - 87
-** <sys/types.h> wait3, wait4 - 88
-** <signal.h> signal, kill - 109
-** <sys/stat.h> stat, lstat, fstat - 61
-** <dirent.h> opendir, readdir, closedir - 66
-** <errno.h> errno - 00
-**
-** ft_putendl("---");
-** ft_putnbr(len);
-** ft_putendl("");
-** write(1, "\n", 1);
-** ft_putendl(all->env[all->i]);
-**
-** "\v\f\r \n\t"
-**
-** signal(SIGINT, handler);		// SIGINT - CTRL + C
-** signal(SIGTERM, handler);
-** signal(SIGKILL, handler);
-** signal(SIGQUIT, handler);	// SIGQUIT - CTRL + \
-**
-** close(1);
-** fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
-**
-** put_cmd(all);
-**
-** write(1, " | ", 3);
-** ft_putstr(strerror(errno));
-*/
+pid, ppid - 71
+fork + exec - 89
+
+<strings.h> strerror - 00
+<stdlib.h> malloc, free, exit
+		   \___00, \_00, \_84
+<unistd.h> write, read, close, fork, getcwd, chdir, execve, dup, dup2, pipe
+		   \__52, \_52, \__54, \_77, \___00, \__75, \___80, \______96, \120
+<fcntl.h> open - 50
+<sys/wait.h> wait, waitpid - 87
+<sys/types.h> wait3, wait4 - 88
+<signal.h> signal, kill - 109
+<sys/stat.h> stat, lstat, fstat - 61
+<dirent.h> opendir, readdir, closedir - 66
+<errno.h> errno - 00
+
+ft_putendl("---");
+ft_putnbr(len);
+ft_putendl("");
+write(1, "\n", 1);
+ft_putendl(all->env[all->i]);
+
+"\v\f\r \n\t"
+
+signal(SIGINT, handler);	// SIGINT - CTRL + C
+signal(SIGTERM, handler);
+signal(SIGKILL, handler);
+signal(SIGQUIT, handler);	// SIGQUIT - CTRL + \
+
+close(1);
+fd = open("file.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666);
+
+put_cmd(all);
+
+write(1, " | ", 3);
+ft_putstr(strerror(errno));
 
 // alias mm="make && ./minishell"
-
+*/
 # include <unistd.h> // for NULL
 # include <dirent.h> // for DIR
 # include <errno.h>  // for errno
@@ -52,18 +51,19 @@
 #define INPUT	write(1, "minishell-0.0", 13);
 #define RESET	write(1, "\033[0m", 4);
 #define RED_INPUT write(1, "\033[0;31m$ \033[0m", 13);
-
+// --------------------not_end_loop-------------------
 int		wt(void)
 {
 	while (1)
 		;
 	return (0);
 }
-
+// --------------------list-------------------
+/*
 t_parse		*lst_new(char **arg);
 t_parse		*lst_last(t_parse *lstarg);
 void		add_back(t_parse **lstarg, t_parse *new);
-
+*/
 typedef struct		s_parse
 {
 	char			**arg;
@@ -111,7 +111,7 @@ void		add_back(t_parse **lstarg, t_parse *new)
 		tmp->prev = last;
 	}
 }
-
+// --------------------old_dir-------------------
 int		ft_check_dir(char *tmp, char *cmd)
 {
 	DIR *dir;
@@ -142,87 +142,7 @@ int		ft_check_dir(char *tmp, char *cmd)
 	}
 	return (-1);//OPEN_ERROR;
 }
-int		blt_env(t_param *all)
-{
-	if (all->cmd[1] && all->cmd[1][0] != '#' && !ft_strchr(all->cmd[1], '='))
-	{
-		if (all->cmd[1][0] == '-')
-		{
-			if (ft_isalpha(all->cmd[1][1]) == 1)
-				return (put_error("Enter without any options!", NULL));
-		}
-		else
-			return (put_error("No such file or directory", all->cmd[1]));
-	}
-	else
-	{
-		all->i = -1;
-		while (all->env[++all->i])
-			if (all->env[all->i] != NULL)
-				if (ft_strchr(all->env[all->i], '='))
-					ft_putendl(all->env[all->i]);
-		if (all->cmd[1])
-			if (ft_strchr(all->cmd[1], '='))
-				ft_putendl(all->cmd[1]);
-	}
-	return (0);
-}
-
-// --------------signal-----------------
-
-void	sig_int(int code)
-{
-	(void)code;
-	if (g_sig.pid == 0)
-	{
-		ft_putstr_fd("\b\b  ", STDERR);
-		ft_putstr_fd("\n", STDERR);
-		ft_putstr_fd("\033[0;36m\033[1m🤬 minishell ▸ \033[0m", STDERR);
-		g_sig.exit_status = 1;
-	}
-	else
-	{
-		ft_putstr_fd("\n", STDERR);
-		g_sig.exit_status = 130;
-	}
-	g_sig.sigint = 1;
-}
-
-void	sig_quit(int code)
-{
-	char	*nbr;
-
-	nbr = ft_itoa(code);
-	if (g_sig.pid != 0)
-	{
-		ft_putstr_fd("Quit: ", STDERR);
-		ft_putendl_fd(nbr, STDERR);
-		g_sig.exit_status = 131;
-		g_sig.sigquit = 1;
-	}
-	else
-		ft_putstr_fd("\b\b  \b\b", STDERR);
-	ft_memdel(nbr);
-}
-
-typedef struct		s_sig
-{
-	int				sigint;
-	int				sigquit;
-	int				exit_status;
-	pid_t			pid;
-}					t_sig;
-
-void	sig_init(void)
-{
-	g_sig.sigint = 0;
-	g_sig.sigquit = 0;
-	g_sig.pid = 0;
-	g_sig.exit_status = 0;
-}
-
 // --------------------tmp_redirect-------------------
-
 /*
 typedef struct		s_var
 {
@@ -259,50 +179,7 @@ void	processing_fd(t_var *var, t_param *all)
 		// permission_denied(all);
 	}
 }
-
-void	fd_processor(t_param *all)
-{
-	int	i;
-
-	i = 0;
-	while (all->cmd[i] != NULL)
-	{
-		if ((all->cmd[i][0] == ';' && all->cmd[i][1] == '\0') ||
-			(all->cmd[i][0] == '|' && all->cmd[i][1] == '\0'))
-			break ;
-		if (all->fd_1 != -1 && \
-				((all->cmd[i][0] == '>' && all->cmd[i][1] == '\0') || \
-				(all->cmd[i][0] == '>' && all->cmd[i][1] == '>' && \
-											all->cmd[i][2] == '\0')))
-			all->fd_1 = fd_close(all->fd_1);
-		else if (all->fd_0 != -1 && \
-					(all->cmd[i][0] == '<' && all->cmd[i][2] == '\0'))
-			all->fd_1 = fd_close(all->fd_1);
-		if (all->cmd[i][0] == '>' && all->cmd[i][1] == '\0')
-		{
-			all->fd_1 = open(all->cmd[i + 1], O_RDWR | O_CREAT | \
-									O_TRUNC, S_IWRITE | S_IREAD);
-			all->redirect = cmd_remove_and_shift(all, i, 2);
-		}
-		else if (all->cmd[i][0] == '>' &&
-				all->cmd[i][1] == '>' && all->cmd[i][2] == '\0')
-		{
-			all->fd_1 = open(all->cmd[i + 1], O_RDWR | O_CREAT | \
-									O_APPEND, S_IWRITE | S_IREAD);
-			all->redirect = cmd_remove_and_shift(all, i, 2);
-		}
-		else if (all->cmd[i][0] == '<' && all->cmd[i][1] == '\0')
-		{
-			all->fd_0 = open(all->cmd[i + 1], O_RDONLY);
-			all->redirect = cmd_remove_and_shift(all, i, 2);
-		}
-		else
-			i++;
-	}
-}
-
 // -------------------pipe-----------------------------
-
 int		conveyor(t_param *all)
 {
 	all->i = 0;
@@ -335,115 +212,69 @@ int		conveyor(t_param *all)
 	wait(NULL);		// (wait execve2)
 	return (0);
 }
-
-
-int		ft_pipe(t_param *all)
+// ----------------pipes_conveyor-------------------
+void connect_stdio_to_pipes(int prev_fds[], int next_fds[])
 {
-	all->i = 0;
-	int	rc;
-
-	int		fd[2];
-	int		p1;
-	int		p2;
-
-	pipe(fd);
-	p1 = fork();
-	if (p1 == 0) // child #1
+	if (prev_fds[0] >= 0)
 	{
-		close(fd[0]);
-		// ...
-		write(fd[1], "...", 3);
-		// ...
-		exit (0);
+		dup2(prev_fds[0], 0);
+		close(prev_fds[0]);
+		close(prev_fds[1]);
 	}
-	p2 = fork();
-	if (p2 == 0) // child #2
+	if (next_fds[1] >= 0)
 	{
-		close (fd[1]);
-		// ...
-		rc = read(fd[0], "...", 3);
-		// ...
-		exit(0);
+		dup2(next_fds[1], 1);
+		close(next_fds[1]);
+		close(next_fds[0]);
 	}
-	// parent
-	close(fd[0]);
-	close(fd[1]);
-	// ...
-	return (0);
 }
 
-int		pipe_conveyor(t_param *all)
+int main(int argc, char **argv, char **envp)
 {
-	int		fd[2];
+	char *cmd1[] = { "/bin/cat", NULL };
+	char *cmd2[] = { "/usr/bin/grep", "a", NULL };
+	char *cmd3[] = { "/usr/bin/grep", "a", NULL };
+	char *cmd4[] = { "/usr/bin/grep", "a", NULL };
+	char **cmds[5];
+	cmds[0] = cmd1;
+	cmds[1] = cmd2;
+	cmds[2] = cmd3;
+	cmds[3] = cmd4;
+	cmds[4] = NULL;
 
-	// all->save_fd_1 = dup(1);
-	// all->save_fd_0 = dup(0);	
-
-	fd[0] = all->fd_0;
-	fd[1] = all->fd_1;
-	
-	// ------print--------
-	// ft_putendl("-tmp-");
-	// ft_putendl(all->tmp);
-	// ft_putendl("-cmd-");
-	// int i = -1;
-	// while (all->cmd[++i] != NULL)
-	// 	ft_putendl(all->cmd[i]);
-	// ft_putendl("---");
-
-	pipe(fd);
-	if (fork() == 0)
+	int i = 0;
+	int cmds_count = 4;
+	int prev_pipe_fds[2];
+	int next_pipe_fds[2];
+	next_pipe_fds[0] = -1;
+	next_pipe_fds[1] = -1;
+	while (i < cmds_count)
 	{
-		ft_putendl("-1-");
-		int i = -1;
-		while (all->cmd[++i] != NULL)
-			ft_putendl(all->cmd[i]);
-
-		close(fd[0]);
-		dup2(fd[1], 1);
-		close(fd[1]);
-		// all->tmp = ;
-		// all->cmd = ;
-		// executor(all);
-		// execlp("ls", "ls", "-lR", NULL);
-		// execve(all->tmp, all->cmd, all->env);
-		exit (1);
+		prev_pipe_fds[0] = next_pipe_fds[0];
+		prev_pipe_fds[1] = next_pipe_fds[1];
+		if (i != cmds_count - 1)
+		{
+			pipe(next_pipe_fds);
+			printf("%d, %d\n", next_pipe_fds[0], next_pipe_fds[1]);
+		}
+		else
+		{
+		next_pipe_fds[0] = -1;
+			next_pipe_fds[1] = -1;
+		}
+		if (fork() == 0)
+		{
+			connect_stdio_to_pipes(prev_pipe_fds, next_pipe_fds);
+			char **cmd = cmds[i];
+			execve(cmd[0], cmd, NULL);
+		}
+		close(prev_pipe_fds[0]);
+		close(prev_pipe_fds[1]);
+		i++;
 	}
-	if (fork() == 0)
-	{
-		ft_putendl("-2-");
-		int i = -1;
-		while (all->cmd[++i] != NULL)
-			ft_putendl(all->cmd[i]);
-
-		close(fd[1]);
-		dup2(fd[0], 0);
-		close(fd[0]);
-		// all->tmp = ;
-		// all->cmd = ;
-		// executor(all);
-		// execlp("grep", "grep", "^d", NULL);
-		// execve(all->tmp, all->cmd, all->env);
-		exit (1);
-	}
-	close(fd[0]);
-	close(fd[1]);
 	wait(NULL);
 	wait(NULL);
-
-	// dup2(all->save_fd_1, 1);
-	// dup2(all->save_fd_0, 0);
-	// if (all->save_fd_1 != -2)
-	// 	all->save_fd_1 = fd_close(all->save_fd_1);
-	// if (all->save_fd_0 != -2)
-	// 	all->save_fd_0 = fd_close(all->save_fd_0);
-
+	wait(NULL);
+	wait(NULL);
 	return (0);
 }
-
-
-		all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
-		all->i = 0;
-		while (all->cmd[*i + all->i])
-			free(all->cmd[*i + all->i++]);
-		all->cmd[*i] = NULL;

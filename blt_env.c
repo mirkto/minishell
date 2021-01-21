@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	**inc_env(char ***env, char *str)
+char	**inc_env(char **env, char *str)
 {
 	char	**tmp;
 	int		len;
@@ -20,7 +20,7 @@ char	**inc_env(char ***env, char *str)
 	len = 0;
 	while (env[0][len])
 		len++;
-	tmp = copy_env(*env, len + 1);
+	tmp = copy_env(env, len + 1);
 	free_array(env);
 	tmp[len] = ft_strdup(str);
 	tmp[len + 1] = NULL;

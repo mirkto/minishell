@@ -52,6 +52,7 @@ typedef struct		s_parameters
 	int				i;
 	char			*tmp;
 	int				flag;
+	char			*buf;
 	int				buf_len;
 	char			**env;
 	char			**cmd;
@@ -67,9 +68,10 @@ typedef struct		s_parameters
 	int				save_fd_1;
 	int				save_fd_0;
 	char			**cmd_tmp;
-	int				cmd_flag;
 	char			*tmp3;
-	int				pipe_flag;
+	int				cmd_flag;
+	int				pipe_num;
+	int				semicolon_num;
 }					t_param;
 
 typedef struct		s_line
@@ -79,11 +81,11 @@ typedef struct		s_line
 	int				fd_output;
 }					t_line;
 
-void				free_array(char ***lst);
+void				free_array(char **lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
 int					check_options(t_param *all, int i);
-int					check_back_slash_n(char *tmp);
+int					check_back_slash_n(t_param *all, char *tmp);
 
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
@@ -97,7 +99,7 @@ int					blt_export_write(t_param *all, int i, int arg_n);
 int					blt_export(t_param *all);
 void		put_cmd(t_param *all);
 
-char				**inc_env(char ***env, char *str);
+char				**inc_env(char **env, char *str);
 char				**copy_env(char **env, int len);
 int					search_key_env(t_param *all, char *str);
 char				*get_value_env(t_param *all, char *str);
@@ -119,8 +121,12 @@ void				handler_int_c_2(int i);
 int					fd_close(int fd);
 int					fd_check_and_dup(t_param *all);
 int					fd_check_and_close(t_param *all);
+int					cmd_remove_and_shift(t_param *all, int index, int num);
 void				fd_processor(t_param *all);
 
+int					check_semicolon(t_param *all);
+int					split_by_semicolon(t_param *all);
+// ---
 int					ft_pipe(t_param *all);
 int					conveyor(t_param *all);
 
@@ -129,6 +135,7 @@ int					check_semicolon_and_pipe(t_param *all);
 int			pipe_fd_open(t_param *all);
 int					pipe_conveyor(t_param *all);
 
+char				*inits_buf_and_get_line(t_param *all, char *buf);
 int					executor(t_param *all);
 
 int					g_exit_code;

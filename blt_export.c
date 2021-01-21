@@ -23,7 +23,7 @@ int		blt_export_search_and_inc(t_param *all, int arg_n)
 			break ;
 		i++;
 		if (all->env[i] == NULL)
-			all->env = inc_env(&all->env, "\0");
+			all->env = inc_env(all->env, "\0");
 	}
 	blt_export_write(all, i, arg_n);
 	return (0);
@@ -40,7 +40,7 @@ int		blt_export_with_value(t_param *all, int arg_n)
 		blt_export_write(all, i, arg_n);
 	else
 		blt_export_search_and_inc(all, arg_n);
-	free_array(&tmp);
+	free_array(tmp);
 	return (0);
 }
 

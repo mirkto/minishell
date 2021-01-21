@@ -21,9 +21,9 @@ int		blt_exit_and_free(t_param *all, int nbr, int check_nbr)
 		nbr -= 256;
 	while (nbr < 0)
 		nbr += 256;
-	free_array(&all->env);
-	free_array(&all->cmd);
-	free_array(&all->pathes);
+	free_array(all->env);
+	free_array(all->cmd);
+	free_array(all->pathes);
 	exit(nbr);
 	return (0);
 }

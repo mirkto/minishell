@@ -61,7 +61,7 @@ int		exec_check_path(t_param *all)
 
 	if (search_key_env(all, "PATH") == -1)
 		return (put_error("No such file or directory", all->cmd[0]));
-	free_array(&all->pathes);
+	free_array(all->pathes);
 	all->pathes = split_pathes(all, all->env);
 	i = -1;
 	while (all->pathes[++i])

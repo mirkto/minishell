@@ -12,17 +12,19 @@
 
 #include "minishell.h"
 
-void	free_array(char ***lst)
+void	free_array(char **lst)
 {
 	int		i;
 
 	i = 0;
-	while (lst[0][i])
+	while (lst[i])
 	{
-		free(lst[0][i]);
+		free(lst[i]);
+		lst[i] = NULL;
 		i++;
 	}
-	free(*lst);
+	free(lst);
+	lst = NULL;
 }
 
 int		put_error(char *str_error, char *arg)
@@ -66,7 +68,7 @@ int		check_options(t_param *all, int arg_n)
 	return (FALSE);
 }
 
-int		check_back_slash_n(char *tmp)
+int		check_back_slash_n(t_param *all, char *tmp)
 {
 	int i;
 
@@ -77,5 +79,7 @@ int		check_back_slash_n(char *tmp)
 			return (0);
 		i++;
 	}
+	all->tmp = all->buf;
+	free(all->buf);
 	return (1);
 }

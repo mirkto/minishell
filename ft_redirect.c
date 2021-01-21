@@ -51,12 +51,12 @@ int		fd_check_and_close(t_param *all)
 	return (0);
 }
 
-int		cmd_remove_and_shift(t_param *all, int index, int number)
+int		cmd_remove_and_shift(t_param *all, int index, int num)
 {
 	int	tmp;
 
 	tmp = index;
-	while (number > 0)
+	while (num > 0)
 	{
 		free(all->cmd[index]);
 		while (all->cmd[index])
@@ -65,7 +65,7 @@ int		cmd_remove_and_shift(t_param *all, int index, int number)
 			index++;
 		}
 		index = tmp;
-		number--;
+		num--;
 	}
 	return (1);
 }

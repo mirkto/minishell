@@ -26,6 +26,7 @@ int		pipe_conveyor_one(t_param *all, int fd[2])
 		close(fd[1]);
 		fd_processor(all);
 		ft_execve(all);
+		// executor(all);
 		exit (1);
 	}
 	return (0);
@@ -45,41 +46,13 @@ int		pipe_conveyor_two(t_param *all, int fd[2])
 		close(fd[0]);
 		fd_processor(all);
 		ft_execve(all);
+		// executor(all);
 		exit (1);
 	}
 	return (0);
 }
 
-int		pipe_conveyor_binder(t_param *all, int fd[2])
-{
-	if (fork() == 0)
-	{
-		// ft_putendl("-binder-");
-		// int i = -1;
-		// while (all->cmd[++i] != NULL)
-		// 	ft_putendl(all->cmd[i]);
-		if (all->pipe_flag % 2 == 1)
-		{
-			close(fd[0]);
-			dup2(fd[1], 1);
-			close(fd[1]);
-		}
-		if (all->pipe_flag % 2 == 0)	
-		{
-			close(fd[1]);
-			dup2(fd[0], 0);
-			close(fd[0]);
-		}
-		
-		// fd_processor(all, 0);
-		// ft_execve(all);
-		executor(all);
-		exit (1);
-	}
-	return (0);
-}
-
-char	**check_tmp_on_end(t_param *all)
+int		check_tmp_on_end(t_param *all)
 {
 	int		i;
 	char	**tmp;
@@ -88,141 +61,92 @@ char	**check_tmp_on_end(t_param *all)
 	tmp = NULL;
 	while (1)
 	{
-		if (all->cmd_tmp[i] == NULL)
+		
+		if (all->cmd_tmp[i + 1] == NULL)
 		{
-			all->cmd_flag = 0;
-			free_array(&all->cmd);
-			all->cmd = all->cmd_tmp;
+			free_array(all->cmd);
+			all->cmd = copy_env(all->cmd_tmp, 0);
+			// free_array(all->cmd_tmp);
 			break ;
 		}
-		if (!ft_strcmp(all->cmd_tmp[i], ";"))
+		if (!ft_strcmp(all->cmd_tmp[i], ";") || !ft_strcmp(all->cmd_tmp[i], "|"))
 		{
 			tmp = copy_env(&all->cmd_tmp[i + 1], 0);
 			all->i = 0;
 			while (all->cmd_tmp[i + all->i])
 				free(all->cmd_tmp[i + all->i++]);
 			all->cmd_tmp[i] = NULL;
-			free_array(&all->cmd);
-			all->cmd = all->cmd_tmp;
-			break ;
-		}
-		if (!ft_strcmp(all->cmd_tmp[i], "|"))
-		{
-			tmp = copy_env(&all->cmd_tmp[i + 1], 0);
-			all->i = 0;
-			while (all->cmd_tmp[i + all->i])
-				free(all->cmd_tmp[i + all->i++]);
-			all->cmd_tmp[i] = NULL;
-			free_array(&all->cmd);
-			all->cmd = all->cmd_tmp;
-			// all->pipe_flag = 1;//----
+			free_array(all->cmd);
+			all->cmd = copy_env(all->cmd_tmp, 0);
+			if (tmp != NULL)
+			{
+				free_array(all->cmd_tmp);
+				all->cmd_tmp = copy_env(tmp, 0);
+				free_array(tmp);
+			}
+			// free_array(all->cmd_tmp);
 			break ;
 		}
 		i++;
 	}
-	return (tmp);
+		return (0);
+}
+
+void	fd_connect(int prev_fd[], int next_fd[])
+{
+	if (prev_fd[0] >= 0)
+	{
+		dup2(prev_fd[0], 0);
+		close(prev_fd[0]);
+		close(prev_fd[1]);
+	}
+	if (next_fd[1] >= 0)
+	{
+		dup2(next_fd[1], 1);
+		close(next_fd[1]);
+		close(next_fd[0]);
+	}
 }
 
 int		pipe_fd_open(t_param *all)
 {
-	int		fd[2];
-	int		fd_tmp[2];
-	char	**tmp;
+	int		prev_fd[2];
+	int		next_fd[2];
 	
-	tmp = NULL;
-	fd[0] = -2;
-	fd[1] = -2;
-	fd_tmp[0] = -2;
-	fd_tmp[1] = -2;
-	pipe(fd);
-
-	// ft_putendl("\n-tmp-");
-	// i = -1;
-	// while (all->cmd_tmp[++i] != NULL)
-	// 	ft_putendl(all->cmd_tmp[i]);
-	// ft_putendl("-tmp-\n");
-
-	pipe_conveyor_one(all, fd);
-	// pipe_conveyor_binder(all, fd);
-
-	tmp = check_tmp_on_end(all);
-
-	// while (all->pipe_flag == 1)
-	// {
-	// 	all->pipe_flag = 0;
-
-	// 	pipe_conveyor_binder(all, fd, fd_tmp);
-	// 	// pipe_conveyor_two(all, fd);
-	// 	// if (tmp != NULL)
-	// 	// {
-	// 	// 	free_array(&all->cmd_tmp);
-	// 	// 	all->cmd_tmp = copy_env(tmp, 0);
-	// 	// 	free_array(&tmp);
-	// 	// }
-	// 	tmp = check_tmp_on_end(all);
-	// }
-
-	pipe_conveyor_two(all, fd);
-	// pipe_conveyor_binder(all, fd);
-	if (tmp != NULL)
+	prev_fd[0] = -2;
+	prev_fd[1] = -2;
+	// ------------
+	int i = 0;
+	while (i <= all->pipe_num)
 	{
-		free_array(&all->cmd_tmp);
-		all->cmd_tmp = tmp;
+		prev_fd[0] = next_fd[0];
+		prev_fd[1] = next_fd[1];
+		if (i != all->pipe_num)
+			pipe(next_fd);
+		else
+		{
+			next_fd[0] = -2;
+			next_fd[1] = -2;
+		}
+		if (fork() == 0)
+		{
+			fd_connect(prev_fd, next_fd);
+			// fd_processor(all);
+			// ft_execve(all);
+			executor(all);
+			exit (1);
+		}
+		// check_tmp_on_end(all);
+
+		close(prev_fd[0]);
+		close(prev_fd[1]);
+		i++;
 	}
-
-	close(fd[0]);
-	close(fd[1]);
-	wait(NULL);
-	wait(NULL);
-
-	// i = 0;
-	// while (1)
-	// {
-	// 	if (all->cmd_tmp[i] != NULL)
-	// 	{
-	// 		all->cmd_flag = 0;
-	// 		// free_array(&all->cmd);
-	// 		all->cmd = copy_env(all->cmd_tmp, 0);
-	// 		free_array(&all->cmd_tmp);
-	// 		break ;
-	// 	}
-	// 	if (!ft_strcmp(all->cmd_tmp[i], "|"))
-	// 	{
-	// 		// free_array(&all->cmd);
-	// 		// all->cmd = copy_env(all->cmd_tmp, 0);
-	// 		all->cmd = (char**)malloc(sizeof(char *) + i);
-	// 		all->i = -1;
-	// 		while (!ft_strcmp(all->cmd_tmp[++all->i], "|"))
-	// 			all->cmd[all->i] = all->cmd_tmp[all->i];
-	// 		all->cmd[i] = NULL;
-	// 		break ;
-	// 	}
-	// 	i++;
-	// }
-	
-	// if (all->cmd[*i + 1] == NULL)
-	// {
-	// 	free(all->cmd[*i]);
-	// 	all->cmd[*i] = NULL;
-	// 	return (1);
-	// }
-	// else
-	// {
-	// 	all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
-	// 	all->i = 0;
-	// 	while (all->cmd[*i + all->i])
-	// 		free(all->cmd[*i + all->i++]);
-	// 	all->cmd[*i] = NULL;
-	// }
-	// all->cmd_flag = 1;
-	// *i = 0;
-
-	// close(fd[0]);
-	// close(fd[1]);
-	// wait(NULL);
-	// wait(NULL);
-
-	// fd_check_and_close(all);
-	// all->redirect = 0;
+	i = 0;
+	while (i <= all->pipe_num)
+	{
+		wait(NULL);
+		i++;
+	}
 	return (0);
 }
