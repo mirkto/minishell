@@ -12,13 +12,62 @@
 
 #include "minishell.h"
 
+int		check_pipes(t_param *all)
+{
+	int	i;
+
+	i = -1;
+	while (all->cmd[++i] != NULL)
+		if (!ft_strcmp(all->cmd[i], "|"))
+			all->pipe_num++;
+	if (all->pipe_num == -1)
+		return (1);
+	all->pipe_num++;
+	all->pipes_tmp = copy_env(all->cmd, 0);
+	return (0);
+}
+
+int		split_by_pipes(t_param *all)
+{
+	int		i;
+	char	**tmp_array;
+
+	tmp_array = NULL;
+	i = 0;
+	while (all->pipes_tmp[i] != NULL)
+	{
+		if (!ft_strcmp(all->pipes_tmp[i], "|"))
+		{
+			free_array(all->cmd);
+			all->cmd = copy_env(all->pipes_tmp, 0);
+			all->i = 0;
+			while (all->cmd[i + all->i])
+				free(all->cmd[i + all->i++]);
+			all->cmd[i] = NULL;
+
+			tmp_array = copy_env(&all->pipes_tmp[i + 1], 0);
+			free_array(all->pipes_tmp);
+			all->pipes_tmp = tmp_array;
+			return (1);
+		}
+		i++;
+	}
+	free_array(all->cmd);
+	all->cmd = copy_env(all->pipes_tmp, 0);
+	all->i = 0;
+	while (all->cmd[i + all->i])
+		free(all->cmd[i + all->i++]);
+	all->cmd[i] = NULL;
+	free_array(all->pipes_tmp);
+	return (0);
+}
+
 int		check_semicolon(t_param *all)
 {
 	int	i;
 
-	// free(all->buf);
-	if (!all->cmd)// || !(all->cmd[0][0]))
-		return (-1);
+	// if (!all->cmd)
+	// 	return (-1);
 	i = -1;
 	while (all->cmd[++i] != NULL)
 		if (!ft_strcmp(all->cmd[i], ";"))
@@ -29,11 +78,10 @@ int		check_semicolon(t_param *all)
 		cmd_remove_and_shift(all, i - 1, 1);
 		all->semicolon_num--;
 	}
-	// if (all->cmd_tmp != NULL)
-	// 	free_array(all->cmd_tmp);
 	all->cmd_tmp = copy_env(all->cmd, 0);
 	return (0);
 }
+
 int		split_by_semicolon(t_param *all)
 {
 	int		i;
@@ -136,7 +184,7 @@ int		split_by_semicolon(t_param *all)
 // 		else if (!ft_strcmp(all->cmd[i], "|"))
 // 		{
 // 			if (cut_and_save_or_check_end(all, &i) == 0)
-// 				pipe_fd_open(all);
+// 				pipe_conveyor(all);
 // 			continue ;
 // 		}
 // 		else if (!ft_strcmp(all->cmd[i], ";"))
