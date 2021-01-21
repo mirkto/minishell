@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 19:17:55 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/21 19:18:28 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 20:18:43 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,34 +66,40 @@ char		*dollar_in_quote_handler(int *z, int *i, t_param *all, char *tok)
 	return (tmp3);
 }
 
+char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
+{
+	if (tok[*i] == '\\' && tok[*i + 1] != '\0' && all->c == '\"')
+	{
+		tmp3 = str_joiner(tmp3, tok, i, &all->z);
+		(*i) += 2;
+		all->z = *i;
+	}
+	else if (tok[*i] == '$' && tok[*i + 1] == '?' && all->c == '\"')
+	{
+		free(tmp3);
+		tmp3 = exitcode_handler(&all->z, i, all, tok);
+	}
+	else if (tok[*i] == '$' && all->c == '\"')
+	{
+		free(tmp3);
+		tmp3 = dollar_in_quote_handler(&all->z, i, all, tok);
+	}
+	else
+		(*i)++;
+	return (tmp3);
+}
+
 char		*quote_remover(int *i, char *tok, t_param *all)
 {
-	char	c;
-	int		z;
 	char	*tmp3;
 
-	c = tok[(*i)++];
-	z = *i;
+	all->c = tok[(*i)++];
+	all->z = *i;
 	tmp3 = ft_calloc(sizeof(char), 2);
-	while (tok[*i] && tok[*i] != c)
-	{
-		if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
-		{
-			tmp3 = str_joiner(tmp3, tok, i, &z);
-			(*i) += 2;
-			z = *i;
-		}
-		else if (tok[*i] == '$' && tok[*i + 1] == '?' && c == '\"')
-			{free(tmp3);
-			tmp3 = exitcode_handler(&z, i, all, tok);}
-		else if (tok[*i] == '$' && c == '\"')
-			{free(tmp3);
-			tmp3 = dollar_in_quote_handler(&z, i, all, tok);}
-		else
-			(*i)++;
-	}
-	if (z != (*i))
-		tmp3 = str_joiner(tmp3, tok, i, &z);
+	while (tok[*i] && tok[*i] != all->c)
+		tmp3 = quote_remover2(i, tok, all, tmp3);
+	if (all->z != (*i))
+		tmp3 = str_joiner(tmp3, tok, i, &all->z);
 	(*i)++;
 	return (tmp3);
 }

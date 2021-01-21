@@ -6,32 +6,60 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/21 18:49:30 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 20:48:32 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char		*exit_handler(char *str)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = str;
+	str = ft_itoa(g_exit_code);
+	tmp2 = ft_strjoin(tmp, str);
+	free(str);
+	free(tmp);
+	str = tmp2;
+	return (str);
+}
+
+char		*dollar_handler(t_param *all, char *tok, int *i, char *str)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = str;
+	str = get_value_env(all, &tok[(*i) + 1]);
+	tmp2 = ft_strjoin(tmp, str);
+	free(str);
+	free(tmp);
+	str = tmp2;
+	return (str);
+}
+
 char		*token_handler(t_param *all, char *tok)
 {
 	char	*str;
-	char	*tmp;
-	char	*tmp2;
 	int		i;
 	int		z;
+	char	*tmp;
+	char	*tmp2;
 
 	i = 0;
 	z = 0;
 	str = ft_calloc(sizeof(char), 3);
-
 	while (tok[i])
 	{
 		if (tok[i] == '\\' && tok[i + 2] == '\0')
 		{
 			str[i] = tok[i + 1];
-			return(str);
+			return (str);
 		}
-		else if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
+		else if (tok[i] == '>' || tok[i] == '<'
+				|| tok[i] == ';' || tok[i] == '|')
 		{
 			while (tok[i])
 			{
@@ -47,7 +75,7 @@ char		*token_handler(t_param *all, char *tok)
 				str = str_joiner(str, tok, &i, &z);
 				z = i;
 			}
-			if (tok[i] == '\'' || tok[i] == '\"' )
+			if (tok[i] == '\'' || tok[i] == '\"')
 			{
 				str = str_joiner(str, tok, &i, &z);
 				z = i;
@@ -59,25 +87,9 @@ char		*token_handler(t_param *all, char *tok)
 				z = i;
 			}
 			else if (tok[i] == '$' && tok[i + 1] == '?')
-			{
-				tmp = str;
-				str = ft_itoa(g_exit_code);
-				tmp2 = ft_strjoin(tmp, str);
-				free(str);
-				free(tmp);
-				str = tmp2;
-				return(str);
-			}
+				return (exit_handler(str));
 			else if (tok[i] == '$')
-			{
-				tmp = str;
-				str = get_value_env(all, &tok[i + 1]);
-				tmp2 = ft_strjoin(tmp, str);
-				free(str);
-				free(tmp);
-				str = tmp2;
-				return(str);
-			}
+				return (dollar_handler(all, tok, &i, str));
 			else
 				i++;
 		}
@@ -95,17 +107,12 @@ int			parser(t_param *all, char **buf)
 	int		i;
 
 	tmp = ft_strtrim(*buf, " \t\n");
-	if (ft_strlen(tmp) <= 0)
+	if ((ft_strlen(tmp) <= 0) || (lexer(tmp) == -1))
 	{
 		free(tmp);
 		free(all->buf);
 		return (-1);
 	}
-	// if (lexer(tmp) == -1)
-	// {
-	// 	free(tmp);
-	// 	return (-1);
-	// }
 	str = list_maker(all, tmp);
 	i = 0;
 	while (str[i])
@@ -113,14 +120,11 @@ int			parser(t_param *all, char **buf)
 		str2 = token_handler(all, str[i]);
 		free(str[i]);
 		str[i] = ft_strdup(str2);
-		// str[i] = dollar_remover(all, str2);
 		free(str2);
 		i++;
 	}
 	ft_lstclear(&all->tmp_vasya, free);
 	all->cmd = str;
-	if (!all->cmd)
-		ft_putendl("ERROR in process of parser");
 	free(tmp);
 	free(all->buf);
 	return (0);
