@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 19:17:55 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/18 20:50:09 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/18 19:10:04 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,16 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 {
 	char	c;
 	int		z;
+	char	*tmp3;
 
 	c = tok[(*i)++];
 	z = *i;
-	all->tmp3 = ft_calloc(sizeof(char), 2);
+	tmp3 = ft_calloc(sizeof(char), 2);
 	while (tok[*i] && tok[*i] != c)
 	{
 		if (tok[*i] == '\\' && tok[*i + 1] != '\0' && c == '\"')
 		{
-			all->tmp3 = str_joiner(all->tmp3, tok, i, &z);
+			tmp3 = str_joiner(tmp3, tok, i, &z);
 			(*i) += 2;
 			z = *i;
 		}
@@ -88,7 +89,7 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 			(*i)++;
 	}
 	if (z != (*i))
-		all->tmp3 = str_joiner(all->tmp3, tok, i, &z);
+		tmp3 = str_joiner(tmp3, tok, i, &z);
 	(*i)++;
-	return (all->tmp3);
+	return (tmp3);
 }
