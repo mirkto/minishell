@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/21 18:37:36 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 18:49:30 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,9 @@ char		*token_handler(t_param *all, char *tok)
 
 	while (tok[i])
 	{
-		if (tok[i] == '\\' && tok[i + 1] == '\\')
+		if (tok[i] == '\\' && tok[i + 2] == '\0')
 		{
-			tok = ft_strdup("\\");
-			str[i] = tok[i];
-			free(tok);
-			return(str);
-		}
-		else if (tok[i] == '\\' && tok[i + 1] == '\"')
-		{
-			tok = ft_strdup("\"");
-			str[i] = tok[i];
-			free(tok);
+			str[i] = tok[i + 1];
 			return(str);
 		}
 		else if (tok[i] == '>' || tok[i] == '<' || tok[i] == ';' || tok[i] == '|')
