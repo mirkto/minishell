@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/21 20:12:59 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 22:04:54 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct		s_parameters
 	char			*tmp3;
 	int				pipe_num;
 	int				semicolon_num;
+	char			**pipes_tmp;
 	char			c;
 	int				z;
 }					t_param;
