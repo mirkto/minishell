@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 19:17:55 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/21 20:18:43 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 23:07:44 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char		*dollar_in_quote_handler(int *z, int *i, t_param *all, char *tok)
 
 char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
 {
-	if (tok[*i] == '\\' && tok[*i + 1] != '\0' && all->c == '\"')
+	if (tok[*i] == '\\' && tok[*i + 1] == '$' && all->c == '\"')
 	{
 		tmp3 = str_joiner(tmp3, tok, i, &all->z);
 		(*i) += 2;
