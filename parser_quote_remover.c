@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 19:17:55 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/21 19:05:51 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 19:18:28 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char		*str_joiner(char *tmp3, char *tok, int *i, int *z)
 	return (tmp2);
 }
 
-void		exitcode_handler(int *z, int *i, t_param *all, char *tok)
+char		*exitcode_handler(int *z, int *i, t_param *all, char *tok)
 {
 	char	*tmp3;
 	char	*tmp4;
@@ -40,6 +40,7 @@ void		exitcode_handler(int *z, int *i, t_param *all, char *tok)
 	free(tmp4);
 	free(all->tmp);
 	*z = *i;
+	return (tmp3);
 }
 
 char		*dollar_in_quote_handler(int *z, int *i, t_param *all, char *tok)
@@ -83,7 +84,8 @@ char		*quote_remover(int *i, char *tok, t_param *all)
 			z = *i;
 		}
 		else if (tok[*i] == '$' && tok[*i + 1] == '?' && c == '\"')
-			exitcode_handler(&z, i, all, tok);
+			{free(tmp3);
+			tmp3 = exitcode_handler(&z, i, all, tok);}
 		else if (tok[*i] == '$' && c == '\"')
 			{free(tmp3);
 			tmp3 = dollar_in_quote_handler(&z, i, all, tok);}
