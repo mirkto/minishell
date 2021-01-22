@@ -34,10 +34,7 @@ int		blt_exit(t_param *all)
 	if (all->cmd[1])
 	{
 		if (all->cmd[2])
-		{
-			all->tmp_exit_code = 1;
 			return (put_error("too many arguments", "exit"));
-		}
 		if (check_options(all, 1) == TRUE)
 			return (put_error("Enter without any options!", NULL));
 		if (ft_strisdigit(all->cmd[1]) == FALSE)

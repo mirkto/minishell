@@ -18,11 +18,12 @@ int		init_env_and_pathes(t_param *all, char **env)
 	if (search_key_env(all, "OLDPWD") == -1)
 		all->env = inc_env(all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
-	all->tmp_exit_code = 0;
+	tmp_exit_code = 0;
 	all->fd_0 = -2;
 	all->fd_1 = -2;
 	all->save_fd_0 = -2;
 	all->save_fd_1 = -2;
+	all->dollar_q = 0;
 	return (0);
 }
 
@@ -38,8 +39,8 @@ char	*inits_buf(t_param *all)
 	all->num_of_toks = 0;
 	all->vasya = NULL;
 	all->tok = NULL;
-	g_exit_code = all->tmp_exit_code;
-	all->tmp_exit_code = 0;
+	g_exit_code = tmp_exit_code;
+	tmp_exit_code = 0;
 	tmp = NULL;
 	signal(SIGINT, handler_int_c);
 	signal(SIGQUIT, handler_quit_);
@@ -54,6 +55,7 @@ char	*inits_buf(t_param *all)
 	}
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	write(1, "  \b\b", 4);
+	
 	return (tmp);
 }
 
@@ -132,28 +134,28 @@ int		main(int argc, char **argv, char **env)
 		if (parser(&all, &all.buf) == -1 || check_semicolon(&all) == -1)
 			continue ;
 
-		// ft_putendl("/str\\");
-		// put_cmd(&all); // print cmd
-		// ft_putendl("\\___/");
+		ft_putendl("/str\\");
+		put_cmd(&all); // print cmd
+		ft_putendl("\\___/");
 
 		while(all.semicolon_num >= 0)
 		{
 			split_by_semicolon(&all);
-
+			check_and_replace_dollar_q(all.cmd);
 				// // ---print_semicolon---
-				// ft_putstr("\n--");
-				// ft_putnbr(all.semicolon_num);
-				// ft_putstr("--\n");
-				// ft_putendl("/cmd\\");
-				// put_cmd(&all);
-				// ft_putendl("\\___/");
-				// ft_putendl("/tmp\\");
+				ft_putstr("\n--");
+				ft_putnbr(all.semicolon_num);
+				ft_putstr("--\n");
+				ft_putendl("/cmd\\");
+				put_cmd(&all);
+				ft_putendl("\\___/");
+				ft_putendl("/tmp\\");
 				// int	c = -1;
-				// while (all.cmd_tmp[++c] != NULL)
-				// 	ft_putendl(all.cmd_tmp[c]);
-				// if (all.cmd_tmp[0] == NULL)
-				// 	ft_putendl("#free");
-				// ft_putendl("\\___/");
+				// while (all.cmd_remnant[++c] != NULL)
+				// 	ft_putendl(all.cmd_remnant[c]);
+				if (all.cmd_remnant[0] == NULL)
+					ft_putendl("#free");
+				ft_putendl("\\___/");
 				// // ---print_semicolon---
 
 			all.semicolon_num--;

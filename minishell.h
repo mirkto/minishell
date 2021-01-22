@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:58:02 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/21 22:04:54 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/21 17:37:35 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct		s_parameters
 	char			**env;
 	char			**cmd;
 	char			**pathes;
-	int				tmp_exit_code;
 	int				num_of_toks;
 	t_list			*vasya;
 	t_list			*tmp_vasya;
@@ -71,8 +70,10 @@ typedef struct		s_parameters
 	char			*tmp3;
 	int				pipe_num;
 	int				semicolon_num;
-	char			**pipes_tmp;
-	char			c;
+	char			**pipes_remnant;
+	char			**cmd_remnant;
+	int				dollar_q;
+	int				c;
 	int				z;
 }					t_param;
 
@@ -130,6 +131,7 @@ int					check_pipes(t_param *all);
 int					split_by_pipes(t_param *all);
 int					check_semicolon(t_param *all);
 int					split_by_semicolon(t_param *all);
+int					check_and_replace_dollar_q(char **cmd);
 // ---
 
 int					pipe_conveyor(t_param *all);
@@ -138,5 +140,6 @@ char				*inits_buf_and_get_line(t_param *all, char *buf);
 int					executor(t_param *all);
 
 int					g_exit_code;
+int					tmp_exit_code;
 
 #endif

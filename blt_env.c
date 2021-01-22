@@ -17,13 +17,21 @@ char	**inc_env(char **env, char *str)
 	char	**tmp;
 	int		len;
 
+	// ft_putendl("-inv_env-");
 	len = 0;
 	while (env[0][len])
 		len++;
+	// ft_putnbr(len);
+	// ft_putendl("");
 	tmp = copy_env(env, len + 1);
+	// ft_putendl("tmp");
 	free_array(env);
+	// free(tmp[len]);
+	// ft_putendl("");
+	
 	tmp[len] = ft_strdup(str);
 	tmp[len + 1] = NULL;
+	// ft_putendl("-inv_env-");
 	return (tmp);
 }
 
@@ -57,7 +65,10 @@ int		search_key_env(t_param *all, char *str)
 	int		index;
 	int		len;
 
-	len = ft_strlen(str);
+	if (str == NULL)
+		len = 0;
+	else
+		len = ft_strlen(str);
 	index = 0;
 	while (all->env[index])
 	{

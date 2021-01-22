@@ -38,6 +38,11 @@ write(1, " | ", 3);
 ft_putstr(strerror(errno));
 
 // alias mm="make && ./minishell"
+
+	i = -1;
+	while (str[++i] != NULL)
+		ft_putendl(str[i]);
+
 */
 # include <unistd.h> // for NULL
 # include <dirent.h> // for DIR
@@ -357,4 +362,34 @@ int		check_tmp_on_end(t_param *all)
 		i++;
 	}
 		return (0);
+}
+
+void	check_dollar(char **cmd)
+{
+	int		word;
+	int		c;
+	int		i;
+	int		j;
+
+	word = 0;
+	while (cmd[++word])
+	{
+		c = 0;
+		i = 0;
+		// tmp = ft_strdup(all->cmd[word]);
+		while (cmd[word][c])
+		{
+			while (cmd[word][c] == '$')
+			{
+				c++;
+				while (ft_isalpha(cmd[word][c]) == TRUE)
+					c++;
+				if (ft_isdigit(cmd[word][c]) == TRUE)
+					c++;
+			}
+			j = -1;
+			while (cmd[word][++j + c] != '\0')
+				cmd[word][j + c] = cmd[word][j + c + 1];
+		}
+	}
 }

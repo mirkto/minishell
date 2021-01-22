@@ -34,11 +34,18 @@ int		put_error(char *str_error, char *arg)
 	else
 	{
 		write(1, "minishell: ", 11);
-		ft_putstr(arg);
+		if (arg[0] == '$')
+		{
+			ft_putstr(&arg[1]);
+			free(arg);
+		}
+		else
+			ft_putstr(arg);
 		write(1, ": ", 2);
 		ft_putstr(str_error);
 		write(1, "\n", 1);
 	}
+	g_exit_code = 1;
 	return (-1);
 }
 

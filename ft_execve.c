@@ -34,7 +34,7 @@ int		exec_fork(t_param *all)
 	fd_check_and_close(all);
 	if (wr != -1)
 	{
-		all->tmp_exit_code = WEXITSTATUS(status);
+		tmp_exit_code = WEXITSTATUS(status);
 		return (1);
 	}
 	return (0);
@@ -102,7 +102,7 @@ int		ft_execve(t_param *all)
 		flag = exec_check_path(all);
 	if (flag == 0)
 	{
-		all->tmp_exit_code = 127;
+		tmp_exit_code = 127;
 		put_error("command not found", all->cmd[0]);
 	}
 	return (0);

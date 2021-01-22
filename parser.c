@@ -18,7 +18,7 @@ char		*exit_handler(char *str)
 	char	*tmp2;
 
 	tmp = str;
-	str = ft_itoa(g_exit_code);
+	str = ft_strdup("$?");//str = ft_itoa(g_exit_code);
 	tmp2 = ft_strjoin(tmp, str);
 	free(str);
 	free(tmp);
@@ -86,9 +86,9 @@ char		*token_handler(t_param *all, char *tok)
 				str = tmp2;
 				z = i;
 			}
-			else if (tok[i] == '$' && tok[i + 1] == '?')
-				return (exit_handler(str));
-			else if (tok[i] == '$')
+			// else if (tok[i] == '$' && tok[i + 1] == '?')
+			// 	return (exit_handler(str));
+			else if (tok[i] == '$' && tok[i + 1] != '?')
 				return (dollar_handler(all, tok, &i, str));
 			else
 				i++;
