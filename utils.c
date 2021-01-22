@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 17:13:51 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/11 19:32:45 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/22 22:05:02 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ int		put_error(char *str_error, char *arg)
 	else
 	{
 		write(1, "minishell: ", 11);
-		if (arg[0] == '$')
-		{
-			ft_putstr(&arg[1]);
-			free(arg);
-		}
-		else
+		// if (arg[0] == '$')
+		// {
+		// 	ft_putstr(&arg[1]);
+		// 	free(arg);
+		// }
+		// else
 			ft_putstr(arg);
 		write(1, ": ", 2);
 		ft_putstr(str_error);

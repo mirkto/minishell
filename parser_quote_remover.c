@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/17 19:17:55 by arannara          #+#    #+#             */
-/*   Updated: 2021/01/21 23:07:44 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/22 22:33:25 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,13 @@ char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
 		tmp3 = str_joiner(tmp3, tok, i, &all->z);
 		(*i) += 2;
 		all->z = *i;
+		all->flag = 3;
 	}
+	// else if (tok[*i] == '\\' && tok[*i + 1] == '\"' && all->c == '\"')
+	// {
+	// 	free(tmp3);
+	// 	tmp3 = ft_strdup("\"");
+	// }
 	else if (tok[*i] == '$' && tok[*i + 1] == '?' && all->c == '\"')
 	{
 		free(tmp3);

@@ -6,7 +6,7 @@
 /*   By: arannara <arannara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 16:55:10 by ngonzo            #+#    #+#             */
-/*   Updated: 2021/01/21 20:48:32 by arannara         ###   ########.fr       */
+/*   Updated: 2021/01/22 22:26:08 by arannara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,23 @@ char		*dollar_handler(t_param *all, char *tok, int *i, char *str)
 	return (str);
 }
 
+char		*slash_remover(int *i, char *tok, t_param *all)
+{
+	char	*tmp3;
+
+	all->c = tok[(*i)++];
+	all->z = *i;
+	tmp3 = ft_calloc(sizeof(char), 2);
+	all->flag = 0;
+	while (tok[*i] && tok[*i] != all->c)
+		(*i)++;
+	if (all->z != (*i))
+		tmp3 = str_joiner(tmp3, tok, i, &all->z);
+	(*i)++;
+	return (tmp3);
+}
+
+
 char		*token_handler(t_param *all, char *tok)
 {
 	char	*str;
@@ -53,10 +70,28 @@ char		*token_handler(t_param *all, char *tok)
 	str = ft_calloc(sizeof(char), 3);
 	while (tok[i])
 	{
-		if (tok[i] == '\\' && tok[i + 2] == '\0')
+		if (tok[i] == '\\')
 		{
-			str[i] = tok[i + 1];
-			return (str);
+			if (z != i)
+			{
+				str = str_joiner(str, tok, &i, &z);
+				z = i;
+			}
+			if (tok[i] == '\\')
+			{
+				str = str_joiner(str, tok, &i, &z);
+				z = i;
+				tmp = slash_remover(&i, tok, all);
+				tmp2 = ft_strjoin(str, tmp);
+				free(str);
+				free(tmp);
+				str = tmp2;
+				z = i;
+			}
+			else
+				i++;
+			// str[i] = tok[i + 1];
+			// return (str);
 		}
 		else if (tok[i] == '>' || tok[i] == '<'
 				|| tok[i] == ';' || tok[i] == '|')
