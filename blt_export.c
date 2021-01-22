@@ -59,6 +59,8 @@ int		blt_export_check_valid_name(t_param *all, int arg_n)
 	i = 0;
 	if (all->cmd[arg_n][i] != '_' && ft_isalpha(all->cmd[arg_n][i]) == FALSE)
 		return (ERROR);
+	if (all->cmd[arg_n][i] == '=')
+		return (ERROR);
 	i++;
 	while (all->cmd[arg_n][i] != '=' && all->cmd[arg_n][i] != '\0')
 	{
@@ -79,7 +81,6 @@ int		blt_export(t_param *all)
 
 	if (!all->cmd[1] || all->cmd[1][0] == '#')
 		return (blt_export_print(all));
-	check_dollar(all);
 	arg_n = 1;
 	while (all->cmd[arg_n])
 	{
@@ -88,7 +89,7 @@ int		blt_export(t_param *all)
 		if (blt_export_check_valid_name(all, arg_n) == ERROR)
 			put_error("not a valid identifier",
 						ft_strjoin("$export: ", all->cmd[arg_n]));
-		if (ft_strchr(all->cmd[arg_n], '=') == FALSE)
+		else if (ft_strchr(all->cmd[arg_n], '=') == FALSE)
 			blt_export_without_value(all, arg_n);
 		else
 			blt_export_with_value(all, arg_n);

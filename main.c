@@ -55,7 +55,6 @@ char	*inits_buf(t_param *all)
 	}
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	write(1, "  \b\b", 4);
-	
 	return (tmp);
 }
 
@@ -113,7 +112,6 @@ int		executor(t_param *all)
 	else
 		ft_execve(all);
 	fd_check_and_close(all);
-	// free_array(all->cmd);
 	return (0);
 }
 
@@ -133,48 +131,14 @@ int		main(int argc, char **argv, char **env)
 			all.buf = inits_buf_and_get_line(&all, all.tmp);
 		if (parser(&all, &all.buf) == -1 || check_semicolon(&all) == -1)
 			continue ;
-
-		ft_putendl("/str\\");
-		put_cmd(&all); // print cmd
-		ft_putendl("\\___/");
-
-		while(all.semicolon_num >= 0)
+		while (all.semicolon_num >= 0)
 		{
 			split_by_semicolon(&all);
 			check_and_replace_dollar_q(all.cmd);
-				// // ---print_semicolon---
-				ft_putstr("\n--");
-				ft_putnbr(all.semicolon_num);
-				ft_putstr("--\n");
-				ft_putendl("/cmd\\");
-				put_cmd(&all);
-				ft_putendl("\\___/");
-				ft_putendl("/tmp\\");
-				// int	c = -1;
-				// while (all.cmd_remnant[++c] != NULL)
-				// 	ft_putendl(all.cmd_remnant[c]);
-				if (all.cmd_remnant[0] == NULL)
-					ft_putendl("#free");
-				ft_putendl("\\___/");
-				// // ---print_semicolon---
-
 			all.semicolon_num--;
 			check_pipes(&all);
-				// // ---print_pipes---
-				// ft_putstr("\n|");
-				// ft_putnbr(all.pipe_num);
-				// ft_putstr("| pipes\n");
-				// // ---print_pipes---
 			if (all.pipe_num != -1)
-			{
-					// ft_putendl("_/cmd\\");
-					// put_cmd(&all);
-					// ft_putendl("_\\___/");
 				pipe_conveyor(&all);
-					// ft_putendl("__/cmd\\");
-					// put_cmd(&all);
-					// ft_putendl("__\\___/");
-			}
 			else
 				executor(&all);
 		}

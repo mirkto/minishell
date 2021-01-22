@@ -283,113 +283,51 @@ int main(int argc, char **argv, char **envp)
 	wait(NULL);
 	return (0);
 }
-// ----pff-----------
-int		pipe_conveyor_one(t_param *all, int fd[2])
-{
-	if (fork() == 0)
-	{
-		// ft_putendl("-1-");
-		// int i = -1;
-		// while (all->cmd[++i] != NULL)
-		// 	ft_putendl(all->cmd[i]);
+// ----print_cmd-----
+		// ft_putendl("/str\\");
+		// put_cmd(&all); // print cmd
+		// ft_putendl("\\___/");
 
-		close(fd[0]);
-		dup2(fd[1], 1);
-		close(fd[1]);
-		fd_processor(all);
-		ft_execve(all);
-		// executor(all);
-		exit (1);
+		while(all.semicolon_num >= 0)
+		{
+			split_by_semicolon(&all);
+			check_and_replace_dollar_q(all.cmd);
+				// // ---print_semicolon---
+				// ft_putstr("\n--");
+				// ft_putnbr(all.semicolon_num);
+				// ft_putstr("--\n");
+				// ft_putendl("/cmd\\");
+				// put_cmd(&all);
+				// ft_putendl("\\___/");
+				// ft_putendl("/tmp\\");
+				// int	c = -1;
+				// while (all.cmd_remnant[++c] != NULL)
+				// 	ft_putendl(all.cmd_remnant[c]);
+				// if (all.cmd_remnant[0] == NULL)
+				// 	ft_putendl("#free");
+				// ft_putendl("\\___/");
+				// // ---print_semicolon---
+
+			all.semicolon_num--;
+			check_pipes(&all);
+				// ---print_pipes---
+				// ft_putstr("\n|");
+				// ft_putnbr(all.pipe_num);
+				// ft_putstr("| pipes\n");
+				// ---print_pipes---
+			if (all.pipe_num != -1)
+			{
+					// ft_putendl("_/cmd\\");
+					// put_cmd(&all);
+					// ft_putendl("_\\___/");
+				pipe_conveyor(&all);
+					// ft_putendl("__/cmd\\");
+					// put_cmd(&all);
+					// ft_putendl("__\\___/");
+			}
+			else
+				executor(&all);
+		}
+		free_array(all.cmd);
 	}
 	return (0);
-}
-
-int		pipe_conveyor_two(t_param *all, int fd[2])
-{
-	if (fork() == 0)
-	{
-		// ft_putendl("-2-");
-		// int i = -1;
-		// while (all->cmd[++i] != NULL)
-		// 	ft_putendl(all->cmd[i]);
-
-		close(fd[1]);
-		dup2(fd[0], 0);
-		close(fd[0]);
-		fd_processor(all);
-		ft_execve(all);
-		// executor(all);
-		exit (1);
-	}
-	return (0);
-}
-
-int		check_tmp_on_end(t_param *all)
-{
-	int		i;
-	char	**tmp;
-	
-	i = 0;
-	tmp = NULL;
-	while (1)
-	{
-		
-		if (all->cmd_tmp[i + 1] == NULL)
-		{
-			free_array(all->cmd);
-			all->cmd = copy_env(all->cmd_tmp, 0);
-			// free_array(all->cmd_tmp);
-			break ;
-		}
-		if (!ft_strcmp(all->cmd_tmp[i], ";") || !ft_strcmp(all->cmd_tmp[i], "|"))
-		{
-			tmp = copy_env(&all->cmd_tmp[i + 1], 0);
-			all->i = 0;
-			while (all->cmd_tmp[i + all->i])
-				free(all->cmd_tmp[i + all->i++]);
-			all->cmd_tmp[i] = NULL;
-			free_array(all->cmd);
-			all->cmd = copy_env(all->cmd_tmp, 0);
-			if (tmp != NULL)
-			{
-				free_array(all->cmd_tmp);
-				all->cmd_tmp = copy_env(tmp, 0);
-				free_array(tmp);
-			}
-			// free_array(all->cmd_tmp);
-			break ;
-		}
-		i++;
-	}
-		return (0);
-}
-
-void	check_dollar(char **cmd)
-{
-	int		word;
-	int		c;
-	int		i;
-	int		j;
-
-	word = 0;
-	while (cmd[++word])
-	{
-		c = 0;
-		i = 0;
-		// tmp = ft_strdup(all->cmd[word]);
-		while (cmd[word][c])
-		{
-			while (cmd[word][c] == '$')
-			{
-				c++;
-				while (ft_isalpha(cmd[word][c]) == TRUE)
-					c++;
-				if (ft_isdigit(cmd[word][c]) == TRUE)
-					c++;
-			}
-			j = -1;
-			while (cmd[word][++j + c] != '\0')
-				cmd[word][j + c] = cmd[word][j + c + 1];
-		}
-	}
-}

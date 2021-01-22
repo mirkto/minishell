@@ -16,6 +16,7 @@ int		check_pipes(t_param *all)
 {
 	int	i;
 
+	all->pipe_num = -1;
 	i = -1;
 	while (all->cmd[++i] != NULL)
 		if (!ft_strcmp(all->cmd[i], "|"))
@@ -44,7 +45,6 @@ int		split_by_pipes(t_param *all)
 			while (all->cmd[i + all->i])
 				free(all->cmd[i + all->i++]);
 			all->cmd[i] = NULL;
-
 			tmp_array = copy_env(&all->pipes_remnant[i + 1], 0);
 			free_array(all->pipes_remnant);
 			all->pipes_remnant = tmp_array;
@@ -66,13 +66,10 @@ int		check_semicolon(t_param *all)
 {
 	int	i;
 
-	// if (!all->cmd)
-	// 	return (-1);
 	i = -1;
 	while (all->cmd[++i] != NULL)
 		if (!ft_strcmp(all->cmd[i], ";"))
 			all->semicolon_num++;
-
 	if (all->cmd[i] == NULL && !ft_strcmp(all->cmd[i - 1], ";"))
 	{
 		cmd_remove_and_shift(all, i - 1, 1);
@@ -100,7 +97,6 @@ int		split_by_semicolon(t_param *all)
 			while (all->cmd[i + j])
 				free(all->cmd[i + j++]);
 			all->cmd[i] = NULL;
-
 			tmp_array = copy_env(&all->cmd_remnant[i + 1], 0);
 			free_array(all->cmd_remnant);
 			all->cmd_remnant = tmp_array;
@@ -145,84 +141,3 @@ int		check_and_replace_dollar_q(char **cmd)
 	}
 	return (0);
 }
-// // ------------------
-// int		paste_tmp_and_free(t_param *all)
-// {
-// 	if (all->cmd_flag == 1)
-// 	{
-// 		all->cmd_flag = 0;
-// 		all->cmd = copy_env(all->cmd_tmp, 0);
-// 		free_array(all->cmd_tmp);
-// 		// ft_putendl("-tmp-");
-// 		// put_cmd(all);
-// 		// ft_putendl("-tmp-");
-// 	}
-// 	return (0);
-// }
-
-// int		cut_and_save_or_check_end(t_param *all, int *i)
-// {
-// 	if (all->cmd[*i + 1] == NULL)
-// 	{
-// 		free(all->cmd[*i]);
-// 		all->cmd[*i] = NULL;
-// 		return (1);
-// 	}
-// 	else
-// 	{
-// 		all->cmd_tmp = copy_env(&all->cmd[*i + 1], 0);
-// 		all->i = 0;
-// 		while (all->cmd[*i + all->i])
-// 			free(all->cmd[*i + all->i++]);
-// 		all->cmd[*i] = NULL;
-// 	}
-// 	all->cmd_flag = 1;
-// 	*i = 0;
-// 	return (0);
-// }
-
-// int		check_semicolon_and_pipe(t_param *all)
-// {
-// 	int	i;
-
-// 	// ----print_cmd----
-// 	ft_putendl("\n-str-");
-// 	put_cmd(all);
-// 	ft_putendl("-str-");
-// 	// ----print_cmd----
-
-// 	all->pipe_num = 0;
-// 	i = -1;
-// 	while (all->cmd[++i])
-// 		if (!ft_strcmp(all->cmd[i], "|"))
-// 			all->pipe_num += 1;
-// 	ft_putnbr(all->pipe_num);//--
-// 	ft_putendl("<-pipe_flag-\n");//--
-
-// 	i = 0;
-// 	while (1)
-// 	{
-// 		paste_tmp_and_free(all);
-// 		if (all->cmd[i] == NULL)
-// 		{
-// 			if (all->pipe_num == 0)
-// 				executor(all);
-// 			free_array(all->cmd);
-// 			return (0);
-// 		}
-// 		else if (!ft_strcmp(all->cmd[i], "|"))
-// 		{
-// 			if (cut_and_save_or_check_end(all, &i) == 0)
-// 				pipe_conveyor(all);
-// 			continue ;
-// 		}
-// 		else if (!ft_strcmp(all->cmd[i], ";"))
-// 		{
-// 			if (cut_and_save_or_check_end(all, &i) == 0)
-// 				executor(all);
-// 			continue ;
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
