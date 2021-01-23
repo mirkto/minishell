@@ -125,19 +125,21 @@ int					fd_close(int fd);
 int					fd_check_and_dup(t_param *all);
 int					fd_check_and_close(t_param *all);
 int					cmd_remove_and_shift(t_param *all, int index, int num);
-void				fd_processor(t_param *all);
+void				fd_processor(t_param *all, int i);
 
+char				**split_loop(t_param *all, int i, char **cmd_tmp);
 int					check_pipes(t_param *all);
-int					split_by_pipes(t_param *all);
 int					check_semicolon(t_param *all);
 int					split_by_semicolon(t_param *all);
 int					check_and_replace_dollar_q(char **cmd);
-// ---
 
 int					pipe_conveyor(t_param *all);
 
 char				*inits_buf_and_get_line(t_param *all, char *buf);
 int					executor(t_param *all);
+
+int					init_env_and_pathes(t_param *all, char **env);
+void				inits_on_start_loop(t_param *all);
 
 int					g_exit_code;
 int					tmp_exit_code;

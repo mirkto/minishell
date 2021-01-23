@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+char	**split_loop(t_param *all, int i, char **cmd_tmp)
+{
+	int		j;
+	char	**tmp_array;
+
+	tmp_array = NULL;
+	free_array(all->cmd);
+	all->cmd = copy_env(cmd_tmp, 0);
+	j = 0;
+	while (all->cmd[i + j])
+		free(all->cmd[i + j++]);
+	all->cmd[i] = NULL;
+	tmp_array = copy_env(&cmd_tmp[i + 1], 0);
+	free_array(cmd_tmp);
+	cmd_tmp = tmp_array;
+	return (tmp_array);
+}
+
 int		check_pipes(t_param *all)
 {
 	int	i;
@@ -25,40 +43,6 @@ int		check_pipes(t_param *all)
 		return (1);
 	all->pipe_num++;
 	all->pipes_remnant = copy_env(all->cmd, 0);
-	return (0);
-}
-
-int		split_by_pipes(t_param *all)
-{
-	int		i;
-	char	**tmp_array;
-
-	tmp_array = NULL;
-	i = 0;
-	while (all->pipes_remnant[i] != NULL)
-	{
-		if (!ft_strcmp(all->pipes_remnant[i], "|"))
-		{
-			free_array(all->cmd);
-			all->cmd = copy_env(all->pipes_remnant, 0);
-			all->i = 0;
-			while (all->cmd[i + all->i])
-				free(all->cmd[i + all->i++]);
-			all->cmd[i] = NULL;
-			tmp_array = copy_env(&all->pipes_remnant[i + 1], 0);
-			free_array(all->pipes_remnant);
-			all->pipes_remnant = tmp_array;
-			return (1);
-		}
-		i++;
-	}
-	free_array(all->cmd);
-	all->cmd = copy_env(all->pipes_remnant, 0);
-	all->i = 0;
-	while (all->cmd[i + all->i])
-		free(all->cmd[i + all->i++]);
-	all->cmd[i] = NULL;
-	free_array(all->pipes_remnant);
 	return (0);
 }
 
@@ -91,15 +75,8 @@ int		split_by_semicolon(t_param *all)
 	{
 		if (!ft_strcmp(all->cmd_remnant[i], ";"))
 		{
-			free_array(all->cmd);
-			all->cmd = copy_env(all->cmd_remnant, 0);
-			j = 0;
-			while (all->cmd[i + j])
-				free(all->cmd[i + j++]);
-			all->cmd[i] = NULL;
-			tmp_array = copy_env(&all->cmd_remnant[i + 1], 0);
-			free_array(all->cmd_remnant);
-			all->cmd_remnant = tmp_array;
+			all->cmd_remnant = split_loop(all, i, all->cmd_remnant);
+			all->semicolon_num--;
 			return (1);
 		}
 		i++;
@@ -111,6 +88,7 @@ int		split_by_semicolon(t_param *all)
 		free(all->cmd[i + j++]);
 	all->cmd[i] = NULL;
 	free_array(all->cmd_remnant);
+	all->semicolon_num--;
 	return (0);
 }
 

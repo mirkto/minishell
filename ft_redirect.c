@@ -70,11 +70,8 @@ int		cmd_remove_and_shift(t_param *all, int index, int num)
 	return (1);
 }
 
-void	fd_processor(t_param *all)
+void	fd_processor(t_param *all, int i)
 {
-	int	i;
-
-	i = 0;
 	while (all->cmd[i] != NULL)
 	{
 		if (all->fd_1 != -2 &&

@@ -12,7 +12,32 @@
 
 #include "minishell.h"
 
-void	fd_connect(int prev_fd[], int next_fd[])
+int		split_by_pipes(t_param *all)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (all->pipes_remnant[i] != NULL)
+	{
+		if (!ft_strcmp(all->pipes_remnant[i], "|"))
+		{
+			all->pipes_remnant = split_loop(all, i, all->pipes_remnant);
+			return (1);
+		}
+		i++;
+	}
+	free_array(all->cmd);
+	all->cmd = copy_env(all->pipes_remnant, 0);
+	j = 0;
+	while (all->cmd[i + j])
+		free(all->cmd[i + j++]);
+	all->cmd[i] = NULL;
+	free_array(all->pipes_remnant);
+	return (0);
+}
+
+void	connect_and_execut(t_param *all, int prev_fd[], int next_fd[])
 {
 	if (prev_fd[0] >= 0)
 	{
@@ -26,23 +51,36 @@ void	fd_connect(int prev_fd[], int next_fd[])
 		close(next_fd[1]);
 		close(next_fd[0]);
 	}
+	executor(all);
+	exit(1);
+}
+
+void	wait_all_execve(int number_of_pipes)
+{
+	int	i;
+
+	i = 0;
+	while (i <= number_of_pipes)
+	{
+		wait(NULL);
+		i++;
+	}
 }
 
 int		pipe_conveyor(t_param *all)
 {
-	int		i;
 	int		prev_fd[2];
 	int		next_fd[2];
 
 	next_fd[0] = -2;
 	next_fd[1] = -2;
-	i = 0;
-	while (i <= all->pipe_num)
+	all->i = -1;
+	while (++all->i <= all->pipe_num)
 	{
 		split_by_pipes(all);
 		prev_fd[0] = next_fd[0];
 		prev_fd[1] = next_fd[1];
-		if (i != all->pipe_num)
+		if (all->i != all->pipe_num)
 			pipe(next_fd);
 		else
 		{
@@ -50,20 +88,10 @@ int		pipe_conveyor(t_param *all)
 			next_fd[1] = -2;
 		}
 		if (fork() == 0)
-		{
-			fd_connect(prev_fd, next_fd);
-			executor(all);
-			exit(1);
-		}
+			connect_and_execut(all, prev_fd, next_fd);
 		close(prev_fd[0]);
 		close(prev_fd[1]);
-		i++;
 	}
-	i = 0;
-	while (i <= all->pipe_num)
-	{
-		wait(NULL);
-		i++;
-	}
+	wait_all_execve(all->pipe_num);
 	return (0);
 }
