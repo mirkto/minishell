@@ -34,12 +34,12 @@ int		put_error(char *str_error, char *arg)
 	else
 	{
 		write(1, "minishell: ", 11);
-		// if (arg[0] == '$')
-		// {
-		// 	ft_putstr(&arg[1]);
-		// 	free(arg);
-		// }
-		// else
+		if (arg[0] == '@' && arg[1] == '#' && arg[2] == '&')
+		{
+			ft_putstr(&arg[3]);
+			free(arg);
+		}
+		else
 			ft_putstr(arg);
 		write(1, ": ", 2);
 		ft_putstr(str_error);

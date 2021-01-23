@@ -16,7 +16,7 @@ int		blt_exit_and_free(t_param *all, int nbr, int check_nbr)
 {
 	if (check_nbr == FALSE)
 		put_error("numeric argument required",
-			ft_strjoin("$exit: ", all->cmd[1]));
+			ft_strjoin("@#&exit: ", all->cmd[1]));
 	while (nbr > 255)
 		nbr -= 256;
 	while (nbr < 0)

@@ -88,7 +88,7 @@ int		blt_export(t_param *all)
 			return (put_error("Enter without any options!", NULL));
 		if (blt_export_check_valid_name(all, arg_n) == ERROR)
 			put_error("not a valid identifier",
-						ft_strjoin("$export: ", all->cmd[arg_n]));
+						ft_strjoin("@#&export: ", all->cmd[arg_n]));
 		else if (ft_strchr(all->cmd[arg_n], '=') == FALSE)
 			blt_export_without_value(all, arg_n);
 		else
