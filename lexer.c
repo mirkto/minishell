@@ -18,7 +18,7 @@ int			is_quote_close(int *i, char *tmp)
 
 	c = tmp[*i];
 	(*i)++;
-	while(tmp[*i] != c)
+	while (tmp[*i] != c)
 	{
 		if (tmp[*i] == '\\' && c == '\"' && tmp[*i + 1] != '\0')
 			(*i)++;
@@ -38,24 +38,17 @@ int			lexer3(char *tmp)
 {
 	int		i;
 
-	// i = 0;
-	// while (tmp[i])
-	// {
-	// 	if (tmp[i] == '&' && (tmp[i + 1]) == '&')
-	// 		return (put_error("syntax error near unexpected token `&&'", 0));
-	// 	i++;
-	// }
 	i = 0;
 	while (tmp[i])
 	{
-		if (tmp[i] == '\\' )
+		if (tmp[i] == '\\')
 			i++;
 		else if (tmp[i] == '\'' || tmp[i] == '\"')
 		{
-				if (is_quote_close(&i, tmp) == TRUE)
-					continue ;
-				else
-					return (put_error("quotes are not close", 0));
+			if (is_quote_close(&i, tmp) == TRUE)
+				continue ;
+			else
+				return (put_error("quotes are not close", 0));
 		}
 		i++;
 	}

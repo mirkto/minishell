@@ -34,7 +34,7 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 
 	if (!(tmp = inits_buf(all)))
 		return (NULL);
-	write(1, "\033[0;32mminishell-0.4$ \033[0m", 26);
+	write(1, "\033[0;32mminishell$ \033[0m", 22);
 	if (!read(0, tmp, BUFFER_SIZE))
 	{
 		if (buf != NULL)

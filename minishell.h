@@ -116,6 +116,10 @@ int					lexer(char *tmp);
 char				**list_maker(t_param *all, char *tmp);
 char				*str_joiner(char *tmp3, char *tok, int *i, int *z);
 char				*quote_remover(int *i, char *tok, t_param *all);
+char		*slash_remover(int *i, char *tok, t_param *all);
+char		*join_and_zi(char *str, char *tok, int *i, int *z);
+void		slash_processing(char *str, char *tok, int *i, t_param *all);
+void		quote_processing(char *str, char *tok, int *i, t_param *all);
 
 void				handler_quit_(int);
 void				handler_int_c(int);

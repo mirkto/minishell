@@ -75,11 +75,6 @@ char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
 		all->z = *i;
 		all->flag = 3;
 	}
-	// else if (tok[*i] == '\\' && tok[*i + 1] == '\"' && all->c == '\"')
-	// {
-	// 	free(tmp3);
-	// 	tmp3 = ft_strdup("\"");
-	// }
 	else if (tok[*i] == '$' && tok[*i + 1] == '?' && all->c == '\"')
 	{
 		free(tmp3);

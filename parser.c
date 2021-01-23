@@ -12,18 +12,13 @@
 
 #include "minishell.h"
 
-char		*exit_handler(char *str)
+char		*join_and_zi(char *str, char *tok, int *i, int *z)
 {
 	char	*tmp;
-	char	*tmp2;
 
-	tmp = str;
-	str = ft_strdup("$?");//str = ft_itoa(g_exit_code);
-	tmp2 = ft_strjoin(tmp, str);
-	free(str);
-	free(tmp);
-	str = tmp2;
-	return (str);
+	tmp = str_joiner(str, tok, i, z);
+	*z = *i;
+	return (tmp);
 }
 
 char		*dollar_handler(t_param *all, char *tok, int *i, char *str)
@@ -56,81 +51,45 @@ char		*slash_remover(int *i, char *tok, t_param *all)
 	return (tmp3);
 }
 
-
 char		*token_handler(t_param *all, char *tok)
 {
 	char	*str;
 	int		i;
-	int		z;
-	char	*tmp;
-	char	*tmp2;
 
 	i = 0;
-	z = 0;
+	all->z = 0;
 	str = ft_calloc(sizeof(char), 3);
 	while (tok[i])
 	{
 		if (tok[i] == '\\')
 		{
-			if (z != i)
-			{
-				str = str_joiner(str, tok, &i, &z);
-				z = i;
-			}
-			if (tok[i] == '\\')
-			{
-				str = str_joiner(str, tok, &i, &z);
-				z = i;
-				tmp = slash_remover(&i, tok, all);
-				tmp2 = ft_strjoin(str, tmp);
-				free(str);
-				free(tmp);
-				str = tmp2;
-				z = i;
-			}
+			if (all->z != i)
+				str = join_and_zi(str, tok, &i, &all->z);
+			if (tok[i] == '\'' || tok[i] == '\"')
+				slash_processing(str, tok, &i, all);
 			else
 				i++;
-			// str[i] = tok[i + 1];
-			// return (str);
 		}
 		else if (tok[i] == '>' || tok[i] == '<'
 				|| tok[i] == ';' || tok[i] == '|')
 		{
-			while (tok[i])
-			{
+			i--;
+			while (tok[++i])
 				str[i] = tok[i];
-				i++;
-			}
 			return (str);
 		}
 		else
 		{
-			if (z != i)
-			{
-				str = str_joiner(str, tok, &i, &z);
-				z = i;
-			}
+			if (all->z != i)
+				str = join_and_zi(str, tok, &i, &all->z);
 			if (tok[i] == '\'' || tok[i] == '\"')
-			{
-				str = str_joiner(str, tok, &i, &z);
-				z = i;
-				tmp = quote_remover(&i, tok, all);
-				tmp2 = ft_strjoin(str, tmp);
-				free(str);
-				free(tmp);
-				str = tmp2;
-				z = i;
-			}
-			// else if (tok[i] == '$' && tok[i + 1] == '?')
-			// 	return (exit_handler(str));
-			else if (tok[i] == '$' && tok[i + 1] != '?')
-				return (dollar_handler(all, tok, &i, str));
+				quote_processing(str, tok, &i, all);
 			else
 				i++;
 		}
 	}
-	if (z != i)
-		str = str_joiner(str, tok, &i, &z);
+	if (all->z != i)
+		str = str_joiner(str, tok, &i, &all->z);
 	return (str);
 }
 
@@ -139,7 +98,6 @@ int			parser(t_param *all, char **buf)
 	char	*tmp;
 	char	**str;
 	char	*str2;
-	int		i;
 
 	tmp = ft_strtrim(*buf, " \t\n");
 	if ((ft_strlen(tmp) <= 0) || (lexer(tmp) == -1))
@@ -149,14 +107,13 @@ int			parser(t_param *all, char **buf)
 		return (-1);
 	}
 	str = list_maker(all, tmp);
-	i = 0;
-	while (str[i])
+	all->i = -1;
+	while (str[++all->i])
 	{
-		str2 = token_handler(all, str[i]);
-		free(str[i]);
-		str[i] = ft_strdup(str2);
+		str2 = token_handler(all, str[all->i]);
+		free(str[all->i]);
+		str[all->i] = ft_strdup(str2);
 		free(str2);
-		i++;
 	}
 	ft_lstclear(&all->tmp_vasya, free);
 	all->cmd = str;

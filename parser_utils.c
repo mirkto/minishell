@@ -85,3 +85,41 @@ char		**list_maker(t_param *all, char *tmp)
 	str[i] = NULL;
 	return (str);
 }
+
+void		slash_processing(char *str, char *tok, int *i, t_param *all)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	if (all->z != *i)
+		tmp = join_and_zi(str, tok, i, &all->z);
+	if (tok[*i] == '\\')
+	{
+		tmp = join_and_zi(str, tok, i, &all->z);
+		tmp = slash_remover(i, tok, all);
+		tmp2 = ft_strjoin(str, tmp);
+		free(str);
+		free(tmp);
+		tmp = tmp2;
+		all->z = *i;
+	}
+}
+
+void		quote_processing(char *str, char *tok, int *i, t_param *all)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	if (all->z != *i)
+		tmp = join_and_zi(str, tok, i, &all->z);
+	if (tok[*i] == '\'' || tok[*i] == '\"')
+	{
+		tmp = join_and_zi(str, tok, i, &all->z);
+		tmp = quote_remover(i, tok, all);
+		tmp2 = ft_strjoin(str, tmp);
+		free(str);
+		free(tmp);
+		tmp = tmp2;
+		all->z = *i;
+	}
+}
