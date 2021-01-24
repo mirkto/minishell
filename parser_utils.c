@@ -86,40 +86,44 @@ char		**list_maker(t_param *all, char *tmp)
 	return (str);
 }
 
-void		slash_processing(char *str, char *tok, int *i, t_param *all)
+void		quote_processing(t_param *all, char *tok)
 {
-	char	*tmp;
-	char	*tmp2;
-
-	if (all->z != *i)
-		tmp = join_and_zi(str, tok, i, &all->z);
-	if (tok[*i] == '\\')
+	if (all->z != all->i)
 	{
-		tmp = join_and_zi(str, tok, i, &all->z);
-		tmp = slash_remover(i, tok, all);
-		tmp2 = ft_strjoin(str, tmp);
-		free(str);
-		free(tmp);
-		tmp = tmp2;
-		all->z = *i;
+		all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
+		all->z = all->i;
 	}
+	if (tok[all->i] == '\'' || tok[all->i] == '\"')
+	{
+		if (all->z != all->i)
+		{
+			all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
+			all->z = all->i;
+		}
+		all->tmp = quote_remover(&all->i, tok, all);
+		all->p_str = join_str_and_tmp(all, all->p_str, all->tmp, all->i);
+	}
+	else
+		all->i++;
 }
 
-void		quote_processing(char *str, char *tok, int *i, t_param *all)
+void		slash_processing(t_param *all, char *tok)
 {
-	char	*tmp;
-	char	*tmp2;
-
-	if (all->z != *i)
-		tmp = join_and_zi(str, tok, i, &all->z);
-	if (tok[*i] == '\'' || tok[*i] == '\"')
+	if (all->z != all->i)
 	{
-		tmp = join_and_zi(str, tok, i, &all->z);
-		tmp = quote_remover(i, tok, all);
-		tmp2 = ft_strjoin(str, tmp);
-		free(str);
-		free(tmp);
-		tmp = tmp2;
-		all->z = *i;
+		all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
+		all->z = all->i;
 	}
+	if (tok[all->i] == '\\')
+	{
+		if (all->z != all->i)
+		{
+			all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
+			all->z = all->i;
+		}
+		all->tmp = slash_remover(&all->i, tok, all);
+		all->p_str = join_str_and_tmp(all, all->p_str, all->tmp, all->i);
+	}
+	else
+		all->i++;
 }

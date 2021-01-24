@@ -73,8 +73,10 @@ typedef struct		s_parameters
 	char			**pipes_remnant;
 	char			**cmd_remnant;
 	int				dollar_q;
+	int				j;
 	int				c;
 	int				z;
+	char			*p_str;
 }					t_param;
 
 typedef struct		s_line
@@ -117,9 +119,8 @@ char				**list_maker(t_param *all, char *tmp);
 char				*str_joiner(char *tmp3, char *tok, int *i, int *z);
 char				*quote_remover(int *i, char *tok, t_param *all);
 char		*slash_remover(int *i, char *tok, t_param *all);
-char		*join_and_zi(char *str, char *tok, int *i, int *z);
-void		slash_processing(char *str, char *tok, int *i, t_param *all);
-void		quote_processing(char *str, char *tok, int *i, t_param *all);
+char		*join_str_and_tmp(t_param *all, char *str, char *tmp, int i);
+
 
 void				handler_quit_(int);
 void				handler_int_c(int);
@@ -144,6 +145,8 @@ int					executor(t_param *all);
 
 int					init_env_and_pathes(t_param *all, char **env);
 void				inits_on_start_loop(t_param *all);
+void		quote_processing(t_param *all, char *tok);
+void		slash_processing(t_param *all, char *tok);
 
 int					g_exit_code;
 int					tmp_exit_code;

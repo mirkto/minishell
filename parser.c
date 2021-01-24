@@ -12,13 +12,15 @@
 
 #include "minishell.h"
 
-char		*join_and_zi(char *str, char *tok, int *i, int *z)
+char		*join_str_and_tmp(t_param *all, char *str, char *tmp, int i)
 {
-	char	*tmp;
+	char	*tmp2;
 
-	tmp = str_joiner(str, tok, i, z);
-	*z = *i;
-	return (tmp);
+	tmp2 = ft_strjoin(str, tmp);
+	free(str);
+	free(tmp);
+	all->z = i;
+	return (tmp2);
 }
 
 char		*dollar_handler(t_param *all, char *tok, int *i, char *str)
@@ -53,44 +55,29 @@ char		*slash_remover(int *i, char *tok, t_param *all)
 
 char		*token_handler(t_param *all, char *tok)
 {
-	char	*str;
-	int		i;
-
-	i = 0;
+	all->i = 0;
 	all->z = 0;
-	str = ft_calloc(sizeof(char), 3);
-	while (tok[i])
+	all->p_str = ft_calloc(sizeof(char), 3);
+	while (tok[all->i])
 	{
-		if (tok[i] == '\\')
+		if (tok[all->i] == '\\')
+			slash_processing(all, tok);
+		else if (tok[all->i] == '>' || tok[all->i] == '<'
+				|| tok[all->i] == ';' || tok[all->i] == '|')
 		{
-			if (all->z != i)
-				str = join_and_zi(str, tok, &i, &all->z);
-			if (tok[i] == '\'' || tok[i] == '\"')
-				slash_processing(str, tok, &i, all);
-			else
-				i++;
-		}
-		else if (tok[i] == '>' || tok[i] == '<'
-				|| tok[i] == ';' || tok[i] == '|')
-		{
-			i--;
-			while (tok[++i])
-				str[i] = tok[i];
-			return (str);
+			while (tok[all->i])
+			{
+				all->p_str[all->i] = tok[all->i];
+				all->i++;
+			}
+			return (all->p_str);
 		}
 		else
-		{
-			if (all->z != i)
-				str = join_and_zi(str, tok, &i, &all->z);
-			if (tok[i] == '\'' || tok[i] == '\"')
-				quote_processing(str, tok, &i, all);
-			else
-				i++;
-		}
+			quote_processing(all, tok);
 	}
-	if (all->z != i)
-		str = str_joiner(str, tok, &i, &all->z);
-	return (str);
+	if (all->z != all->i)
+		all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
+	return (all->p_str);
 }
 
 int			parser(t_param *all, char **buf)
@@ -107,12 +94,12 @@ int			parser(t_param *all, char **buf)
 		return (-1);
 	}
 	str = list_maker(all, tmp);
-	all->i = -1;
-	while (str[++all->i])
+	all->j = -1;
+	while (str[++all->j])
 	{
-		str2 = token_handler(all, str[all->i]);
-		free(str[all->i]);
-		str[all->i] = ft_strdup(str2);
+		str2 = token_handler(all, str[all->j]);
+		free(str[all->j]);
+		str[all->j] = ft_strdup(str2);
 		free(str2);
 	}
 	ft_lstclear(&all->tmp_vasya, free);
