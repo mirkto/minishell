@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char		*join_str_and_tmp(t_param *all, char *str, char *tmp, int i)
+char		*join_str_tmp(t_param *all, char *str, char *tmp, int i)
 {
 	char	*tmp2;
 
