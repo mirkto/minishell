@@ -86,7 +86,7 @@ char		**list_maker(t_param *all, char *tmp)
 	return (str);
 }
 
-void		quote_processing(t_param *all, char *tok)
+int			quote_processing(t_param *all, char *tok)
 {
 	if (all->z != all->i)
 	{
@@ -101,10 +101,13 @@ void		quote_processing(t_param *all, char *tok)
 			all->z = all->i;
 		}
 		all->tmp = quote_remover(&all->i, tok, all);
-		all->p_str = join_str_and_tmp(all, all->p_str, all->tmp, all->i);
+		all->p_str = join_str_tmp(all, all->p_str, all->tmp, all->i);
 	}
+	else if (tok[all->i] == '$' && tok[all->i + 1] != '?')
+		return (1);
 	else
 		all->i++;
+	return (0);
 }
 
 void		slash_processing(t_param *all, char *tok)
@@ -122,7 +125,7 @@ void		slash_processing(t_param *all, char *tok)
 			all->z = all->i;
 		}
 		all->tmp = slash_remover(&all->i, tok, all);
-		all->p_str = join_str_and_tmp(all, all->p_str, all->tmp, all->i);
+		all->p_str = join_str_tmp(all, all->p_str, all->tmp, all->i);
 	}
 	else
 		all->i++;

@@ -18,7 +18,7 @@ int		init_env_and_pathes(t_param *all, char **env)
 	if (search_key_env(all, "OLDPWD") == -1)
 		all->env = inc_env(all->env, "OLDPWD");
 	all->pathes = split_pathes(all, env);
-	tmp_exit_code = 0;
+	g_tmp_exit_code = 0;
 	all->fd_0 = -2;
 	all->fd_1 = -2;
 	all->save_fd_0 = -2;
@@ -37,8 +37,8 @@ void	inits_on_start_loop(t_param *all)
 	all->num_of_toks = 0;
 	all->vasya = NULL;
 	all->tok = NULL;
-	g_exit_code = tmp_exit_code;
-	tmp_exit_code = 0;
+	g_exit_code = g_tmp_exit_code;
+	g_tmp_exit_code = 0;
 	signal(SIGINT, handler_int_c);
 	signal(SIGQUIT, handler_quit_);
 	all->redirect = 0;

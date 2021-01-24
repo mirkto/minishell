@@ -56,7 +56,10 @@ char		*dollar_in_quote_handler(int *z, int *i, t_param *all, char *tok)
 			&& tok[*i] != '\\' && tok[*i] != '\"')
 		(*i)++;
 	tmp4 = ft_substr(tok, *z, (*i) - (*z));
-	all->tmp = get_value_env(all, tmp4);
+	if (all->flag == 3)
+		all->tmp = ft_strjoin("$", tmp4);
+	else
+		all->tmp = get_value_env(all, tmp4);
 	free(tmp4);
 	tmp4 = ft_strjoin(tmp3, all->tmp);
 	free(tmp3);
@@ -71,7 +74,7 @@ char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
 	if (tok[*i] == '\\' && tok[*i + 1] == '$' && all->c == '\"')
 	{
 		tmp3 = str_joiner(tmp3, tok, i, &all->z);
-		(*i) += 2;
+		(*i) += 1;
 		all->z = *i;
 		all->flag = 3;
 	}

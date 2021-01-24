@@ -13,7 +13,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>// printf <-delete me
 # include <strings.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -102,7 +101,7 @@ void				check_dollar(t_param *all);
 int					blt_export_print(t_param *all);
 int					blt_export_write(t_param *all, int i, int arg_n);
 int					blt_export(t_param *all);
-void		put_cmd(t_param *all);
+void				put_cmd(t_param *all);
 
 char				**inc_env(char **env, char *str);
 char				**copy_env(char **env, int len);
@@ -118,12 +117,12 @@ int					lexer(char *tmp);
 char				**list_maker(t_param *all, char *tmp);
 char				*str_joiner(char *tmp3, char *tok, int *i, int *z);
 char				*quote_remover(int *i, char *tok, t_param *all);
-char		*slash_remover(int *i, char *tok, t_param *all);
-char		*join_str_and_tmp(t_param *all, char *str, char *tmp, int i);
+char				*slash_remover(int *i, char *tok, t_param *all);
+char				*join_str_tmp(t_param *all, char *str, char *tmp, int i);
+char				*dollar_handler(t_param *all, char *tok, int *i, char *str);
 
-
-void				handler_quit_(int);
-void				handler_int_c(int);
+void				handler_quit_(int i);
+void				handler_int_c(int i);
 void				handler_int_c_2(int i);
 
 int					fd_close(int fd);
@@ -145,10 +144,10 @@ int					executor(t_param *all);
 
 int					init_env_and_pathes(t_param *all, char **env);
 void				inits_on_start_loop(t_param *all);
-void		quote_processing(t_param *all, char *tok);
-void		slash_processing(t_param *all, char *tok);
+int					quote_processing(t_param *all, char *tok);
+void				slash_processing(t_param *all, char *tok);
 
 int					g_exit_code;
-int					tmp_exit_code;
+int					g_tmp_exit_code;
 
 #endif

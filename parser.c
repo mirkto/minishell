@@ -65,15 +65,16 @@ char		*token_handler(t_param *all, char *tok)
 		else if (tok[all->i] == '>' || tok[all->i] == '<'
 				|| tok[all->i] == ';' || tok[all->i] == '|')
 		{
-			while (tok[all->i])
-			{
+			all->i--;
+			while (tok[++all->i])
 				all->p_str[all->i] = tok[all->i];
-				all->i++;
-			}
 			return (all->p_str);
 		}
 		else
-			quote_processing(all, tok);
+		{
+			if (quote_processing(all, tok) == 1)
+				return (dollar_handler(all, tok, &all->i, all->p_str));
+		}
 	}
 	if (all->z != all->i)
 		all->p_str = str_joiner(all->p_str, tok, &all->i, &all->z);
