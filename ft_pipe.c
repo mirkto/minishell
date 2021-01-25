@@ -39,6 +39,9 @@ int		split_by_pipes(t_param *all)
 
 void	connect_and_execut(t_param *all, int prev_fd[], int next_fd[])
 {
+	all->input_fd_1 = dup(1);
+	all->output_fd_0 = dup(0);
+	all->pipes_fd = 1;
 	if (prev_fd[0] >= 0)
 	{
 		dup2(prev_fd[0], 0);
@@ -52,6 +55,9 @@ void	connect_and_execut(t_param *all, int prev_fd[], int next_fd[])
 		close(next_fd[0]);
 	}
 	executor(all);
+	all->pipes_fd = 0;
+	all->input_fd_1 = fd_close(all->input_fd_1);
+	all->output_fd_0 = fd_close(all->output_fd_0);
 	exit(1);
 }
 

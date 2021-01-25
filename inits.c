@@ -29,6 +29,9 @@ int		init_env_and_pathes(t_param *all, char **env)
 	all->save_fd_0 = -2;
 	all->save_fd_1 = -2;
 	all->dollar_q = 0;
+	all->pipes_fd = 0;
+	all->input_fd_1 = -2;
+	all->output_fd_0 = -2;
 	return (0);
 }
 
@@ -50,4 +53,5 @@ void	inits_on_start_loop(t_param *all)
 	all->cmd_tmp = NULL;
 	all->semicolon_num = 0;
 	all->pipe_num = -1;
+	all->pipes_fd = 0;
 }

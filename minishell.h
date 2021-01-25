@@ -77,6 +77,9 @@ typedef struct		s_parameters
 	int				c;
 	int				z;
 	char			*p_str;
+	int				pipes_fd;
+	int				input_fd_1;
+	int				output_fd_0;
 }					t_param;
 
 typedef struct		s_line

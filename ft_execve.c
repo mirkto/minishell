@@ -102,6 +102,11 @@ int		ft_execve(t_param *all)
 		flag = exec_check_path(all);
 	if (flag == 0)
 	{
+		if (all->pipes_fd == 1)
+		{
+			dup2(all->input_fd_1, 1);
+			dup2(all->output_fd_0, 0);
+		}
 		g_tmp_exit_code = 127;
 		put_error("command not found", all->cmd[0]);
 	}
