@@ -53,7 +53,8 @@ char		*dollar_in_quote_handler(int *z, int *i, t_param *all, char *tok)
 		tmp3 = str_joiner(tmp3, tok, i, z);
 	*z = ++(*i);
 	while (tok[*i] != '$' && tok[*i] != ' '
-			&& tok[*i] != '\\' && tok[*i] != '\"' && tok[*i] != ';')
+			&& tok[*i] != '\\' && tok[*i] != '\"'
+			&& tok[*i] != ';' && tok[*i] != '|')
 		(*i)++;
 	tmp4 = ft_substr(tok, *z, (*i) - (*z));
 	if (all->flag == 3)
