@@ -80,6 +80,8 @@ typedef struct		s_parameters
 	int				pipes_fd;
 	int				input_fd_1;
 	int				output_fd_0;
+	char			*qr2_tmp;
+	char			*qr2_tmp2;
 }					t_param;
 
 typedef struct		s_line

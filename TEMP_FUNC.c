@@ -37,7 +37,7 @@ put_cmd(all);
 write(1, " | ", 3);
 ft_putstr(strerror(errno));
 
-// v
+// alias mm="make && ./minishell"
 
 	i = -1;
 	while (str[++i] != NULL)

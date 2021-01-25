@@ -85,8 +85,12 @@ char		*quote_remover2(int *i, char *tok, t_param *all, char *tmp3)
 	}
 	else if (tok[*i] == '$' && all->c == '\"')
 	{
+		all->qr2_tmp = ft_strdup(tmp3);
+		all->qr2_tmp2 = dollar_in_quote_handler(&all->z, i, all, tok);
 		free(tmp3);
-		tmp3 = dollar_in_quote_handler(&all->z, i, all, tok);
+		tmp3 = ft_strjoin(all->qr2_tmp, all->qr2_tmp2);
+		free(all->qr2_tmp);
+		free(all->qr2_tmp2);
 	}
 	else
 		(*i)++;
