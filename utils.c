@@ -75,18 +75,31 @@ int		check_options(t_param *all, int arg_n)
 	return (FALSE);
 }
 
-int		check_back_slash_n(t_param *all, char *tmp)
+void	check_dollar(t_param *all)
 {
-	int i;
+	int		word;
+	int		c;
 
-	i = 0;
-	while (tmp[i])
+	word = 0;
+	while (all->cmd[++word])
 	{
-		if (tmp[i] == '\n')
-			return (0);
-		i++;
+		c = 0;
+		all->i = 0;
+		all->tmp = ft_strdup(all->cmd[word]);
+		while (all->cmd[word][c])
+		{
+			while (all->cmd[word][c] == '$')
+			{
+				c++;
+				while (ft_isalpha(all->cmd[word][c]) == TRUE)
+					c++;
+				if (ft_isdigit(all->cmd[word][c]) == TRUE)
+					c++;
+			}
+			all->tmp[all->i++] = all->cmd[word][c++];
+		}
+		all->tmp[all->i] = '\0';
+		free(all->cmd[word]);
+		all->cmd[word] = all->tmp;
 	}
-	all->tmp = all->buf;
-	free(all->buf);
-	return (1);
 }

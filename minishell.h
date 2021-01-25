@@ -50,6 +50,7 @@ typedef struct		s_parameters
 {
 	int				i;
 	char			*tmp;
+	char			*tmp_b;
 	int				flag;
 	char			*buf;
 	int				buf_len;
@@ -89,7 +90,6 @@ void				free_array(char **lst);
 int					put_error(char *str_err, char *arg);
 char				**split_pathes(t_param *all, char **env);
 int					check_options(t_param *all, int i);
-int					check_back_slash_n(t_param *all, char *tmp);
 
 int					blt_exit(t_param *all);
 int					blt_cd(t_param *all);
@@ -124,6 +124,9 @@ char				*dollar_handler(t_param *all, char *tok, int *i, char *str);
 void				handler_quit_(int i);
 void				handler_int_c(int i);
 void				handler_int_c_2(int i);
+int					check_back_slash_n(t_param *all, char *tmp);
+char				*control_d_processing(t_param *all, char *tmp, char *buf,\
+																	int flag);
 
 int					fd_close(int fd);
 int					fd_check_and_dup(t_param *all);

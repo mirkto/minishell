@@ -34,14 +34,10 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 
 	if (!(tmp = inits_buf(all)))
 		return (NULL);
-	write(1, "\033[0;32mminishell$ \033[0m", 22);
 	if (!read(0, tmp, BUFFER_SIZE))
 	{
 		if (buf != NULL)
-		{
-			free(tmp);
-			return (ft_strdup(buf));
-		}
+			return (control_d_processing(all, tmp, buf, 1));
 		if (tmp[0] == 0)
 			write(1, "exit\n", 5);
 		else
@@ -49,11 +45,7 @@ char	*inits_buf_and_get_line(t_param *all, char *buf)
 		return (NULL);
 	}
 	if (buf != NULL)
-	{
-		all->tmp = tmp;
-		free(tmp);
-		tmp = ft_strjoin(buf, all->tmp);
-	}
+		tmp = control_d_processing(all, tmp, buf, 2);
 	return (tmp);
 }
 
@@ -101,6 +93,7 @@ int		main(int argc, char **argv, char **env)
 	init_env_and_pathes(&all, env);
 	while (1)
 	{
+		write(1, "\033[0;32mminishell$ \033[0m", 22);
 		if (!(all.buf = inits_buf_and_get_line(&all, NULL)))
 			return (-1);
 		while (check_back_slash_n(&all, all.buf) == 1)

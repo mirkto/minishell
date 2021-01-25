@@ -10,7 +10,7 @@ fork + exec - 89
 		   \__52, \_52, \__54, \_77, \___00, \__75, \___80, \______96, \120
 <fcntl.h> open - 50
 <sys/wait.h> wait, waitpid - 87
-<sys/types.h> wait3, wait4 - 88
+<sys/types.h> wait3, wait4 - 88export PWD
 <signal.h> signal, kill - 109
 <sys/stat.h> stat, lstat, fstat - 61
 <dirent.h> opendir, readdir, closedir - 66
@@ -37,7 +37,7 @@ put_cmd(all);
 write(1, " | ", 3);
 ft_putstr(strerror(errno));
 
-// alias mm="make && ./minishell"
+// v
 
 	i = -1;
 	while (str[++i] != NULL)

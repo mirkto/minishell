@@ -14,9 +14,14 @@
 
 int		init_env_and_pathes(t_param *all, char **env)
 {
+	int	i;
+
 	all->env = copy_env(env, 0);
 	if (search_key_env(all, "OLDPWD") == -1)
 		all->env = inc_env(all->env, "OLDPWD");
+	i = -1;
+	while (++i < 15)
+		all->env = inc_env(all->env, "");
 	all->pathes = split_pathes(all, env);
 	g_tmp_exit_code = 0;
 	all->fd_0 = -2;

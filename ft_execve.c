@@ -26,7 +26,7 @@ int		exec_fork(t_param *all)
 		fd_check_and_dup(all);
 		if (execve(all->tmp, all->cmd, all->env) == -1)
 		{
-			put_error("No such file or directory", all->cmd[0]);
+			put_error("command not found", all->cmd[0]);
 			exit(127);
 		}
 	}

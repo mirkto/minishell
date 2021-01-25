@@ -18,7 +18,7 @@ char	**inc_env(char **env, char *str)
 	int		len;
 
 	len = 0;
-	while (env[0][len])
+	while (env[len])
 		len++;
 	tmp = copy_env(env, len + 1);
 	free_array(env);
