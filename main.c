@@ -43,7 +43,7 @@ int		executor(t_param *all)
 		return (-1);
 	fd_processor(all, 0);
 	fd_check_and_dup(all);
-	if (!ft_strcmp(all->cmd[0], "q") || !ft_strcmp(all->cmd[0], "exit"))
+	if (!ft_strcmp(all->cmd[0], "exit"))
 		blt_exit(all);
 	else if (!ft_strcmp(all->cmd[0], "pwd") ||
 			!ft_strcmp(all->cmd[0], "PWD"))
